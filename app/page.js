@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
+import Banner from "./_Components/Banner";
 
 export default function Home() {
   return (
-    <div>
-      <Button>Waleed Codes</Button>
+    <div className="container mx-auto">
+      <Banner />
     </div>
   );
 }
