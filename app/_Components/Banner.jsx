@@ -65,7 +65,7 @@ const Banner = () => {
             <div className="bg-gray-200/90 rounded-t-full w-40 p-3 shadow-md">
               {" "}
               <div className=" bg-white shadow-md w-34 p-3 rounded-t-full">
-                <div className="w-28 p-5 bg-gradient-to-r from-primary to-[#6088f4af] rounded-t-full">
+                <div className="w-28 p-5 bg-gradient-to-r from-primary to-[#3c63cda5] rounded-t-full">
                   <h1 className="text-xl pt-4 text-white font-semibold text-center">
                     Super Sale$
                   </h1>
