@@ -6,7 +6,7 @@ import React from "react";
 const About = () => {
   return (
     <>
-      <div className="container py-40">
+      <div className="container py-40 mx-auto">
         <div className="grid grid-cols-2 gap-20 items-center">
           <div className="relative">
             <div className="absolute  right-34">
