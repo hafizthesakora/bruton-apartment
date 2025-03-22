@@ -62,25 +62,25 @@ const Category = () => {
                 <h2 className="text-lg font-normal pt-3">{category.title}</h2>
               </div>
             ))}
-            <div className="">
-              <div className=" flex gap-2 pt-6 justify-center">
-                <form action="#" method="POST">
-                  <div className="flex item-center flex-row w-full">
-                    <input
-                      type="text"
-                      placeholder="Address, Schools City etc."
-                      className="border rounded-l-md p-4 w-[500px] "
-                      required
-                    />
-                    <button
-                      className="bg-primary cursor-pointer text-lg text-white rounded-r-md px-8 py-3"
-                      type="submit"
-                    >
-                      Search
-                    </button>
-                  </div>
-                </form>
-              </div>
+          </div>
+          <div className="">
+            <div className=" flex gap-2 pt-10 justify-center">
+              <form action="#" method="POST">
+                <div className="flex item-center">
+                  <input
+                    type="text"
+                    placeholder="Address, Schools City etc."
+                    className="border rounded-l-md p-4 w-[500px]"
+                    required
+                  />
+                  <button
+                    className="bg-primary cursor-pointer text-lg text-white rounded-r-md px-8 py-3"
+                    type="submit"
+                  >
+                    Search
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
