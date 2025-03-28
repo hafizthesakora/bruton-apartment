@@ -5,8 +5,8 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <div className="container mx-auto py-10">
-      <div className="grid grid-cols-3 gap-10 items-start">
+    <div className="container mx-auto py-10 px-7">
+      <div className="grid md:grid-cols-3 gap-10 items-start">
         <div className="">
           <div className="">
             <Image
@@ -16,7 +16,7 @@ const Footer = () => {
               height={100}
               className="pb-5"
             />
-            <p className="text-lg pe-16 pt-5">
+            <p className="text-md md:text-lg md:pe-16 pt-5">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt nisi
               laboriosam labore velit accusantium culpa, assumenda est, dolorum
               nihil nulla iusto similique odio beatae officia, temporibus dicta
@@ -24,14 +24,34 @@ const Footer = () => {
             </p>
           </div>
         </div>
-        <div className="flex gap-10 justify-around">
+        <div className="flex gap-10 justify-around py-10 md:py-0">
           <div className="">
             <h3 className="text-2xl font-semibold">Quick Links</h3>
             <ul className="space-y-3 text-lg font-normal pt-8 flex flex-col">
-              <Link href="#" className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105">Home</Link>
-              <Link href="#" className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105">About</Link>
-              <Link href="#" className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105">Services</Link>
-              <Link href="#" className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105">Contact</Link>
+              <Link
+                href="#"
+                className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105"
+              >
+                Home
+              </Link>
+              <Link
+                href="#"
+                className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105"
+              >
+                About
+              </Link>
+              <Link
+                href="#"
+                className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105"
+              >
+                Services
+              </Link>
+              <Link
+                href="#"
+                className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105"
+              >
+                Contact
+              </Link>
             </ul>
           </div>
           <div className="">
@@ -103,11 +123,11 @@ const Footer = () => {
         </div>
       </div>
       <div className="border-t-2 border-gray-200 mt-10">
-        <div className="flex justify-between items-center py-5">
+        <div className="md:flex justify-between items-center py-5 space-y-8 md:space-y-0 md:text-start text-center">
           <p className="text-gray-500">
             © 2025 Real Estate. All rights reserved.
           </p>
-          <div className="flex gap-5">
+          <div className="flex gap-5 justify-center">
             <Facebook
               size={20}
               className="cursor-pointer hover:scale-125 hover:transition-all animate-in hover:text-primary"
