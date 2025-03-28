@@ -5,9 +5,9 @@ import React from "react";
 const Banner = () => {
   return (
     <div className="container mx-auto">
-      <div className="grid grid-cols-2 items-center gap-20 justify-around py-24">
+      <div className="grid md:grid-cols-2 items-center gap-20 justify-around py-10 md:py-24">
         <div className="p-10">
-          <h1 className="text-7xl font-semibold py-5">
+          <h1 className="text-5xl md:text-7xl font-semibold py-2 md:py-5">
             Search And Tour With <span className="text-primary">Ozalams</span>
           </h1>
           <p className="pt-5 text-lg">
@@ -15,7 +15,7 @@ const Banner = () => {
             dolore recusandae minus ipsam mollitia distinctio sed voluptatibus
             unde. Asperiores, voluptas.
           </p>
-          <div className="flex gap-20 py-14 px-4">
+          <div className="flex gap-10 md:gap-20 py-14 px-4">
             <Image
               src="/assets/icon2.png"
               alt="icons"
@@ -61,42 +61,42 @@ const Banner = () => {
         </div>
         <div className="relative flex justify-center">
           {/* this for postions */}
-          <div className="absolute top-5 left-16">
-            <div className="bg-gray-200/90 rounded-t-full w-40 p-3 shadow-md">
+          <div className="absolute top-8 md:top-5 left-8 md:left-16">
+            <div className="bg-gray-200/90 rounded-t-full w-24 md:w-40 p-2 md:p-3 shadow-md">
               {" "}
-              <div className=" bg-white shadow-md w-34 p-3 rounded-t-full">
-                <div className="w-28 p-5 bg-gradient-to-r from-primary to-[#3c63cda5] rounded-t-full">
-                  <h1 className="text-xl pt-4 text-white font-semibold text-center">
+              <div className=" bg-white shadow-md w-20 md:w-34 p-2 md:p-3 rounded-t-full">
+                <div className="w-16 md:w-28 p-4 md:p-5 bg-gradient-to-r from-primary to-[#3c63cda5] rounded-t-full">
+                  <h1 className=" text-xs md:text-xl pt-2 md:pt-4 text-white font-semibold text-center">
                     Super Sale$
                   </h1>
                 </div>
               </div>
             </div>
           </div>
-          <div className="absolute right-5 top-78">
+          <div className="absolute right-3 md:right-5 top-60 md:top-78">
             <div className="w-56 space-y-5 bg-gray-200/60 p-3 rounded-lg">
-              <div className="flex gap-3 items-center p-3 bg-white justify-center rounded-lg">
+              <div className="flex gap-3 items-center p-2 md:p-3 bg-white justify-center rounded-lg">
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"
                 />
                 Paid Partner Ship
               </div>{" "}
-              <div className="flex gap-3 items-center p-3 bg-white justify-center rounded-lg">
+              <div className="flex gap-3 items-center p-2 md:p-3 bg-white justify-center rounded-lg">
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"
                 />
                 Paid Partner Ship
               </div>{" "}
-              <div className="flex gap-3 items-center p-3 bg-white justify-center rounded-lg">
+              <div className="flex gap-3 items-center p-2 md:p-3 bg-white justify-center rounded-lg">
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"
                 />
                 Paid Partner Ship
               </div>{" "}
-              <div className="flex gap-3 items-center p-3 bg-white justify-center rounded-lg">
+              <div className="flex gap-3 items-center p-2 md:p-3 bg-white justify-center rounded-lg">
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"
