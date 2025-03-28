@@ -94,31 +94,31 @@ export default function Header() {
         </div>
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
           <Link
-            href="#"
+            href="/"
             className="text-lg font-normal tracking-wide text-gray-900"
           >
             Home
           </Link>
           <Link
-            href="#"
+            href="/about"
             className="text-lg font-normal tracking-wide text-gray-900"
           >
             About Us
           </Link>
           <Link
-            href="#"
+            href="/services"
             className="text-lg font-normal tracking-wide text-gray-900"
           >
             Services
           </Link>
           <Link
-            href="#"
+            href="/facilites"
             className="text-lg font-normal tracking-wide text-gray-900"
           >
             Facilites
           </Link>{" "}
           <Link
-            href="#"
+            href="/blog"
             className="text-lg font-normal tracking-wide text-gray-900"
           >
             Blogs
@@ -163,31 +163,31 @@ export default function Header() {
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-5 py-10 flex flex-col ">
                 <Link
-                  href="#"
+                  href="/"
                   className="text-lg font-normal tracking-wide text-gray-900"
                 >
                   Home
                 </Link>
                 <Link
-                  href="#"
+                  href="/about"
                   className="text-lg font-normal tracking-wide text-gray-900"
                 >
                   About Us
                 </Link>
                 <Link
-                  href="#"
+                  href="/services"
                   className="text-lg font-normal tracking-wide text-gray-900"
                 >
                   Services
-                </Link>{" "}
+                </Link>
                 <Link
-                  href="#"
+                  href="/facilites"
                   className="text-lg font-normal tracking-wide text-gray-900"
                 >
                   Facilites
                 </Link>{" "}
                 <Link
-                  href="#"
+                  href="/blog"
                   className="text-lg font-normal tracking-wide text-gray-900"
                 >
                   Blogs

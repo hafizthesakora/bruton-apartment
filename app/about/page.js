@@ -41,9 +41,9 @@ const AboutUs = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white ">
       {/* Hero Section */}
-      <div className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+      <div className="relative h-[60vh] flex items-center justify-center overflow-hidden p-5">
         <div className="absolute inset-0 z-0">
           <Image
             src="/assets/aboutbackground.jpg"
@@ -54,10 +54,10 @@ const AboutUs = () => {
           />
         </div>
         <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+          <h1 className="text-3xl md:text-6xl font-bold mb-6">
             About Rent Home
           </h1>
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
+          <p className="text-md md:text-2xl max-w-3xl mx-auto leading-relaxed">
             We are dedicated to transforming the rental experience by providing
             seamless, transparent, and innovative housing solutions.
           </p>
@@ -65,7 +65,7 @@ const AboutUs = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 -mt-20 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => (
             <Card
@@ -81,10 +81,10 @@ const AboutUs = () => {
       </div>
 
       {/* Our Story Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-40">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-40">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <h2 className="text-5xl font-semibold text-gray-900">Our Story</h2>
+            <h2 className="text-4xl md:text-5xl font-semibold text-gray-900">Our Story</h2>
             <div className="space-y-4">
               <p className="text-gray-600 text-lg leading-relaxed">
                 Founded in 2018, Renthome started with a simple mission: to make
@@ -118,9 +118,9 @@ const AboutUs = () => {
       </div>
 
       {/* Team Section */}
-      <div className="bg-gray-50 py-32 mb-20">
+      <div className="bg-gray-50 px-3 py-32 mb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-5xl font-semibold text-center text-gray-900 mb-12">
+          <h2 className="text-4xl md:text-5xl font-semibold text-center text-gray-900 mb-12">
             Our Leadership Team
           </h2>
           <div className="grid md:grid-cols-3 gap-8 pt-10">
