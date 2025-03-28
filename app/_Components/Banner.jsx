@@ -15,27 +15,27 @@ const Banner = () => {
             dolore recusandae minus ipsam mollitia distinctio sed voluptatibus
             unde. Asperiores, voluptas.
           </p>
-          <div className="flex gap-10 md:gap-20 py-14 px-4">
+          <div className="flex gap-12 md:gap-20 py-14 px-4">
             <Image
               src="/assets/icon2.png"
               alt="icons"
               width={100}
               height={50}
-              className="w-22 object-cover"
+              className="w-16 md:w-22 object-cover"
             />
             <Image
               src="/assets/icon3.png"
               alt="icons"
               width={100}
               height={50}
-              className="w-22 object-cover"
+              className="w-16 md:w-22 object-cover"
             />
             <Image
               src="/assets/icon1.png"
               alt="icons"
               width={100}
               height={50}
-              className="w-22 object-cover"
+              className="w-16 md:w-22 object-cover"
             />
           </div>
           <div className="">
