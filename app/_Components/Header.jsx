@@ -78,7 +78,7 @@ export default function Header() {
         className="mx-auto flex container items-center justify-between p-6 lg:px-8"
       >
         <div className="flex lg:flex-1">
-          <Link href="#">
+          <Link href="/">
             <Image src="/logo.png" alt="logo" width={160} height={80} />
           </Link>
         </div>
@@ -112,7 +112,7 @@ export default function Header() {
             Services
           </Link>
           <Link
-            href="/facilites"
+            href="/facilities"
             className="text-lg font-normal tracking-wide text-gray-900"
           >
             Facilites
@@ -147,7 +147,7 @@ export default function Header() {
         <div className="fixed inset-0 z-10" />
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
-            <Link href="#">
+            <Link href="/">
               <Image src="/logo.png" alt="logo" width={120} height={60} />
             </Link>
             <button
@@ -181,7 +181,7 @@ export default function Header() {
                   Services
                 </Link>
                 <Link
-                  href="/facilites"
+                  href="/facilities"
                   className="text-lg font-normal tracking-wide text-gray-900"
                 >
                   Facilites
