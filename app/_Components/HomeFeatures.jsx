@@ -11,15 +11,15 @@ import React from "react";
 const HomeFeatures = () => {
   return (
     <div>
-      <div className="container py-40 mx-auto">
-        <div className="grid grid-cols-2 gap-20 items-center">
-          <div className="relative">
-            <div className="absolute  right-34">
-              <div className="bg-gray-200/90 rounded-t-full w-40 p-3 shadow-md">
+      <div className="container py-16 md:py-40 mx-auto p-6">
+        <div className="grid md:grid-cols-2 gap-20 items-center">
+          <div className="relative order-2 md:order-1">
+            <div className="absolute top-5 -left-2 md:left-3">
+              <div className="bg-gray-200/90 rounded-t-full w-24 md:w-40 p-2 md:p-3 shadow-md">
                 {" "}
-                <div className=" bg-white shadow-md w-34 p-3 rounded-t-full">
-                  <div className="w-28 p-5 bg-gradient-to-r from-primary to-[#3c63cda5] rounded-t-full">
-                    <h1 className="text-xl pt-4 text-white font-semibold text-center">
+                <div className=" bg-white shadow-md w-20 md:w-34 p-2 md:p-3 rounded-t-full">
+                  <div className="w-16 md:w-28 p-4 md:p-5 bg-gradient-to-r from-primary to-[#3c63cda5] rounded-t-full">
+                    <h1 className=" text-xs md:text-xl pt-2 md:pt-4 text-white font-semibold text-center">
                       Super Sale$
                     </h1>
                   </div>
@@ -31,11 +31,11 @@ const HomeFeatures = () => {
               alt="about"
               width={600}
               height={400}
-              className=" object-center rounded-t-full px-10"
+              className=" object-center rounded-t-full md:px-10 px-2"
             />
           </div>
-          <div className="">
-            <h1 className="text-7xl font-semibold py-5 capitalize">
+          <div className="order-1 md:order-2">
+            <h1 className="text-4xl md:text-7xl font-semibold py-5 capitalize">
               Sell for more than the home
               <span className="text-primary"> Next Door</span>
             </h1>
@@ -46,14 +46,14 @@ const HomeFeatures = () => {
             </p>
             <div className="pt-7">
               <div className="grid grid-cols-9 py-5 gap-5 items-center">
-                <div className="col-span-2 flex justify-center">
+                <div className="md:col-span-2 col-span-3 flex justify-center">
                   <CircleDollarSignIcon
                     size={90}
                     className=" bg-gray-100 hover:text-white hover:bg-primary rounded-full p-5 cursor-pointer hover:transition-all hover:animate-pulse shadow-xl hover:shadow-2xl"
                   />
                 </div>
-                <div className="col-span-7">
-                  <h1 className="text-2xl font-semibold  py-3">
+                <div className="md:col-span-7 col-span-6">
+                  <h1 className="text-xl md:text-2xl font-semibold  py-3">
                     The Ability to Indentify Market Entry
                   </h1>
                   <p>
@@ -64,14 +64,14 @@ const HomeFeatures = () => {
                 </div>
               </div>
               <div className="grid grid-cols-9 py-5 gap-5 items-center">
-                <div className="col-span-2 flex justify-center">
+                <div className="md:col-span-2 col-span-3 flex justify-center">
                   <Handshake
                     size={90}
                     className=" bg-gray-100 hover:text-white hover:bg-primary rounded-full p-5 cursor-pointer hover:transition-all hover:animate-pulse shadow-xl hover:shadow-2xl"
                   />
                 </div>
-                <div className="col-span-7">
-                  <h1 className="text-2xl font-semibold  py-3">
+                <div className="md:col-span-7 col-span-6">
+                  <h1 className="text-xl md:text-2xl font-semibold  py-3">
                     The Ability to Indentify Market Entry
                   </h1>
                   <p>
