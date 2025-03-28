@@ -91,9 +91,9 @@ const servicesData = [
 
 const Services = () => {
   return (
-    <div className="container mx-auto py-20">
+    <div className="container mx-auto py-20 p-8">
       <div className="pb-24 space-y-5">
-        <h1 className="text-5xl font-semibold  capitalize">
+        <h1 className="text-4xl md:text-5xl font-semibold  capitalize">
           Take The First <span className="text-primary">Step</span>
         </h1>
         <p className="text-lg text-gray-500">
@@ -101,9 +101,9 @@ const Services = () => {
           error.
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-16">
+      <div className="grid md:grid-cols-3 gap-16">
         {servicesData.map((service, index) => (
-          <div key={index} className="bg-white p-8 rounded-4xl shadow-md">
+          <div key={index} className="bg-white md:p-8 p-5 rounded-4xl shadow-md">
             <div>
               <Image
                 src={service.image}
@@ -123,25 +123,25 @@ const Services = () => {
                     />
                   ))}
                 </div>
-                <span className="text-gray-700 font-medium">
+                <span className="text-gray-700 font-medium md:text-md text-xs">
                   {service.visited}
                 </span>
                 <button
-                  className={`ml-auto ${service.buttonColor} text-white px-4 py-2 rounded-full`}
+                  className={`ml-auto ${service.buttonColor} text-white px-4 md:y-2 py-1 rounded-full`}
                 >
                   Visit
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-10 pt-5 items-center justify-center">
+            <div className="md:flex space-y-4 md:space-y-0 gap-10 pt-5 items-center justify-center w-full">
               {service.actions.map((action, idx) => (
                 <div
                   key={idx}
-                  className="p-9 rounded-2xl bg-gray-100 text-center flex flex-col items-center space-y-2 hover:bg-primary hover:text-white cursor-pointer hover:transition-all"
+                  className="p-5 md:p-9 rounded-2xl bg-gray-100 text-center flex flex-col items-center space-y-2 hover:bg-primary hover:text-white cursor-pointer hover:transition-all "
                 >
                   {action.icon}
-                  <h1 className="mt-2 font-medium text-xl">{action.title}</h1>
-                  <p>{action.description}</p>
+                  <h1 className="mt-2 font-medium text-sm md:text-xl">{action.title}</h1>
+                  <p className="text-xs md:text-md">{action.description}</p>
                 </div>
               ))}
             </div>
