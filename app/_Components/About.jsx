@@ -6,9 +6,9 @@ import React from "react";
 const About = () => {
   return (
     <>
-      <div className="container py-40 mx-auto">
-        <div className="grid grid-cols-2 gap-20 items-center">
-          <div className="relative">
+      <div className="container py-40 mx-auto p-6">
+        <div className="grid md:grid-cols-2 gap-20 items-center">
+          <div className="relative order-2 md:order-1 md:block hidden">
             <div className="absolute  right-34">
               <div className="bg-gray-200/90 rounded-t-full w-40 p-3 shadow-md">
                 {" "}
@@ -29,8 +29,8 @@ const About = () => {
               className=" object-center rounded-t-full px-10"
             />
           </div>
-          <div className="">
-            <h1 className="text-7xl font-semibold py-5 capitalize">
+          <div className="order-1 md:order-2">
+            <h1 className="text-4xl md:text-7xl font-semibold py-5 capitalize">
               Sell for more than the home
               <span className="text-primary"> Next Door</span>
             </h1>
@@ -39,9 +39,9 @@ const About = () => {
               dolore recusandae minus ipsam mollitia distinctio sed voluptatibus
               unde. Asperiores, voluptas.
             </p>
-            <div className="">
-              <div className="grid grid-cols-3 gap-10 pt-16">
-                <div className="p-4 bg-gray-100 rounded-t-full text-center relative">
+            <div className="px-10 md:px-0">
+              <div className="grid md:grid-cols-3 gap-10 pt-16">
+                <div className="p-6 md:p-4 bg-gray-100 rounded-t-full text-center relative">
                   <Image
                     src="/assets/main.jpg"
                     alt="about"
@@ -62,7 +62,7 @@ const About = () => {
                     </div>
                   </div>
                 </div>{" "}
-                <div className="p-4 bg-gray-100 rounded-t-full text-center relative">
+                <div className="p-6 md:p-4 bg-gray-100 rounded-t-full text-center relative">
                   <Image
                     src="/assets/imagereader.jpeg"
                     alt="about"
@@ -83,7 +83,7 @@ const About = () => {
                     </div>
                   </div>
                 </div>{" "}
-                <div className="p-4 bg-gray-100 rounded-t-full text-center relative">
+                <div className="p-6 md:p-4 bg-gray-100 rounded-t-full text-center relative">
                   <Image
                     src="/assets/ab3.jpg"
                     alt="about"
