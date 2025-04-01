@@ -54,10 +54,20 @@ const AboutUs = () => {
           />
         </div>
         <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-3xl md:text-6xl font-bold mb-6">
+          <h1
+            className="text-3xl md:text-6xl font-bold mb-6"
+            data-aos="fade-up"
+            data-aos-duration="1200"
+            data-aos-easing="ease-in-out-back"
+          >
             About Rent Home
           </h1>
-          <p className="text-md md:text-2xl max-w-3xl mx-auto leading-relaxed">
+          <p
+            className="text-md md:text-2xl max-w-3xl mx-auto leading-relaxed"
+            data-aos="fade-up"
+            data-aos-duration="1200"
+            data-aos-easing="ease-in-out-back"
+          >
             We are dedicated to transforming the rental experience by providing
             seamless, transparent, and innovative housing solutions.
           </p>
@@ -66,7 +76,12 @@ const AboutUs = () => {
 
       {/* Stats Section */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 -mt-20 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          data-aos="fade-up"
+          data-aos-duration="1200"
+          data-aos-easing="ease-in-out-back"
+        >
           {stats.map((stat, index) => (
             <Card
               key={index}
@@ -84,7 +99,9 @@ const AboutUs = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-40">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <h2 className="text-4xl md:text-5xl font-semibold text-gray-900">Our Story</h2>
+            <h2 className="text-4xl md:text-5xl font-semibold text-gray-900">
+              Our Story
+            </h2>
             <div className="space-y-4">
               <p className="text-gray-600 text-lg leading-relaxed">
                 Founded in 2018, Renthome started with a simple mission: to make

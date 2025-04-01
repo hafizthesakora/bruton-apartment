@@ -1,13 +1,4 @@
-import { Jost } from "next/font/google";
-import "./globals.css";
-import Header from "./_Components/Header";
-import Footer from "./_Components/Footer";
-
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
-  weights: ["100", "200", "300", "400", "500", "600", "700", "800", "900"], // Added font weights
-});
+import ClientWrapper from "./ClientWrapper";
 
 export const metadata = {
   title: "Create Next App",
@@ -17,10 +8,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={jost.className}>
-        <Header />
-        {children}
-        <Footer />
+      <body>
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );
