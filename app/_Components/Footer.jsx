@@ -15,8 +15,16 @@ const Footer = () => {
               width={200}
               height={100}
               className="pb-5"
+              data-aos="flip-down"
+              data-aos-duration="1000"
+              data-aos-easing="ease-in-out-back"
             />
-            <p className="text-md md:text-lg md:pe-16 pt-5">
+            <p
+              className="text-md md:text-lg md:pe-16 pt-5"
+              data-aos="fade-up"
+              data-aos-duration="1200"
+              data-aos-easing="ease-in-out-back"
+            >
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt nisi
               laboriosam labore velit accusantium culpa, assumenda est, dolorum
               nihil nulla iusto similique odio beatae officia, temporibus dicta
@@ -26,48 +34,103 @@ const Footer = () => {
         </div>
         <div className="flex gap-10 justify-around py-10 md:py-0">
           <div className="">
-            <h3 className="text-2xl font-semibold">Quick Links</h3>
+            <h3
+              className="text-2xl font-semibold"
+              data-aos="fade-up"
+              data-aos-duration="1200"
+              data-aos-easing="ease-in-out-back"
+            >
+              Quick Links
+            </h3>
             <ul className="space-y-3 text-lg font-normal pt-8 flex flex-col">
               <Link
                 href="#"
                 className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105"
+                data-aos="fade-right"
+                data-aos-duration="1200"
+                data-aos-easing="ease-in-out-back"
               >
                 Home
               </Link>
               <Link
                 href="#"
                 className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105"
+                data-aos="fade-right"
+                data-aos-duration="1300"
+                data-aos-easing="ease-in-out-back"
               >
                 About
               </Link>
               <Link
                 href="#"
                 className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105"
+                data-aos="fade-right"
+                data-aos-duration="1400"
+                data-aos-easing="ease-in-out-back"
               >
                 Services
               </Link>
               <Link
                 href="#"
                 className="hover:text-primary hover:animate-pulse hover:transition-all hover:scale-105"
+                data-aos="fade-right"
+                data-aos-duration="1500"
+                data-aos-easing="ease-in-out-back"
               >
                 Contact
               </Link>
             </ul>
           </div>
           <div className="">
-            <h3 className="text-2xl font-semibold">Contact</h3>
+            <h3
+              className="text-2xl font-semibold"
+              data-aos="fade-up"
+              data-aos-duration="1200"
+              data-aos-easing="ease-in-out-back"
+            >
+              Contact
+            </h3>
             <ul className="space-y-3 text-lg font-normal pt-8">
-              <li>Facebook</li>
-              <li>Twitter</li>
-              <li>Instagram</li>
-              <li>Youtube</li>
+              <li
+                data-aos="fade-right"
+                data-aos-duration="1200"
+                data-aos-easing="ease-in-out-back"
+              >
+                Facebook
+              </li>
+              <li
+                data-aos="fade-right"
+                data-aos-duration="1300"
+                data-aos-easing="ease-in-out-back"
+              >
+                Twitter
+              </li>
+              <li
+                data-aos="fade-right"
+                data-aos-duration="1400"
+                data-aos-easing="ease-in-out-back"
+              >
+                Instagram
+              </li>
+              <li
+                data-aos="fade-right"
+                data-aos-duration="1500"
+                data-aos-easing="ease-in-out-back"
+              >
+                Youtube
+              </li>
             </ul>
           </div>
         </div>
         <div className="flex justify-around">
           <div className="space-y-4">
             <div className="flex items-center space-x-7">
-              <div className="w-16 h-16 rounded-lg overflow-hidden">
+              <div
+                className="w-16 h-16 rounded-lg overflow-hidden"
+                data-aos="fade-up"
+                data-aos-duration="1200"
+                data-aos-easing="ease-in-out-back"
+              >
                 <Image
                   src="/assets/ab1.png"
                   alt="House Update 1"
@@ -77,15 +140,32 @@ const Footer = () => {
                 />
               </div>
               <div>
-                <h3 className="text-black text-lg font-medium">
+                <h3
+                  className="text-black text-lg font-medium"
+                  data-aos="fade-left"
+                  data-aos-duration="1200"
+                  data-aos-easing="ease-in-out-back"
+                >
                   Here are updates
                 </h3>
-                <p className="text-gray-700">Lorem Ipsum Dolor Sit</p>
+                <p
+                  className="text-gray-700"
+                  data-aos="fade-left"
+                  data-aos-duration="1300"
+                  data-aos-easing="ease-in-out-back"
+                >
+                  Lorem Ipsum Dolor Sit
+                </p>
               </div>
             </div>
 
             <div className="flex items-center space-x-7">
-              <div className="w-16 h-16 rounded-lg overflow-hidden">
+              <div
+                className="w-16 h-16 rounded-lg overflow-hidden"
+                data-aos="fade-up"
+                data-aos-duration="1400"
+                data-aos-easing="ease-in-out-back"
+              >
                 <Image
                   src="/assets/ab2.jpg"
                   alt="House Update 2"
@@ -95,15 +175,32 @@ const Footer = () => {
                 />
               </div>
               <div>
-                <h3 className="text-black text-lg font-medium">
+                <h3
+                  className="text-black text-lg font-medium"
+                  data-aos="fade-left"
+                  data-aos-duration="1200"
+                  data-aos-easing="ease-in-out-back"
+                >
                   Here are updates
                 </h3>
-                <p className="text-gray-700">Lorem Ipsum Dolor Sit</p>
+                <p
+                  className="text-gray-700"
+                  data-aos="fade-left"
+                  data-aos-duration="1300"
+                  data-aos-easing="ease-in-out-back"
+                >
+                  Lorem Ipsum Dolor Sit
+                </p>
               </div>
             </div>
 
             <div className="flex items-center space-x-7">
-              <div className="w-16 h-16 rounded-lg overflow-hidden">
+              <div
+                className="w-16 h-16 rounded-lg overflow-hidden"
+                data-aos="fade-up"
+                data-aos-duration="1600"
+                data-aos-easing="ease-in-out-back"
+              >
                 <Image
                   src="/assets/ab3.jpg"
                   alt="House Update 3"
@@ -113,10 +210,22 @@ const Footer = () => {
                 />
               </div>
               <div>
-                <h3 className="text-black text-lg font-medium">
+                <h3
+                  className="text-black text-lg font-medium"
+                  data-aos="fade-left"
+                  data-aos-duration="1200"
+                  data-aos-easing="ease-in-out-back"
+                >
                   Here are updates
                 </h3>
-                <p className="text-gray-700">Lorem Ipsum Dolor Sit</p>
+                <p
+                  className="text-gray-700"
+                  data-aos="fade-left"
+                  data-aos-duration="1300"
+                  data-aos-easing="ease-in-out-back"
+                >
+                  Lorem Ipsum Dolor Sit
+                </p>
               </div>
             </div>
           </div>
