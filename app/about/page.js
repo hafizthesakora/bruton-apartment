@@ -64,8 +64,8 @@ const AboutUs = () => {
           </h1>
           <p
             className="text-md md:text-2xl max-w-3xl mx-auto leading-relaxed"
-            data-aos="fade-up"
-            data-aos-duration="1200"
+            data-aos="fade-down"
+            data-aos-duration="1400"
             data-aos-easing="ease-in-out-back"
           >
             We are dedicated to transforming the rental experience by providing
@@ -78,7 +78,7 @@ const AboutUs = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 -mt-20 relative z-10">
         <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-          data-aos="fade-up"
+          data-aos="fade-down"
           data-aos-duration="1200"
           data-aos-easing="ease-in-out-back"
         >
@@ -99,31 +99,61 @@ const AboutUs = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-40">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <h2 className="text-4xl md:text-5xl font-semibold text-gray-900">
+            <h2
+              className="text-4xl md:text-5xl font-semibold text-gray-900"
+              data-aos="fade-right"
+              data-aos-duration="1000"
+              data-aos-easing="ease-in-out-back"
+            >
               Our Story
             </h2>
             <div className="space-y-4">
-              <p className="text-gray-600 text-lg leading-relaxed">
+              <p
+                className="text-gray-600 text-lg leading-relaxed"
+                data-aos="fade-right"
+                data-aos-duration="1200"
+                data-aos-easing="ease-in-out-back"
+              >
                 Founded in 2018, Renthome started with a simple mission: to make
                 finding and managing rental properties easier and more
                 transparent for everyone.
               </p>
-              <p className="text-gray-600 text-lg leading-relaxed">
+              <p
+                className="text-gray-600 text-lg leading-relaxed"
+                data-aos="fade-right"
+                data-aos-duration="1300"
+                data-aos-easing="ease-in-out-back"
+              >
                 We leverage cutting-edge technology and a customer-first
                 approach to simplify the rental process, providing innovative
                 solutions that benefit both renters and property owners.
               </p>
             </div>
             <div className="flex gap-4">
-              <button className="bg-primary text-white px-6 py-3 rounded-full hover:bg-primary/90 transition-colors">
+              <button
+                className="bg-primary text-white px-6 py-3 rounded-full hover:bg-primary/90 transition-colors"
+                data-aos="fade-right"
+                data-aos-duration="1400"
+                data-aos-easing="ease-in-out-back"
+              >
                 Learn More
               </button>
-              <button className="border-2 border-primary text-primary px-6 py-3 rounded-full hover:bg-primary/10 transition-colors">
+              <button
+                className="border-2 border-primary text-primary px-6 py-3 rounded-full hover:bg-primary/10 transition-colors"
+                data-aos="fade-right"
+                data-aos-duration="1600"
+                data-aos-easing="ease-in-out-back"
+              >
                 Contact Us
               </button>
             </div>
           </div>
-          <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
+          <div
+            className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl"
+            data-aos="fade-left"
+            data-aos-duration="1400"
+            data-aos-easing="ease-in-out-back"
+          >
             <Image
               src="/assets/main.jpg"
               alt="Company Story"
@@ -137,7 +167,12 @@ const AboutUs = () => {
       {/* Team Section */}
       <div className="bg-gray-50 px-3 py-32 mb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl md:text-5xl font-semibold text-center text-gray-900 mb-12">
+          <h2
+            className="text-4xl md:text-5xl font-semibold text-center text-gray-900 mb-12"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            data-aos-easing="ease-in-out-back"
+          >
             Our Leadership Team
           </h2>
           <div className="grid md:grid-cols-3 gap-8 pt-10">
@@ -152,13 +187,35 @@ const AboutUs = () => {
                     alt={member.name}
                     fill
                     className="rounded-full object-cover"
+                    data-aos="zoom-in"
+                    data-aos-duration="1200"
+                    data-aos-easing="ease-in-out-back"
                   />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3
+                  className="text-xl font-semibold text-gray-900 mb-2"
+                  data-aos="fade-up"
+                  data-aos-duration="1300"
+                  data-aos-easing="ease-in-out-back"
+                >
                   {member.name}
                 </h3>
-                <p className="text-primary font-medium mb-3">{member.role}</p>
-                <p className="text-gray-600">{member.bio}</p>
+                <p
+                  className="text-primary font-medium mb-3"
+                  data-aos="fade-down"
+                  data-aos-duration="1400"
+                  data-aos-easing="ease-in-out-back"
+                >
+                  {member.role}
+                </p>
+                <p
+                  className="text-gray-600"
+                  data-aos="fade-up"
+                  data-aos-duration="1500"
+                  data-aos-easing="ease-in-out-back"
+                >
+                  {member.bio}
+                </p>
               </Card>
             ))}
           </div>
