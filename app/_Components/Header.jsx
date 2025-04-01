@@ -79,7 +79,15 @@ export default function Header() {
       >
         <div className="flex lg:flex-1">
           <Link href="/">
-            <Image src="/logo.png" alt="logo" width={160} height={80} />
+            <Image
+              src="/logo.png"
+              alt="logo"
+              width={160}
+              height={80}
+              data-aos="fade-right"
+              data-aos-duration="800"
+              data-aos-easing="ease-in"
+            />
           </Link>
         </div>
         <div className="flex lg:hidden">
@@ -96,30 +104,45 @@ export default function Header() {
           <Link
             href="/"
             className="text-lg font-normal tracking-wide text-gray-900"
+            data-aos="fade-down"
+            data-aos-duration="900"
+            data-aos-easing="ease-in-out-back"
           >
             Home
           </Link>
           <Link
             href="/about"
             className="text-lg font-normal tracking-wide text-gray-900"
+            data-aos="fade-down"
+            data-aos-duration="1000"
+            data-aos-easing="ease-in-out-back"
           >
             About Us
           </Link>
           <Link
             href="/services"
             className="text-lg font-normal tracking-wide text-gray-900"
+            data-aos="fade-down"
+            data-aos-duration="1100"
+            data-aos-easing="ease-in-out-back"
           >
             Services
           </Link>
           <Link
             href="/facilities"
             className="text-lg font-normal tracking-wide text-gray-900"
+            data-aos="fade-down"
+            data-aos-duration="1200"
+            data-aos-easing="ease-in-out-back"
           >
             Facilites
           </Link>{" "}
           <Link
             href="/blog"
             className="text-lg font-normal tracking-wide text-gray-900"
+            data-aos="fade-down"
+            data-aos-duration="1300"
+            data-aos-easing="ease-in-out-back"
           >
             Blogs
           </Link>
@@ -131,10 +154,20 @@ export default function Header() {
           >
             Log in <ArrowRight size={20} />
           </Link> */}
-          <Button variant="secondary">
+          <Button
+            variant="secondary"
+            data-aos="fade-left"
+            data-aos-duration="1400"
+            data-aos-easing="ease-in-out-back"
+          >
             <MapPinHouse size={30} /> Vist Now
           </Button>
-          <Button className="">
+          <Button
+            className=""
+            data-aos="fade-left"
+            data-aos-duration="1800"
+            data-aos-easing="ease-in-out-back"
+          >
             <UserRoundSearch size={30} /> Contact Us
           </Button>
         </div>
