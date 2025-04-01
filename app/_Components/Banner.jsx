@@ -109,28 +109,48 @@ const Banner = () => {
             data-aos-easing="ease-in-out-back"
           >
             <div className="w-56 space-y-5 bg-gray-200/60 p-4 md:p-3 rounded-lg">
-              <div className="flex gap-3 items-center p-1 md:p-3 bg-white justify-center rounded-lg">
+              <div
+                className="flex gap-3 items-center p-1 md:p-3 bg-white justify-center rounded-lg"
+                data-aos="fade-left"
+                data-aos-duration="1500"
+                data-aos-easing="ease-in-out-back"
+              >
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"
                 />
                 Paid Partner Ship
               </div>{" "}
-              <div className="flex gap-3 items-center p-1 md:p-3 bg-white justify-center rounded-lg">
+              <div
+                className="flex gap-3 items-center p-1 md:p-3 bg-white justify-center rounded-lg"
+                data-aos="fade-left"
+                data-aos-duration="1700"
+                data-aos-easing="ease-in-out-back"
+              >
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"
                 />
                 Paid Partner Ship
               </div>{" "}
-              <div className="flex gap-3 items-center p-1 md:p-3 bg-white justify-center rounded-lg">
+              <div
+                className="flex gap-3 items-center p-1 md:p-3 bg-white justify-center rounded-lg"
+                data-aos="fade-left"
+                data-aos-duration="1900"
+                data-aos-easing="ease-in-out-back"
+              >
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"
                 />
                 Paid Partner Ship
               </div>{" "}
-              <div className="flex gap-3 items-center p-1 md:p-3 bg-white justify-center rounded-lg">
+              <div
+                className="flex gap-3 items-center p-1 md:p-3 bg-white justify-center rounded-lg"
+                data-aos="fade-left"
+                data-aos-duration="2100"
+                data-aos-easing="ease-in-out-back"
+              >
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"

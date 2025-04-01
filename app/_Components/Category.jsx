@@ -58,14 +58,29 @@ const Category = () => {
                   width={170}
                   height={170}
                   // className={category.className}
-                  className="rounded-xl w-30 md:w-44 "
+                  className="rounded-xl w-30 md:w-44"
+                  data-aos="fade-up"
+                  data-aos-duration="1400"
+                  data-aos-easing="ease-in-out-back"
                 />
-                <h2 className="text-lg font-normal pt-3">{category.title}</h2>
+                <h2
+                  className="text-lg font-normal pt-3"
+                  data-aos="fade-down"
+                  data-aos-duration="1400"
+                  data-aos-easing="ease-in-out-back"
+                >
+                  {category.title}
+                </h2>
               </div>
             ))}
           </div>
           <div className="">
-            <div className=" flex gap-2 pt-5 md:pt-10 justify-center">
+            <div
+              className=" flex gap-2 pt-5 md:pt-10 justify-center"
+              data-aos="flip-right"
+              data-aos-duration="1400"
+              data-aos-easing="ease-in-out-back"
+            >
               <form action="#" method="POST">
                 <div className="flex item-center">
                   <input
@@ -86,30 +101,55 @@ const Category = () => {
           </div>
         </div>
         <div className="relative">
-          <div className="absolute right-4 md:-right-10 md:top-78 top-42">
-            <div className="w-44 space-y-5 bg-gray-200/60 p-2 md:p-3 rounded-lg">
-              <div className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg">
+          <div className="absolute right-4 md:-right-10 md:top-78 top-42 z-10">
+            <div
+              className="w-44 space-y-5 bg-gray-200/60 p-2 md:p-3 rounded-lg"
+              data-aos="fade-left"
+              data-aos-duration="1200"
+              data-aos-easing="ease-in-out-back"
+            >
+              <div
+                className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg"
+                data-aos="fade-left"
+                data-aos-duration="1200"
+                data-aos-easing="ease-in-out-back"
+              >
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"
                 />
                 Facebook
               </div>{" "}
-              <div className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg">
+              <div
+                className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg"
+                data-aos="fade-left"
+                data-aos-duration="1300"
+                data-aos-easing="ease-in-out-back"
+              >
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"
                 />
                 Twitter
               </div>{" "}
-              <div className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg">
+              <div
+                className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg"
+                data-aos="fade-left"
+                data-aos-duration="1400"
+                data-aos-easing="ease-in-out-back"
+              >
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"
                 />
                 Instagram
               </div>{" "}
-              <div className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg">
+              <div
+                className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg"
+                data-aos="fade-left"
+                data-aos-duration="1500"
+                data-aos-easing="ease-in-out-back"
+              >
                 <Handshake
                   size={35}
                   className="bg-primary p-2 rounded-sm text-white"
@@ -125,6 +165,9 @@ const Category = () => {
               width={600}
               height={600}
               className="rounded-t-full object-cover object-center p-10"
+              data-aos="fade-left"
+              data-aos-duration="1400"
+              data-aos-easing="ease-in-out-back"
             />
           </div>
         </div>
