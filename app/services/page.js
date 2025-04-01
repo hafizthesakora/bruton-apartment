@@ -9,7 +9,6 @@ import {
   Building2,
   Users,
   Star,
-  MessageSquare,
 } from "lucide-react";
 
 const Services = () => {
@@ -82,8 +81,20 @@ const Services = () => {
           />
         </div>
         <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">Our Services</h1>
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
+          <h1
+            className="text-5xl md:text-6xl font-bold mb-6"
+            data-aos="fade-down"
+            data-aos-duration="1000"
+            data-aos-easing="ease-in-out-back"
+          >
+            Our Services
+          </h1>
+          <p
+            className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
+            data-aos="fade-up"
+            data-aos-duration="1200"
+            data-aos-easing="ease-in-out-back"
+          >
             Comprehensive rental solutions designed to make your property
             journey seamless and successful
           </p>
@@ -97,15 +108,43 @@ const Services = () => {
             <Card
               key={index}
               className="p-6 bg-white hover:shadow-xl transition-shadow duration-300"
+              data-aos="fade-down"
+              data-aos-duration="1000"
+              data-aos-easing="ease-in-out-back"
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+              <div
+                className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4"
+                data-aos="fade-right"
+                data-aos-duration="1100"
+                data-aos-easing="ease-in-out-back"
+              >
                 <service.icon className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
-              <p className="text-gray-600 mb-4">{service.description}</p>
+              <h3
+                className="text-xl font-semibold mb-3"
+                data-aos="fade-up"
+                data-aos-duration="1200"
+                data-aos-easing="ease-in-out-back"
+              >
+                {service.title}
+              </h3>
+              <p
+                className="text-gray-600 mb-4"
+                data-aos="fade-up"
+                data-aos-duration="1300"
+                data-aos-easing="ease-in-out-back"
+              >
+                {service.description}
+              </p>
               <ul className="space-y-2">
                 {service.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center text-gray-600">
+                  <li
+                    key={idx}
+                    className="flex items-center text-gray-600"
+                    data-aos="fade-left"
+                    data-aos-duration="1400"
+                    data-aos-easing="ease-in-out-back"
+                  >
                     <Star className="w-4 h-4 text-primary mr-2" />
                     {feature}
                   </li>
@@ -121,15 +160,29 @@ const Services = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h2 className="text-4xl font-bold text-gray-900 pb-6">
+              <h2
+                className="text-4xl font-bold text-gray-900 pb-6"
+                data-aos="fade-right"
+                data-aos-duration="1000"
+                data-aos-easing="ease-in-out-back"
+              >
                 Why Choose Our Services?
               </h2>
               <div className="space-y-4">
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div
+                    className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    data-aos="fade-right"
+                    data-aos-duration="1100"
+                    data-aos-easing="ease-in-out-back"
+                  >
                     <Building2 className="w-6 h-6 text-primary" />
                   </div>
-                  <div>
+                  <div
+                    data-aos="fade-left"
+                    data-aos-duration="1200"
+                    data-aos-easing="ease-in-out-back"
+                  >
                     <h3 className="text-xl font-semibold mb-2">
                       Extensive Property Network
                     </h3>
@@ -140,10 +193,19 @@ const Services = () => {
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div
+                    className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    data-aos="fade-right"
+                    data-aos-duration="1300"
+                    data-aos-easing="ease-in-out-back"
+                  >
                     <Users className="w-6 h-6 text-primary" />
                   </div>
-                  <div>
+                  <div
+                    data-aos="fade-left"
+                    data-aos-duration="1400"
+                    data-aos-easing="ease-in-out-back"
+                  >
                     <h3 className="text-xl font-semibold mb-2">
                       Expert Support Team
                     </h3>
@@ -153,10 +215,19 @@ const Services = () => {
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div
+                    className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    data-aos="fade-right"
+                    data-aos-duration="1500"
+                    data-aos-easing="ease-in-out-back"
+                  >
                     <Shield className="w-6 h-6 text-primary" />
                   </div>
-                  <div>
+                  <div
+                    data-aos="fade-right"
+                    data-aos-duration="1600"
+                    data-aos-easing="ease-in-out-back"
+                  >
                     <h3 className="text-xl font-semibold mb-2">
                       Secure Transactions
                     </h3>
@@ -167,7 +238,12 @@ const Services = () => {
                 </div>
               </div>
             </div>
-            <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
+            <div
+              className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl"
+              data-aos="fade-left"
+              data-aos-duration="1200"
+              data-aos-easing="ease-in-out-back"
+            >
               <Image
                 src="/assets/services-img.jpg"
                 alt="Services Feature"
@@ -181,7 +257,12 @@ const Services = () => {
 
       {/* Testimonials Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 mb-32">
-        <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+        <h2
+          className="text-4xl font-bold text-center text-gray-900 mb-12"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-easing="ease-in-out-back"
+        >
           What Our Clients Say
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
@@ -189,9 +270,17 @@ const Services = () => {
             <Card
               key={index}
               className="p-6 bg-white hover:shadow-xl transition-shadow duration-300"
+              data-aos="fade-down"
+              data-aos-duration="1200"
+              data-aos-easing="ease-in-out-back"
             >
               <div className="flex items-center mb-4">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden mr-4">
+                <div
+                  className="relative w-12 h-12 rounded-full overflow-hidden mr-4"
+                  data-aos="fade-left"
+                  data-aos-duration="1300"
+                  data-aos-easing="ease-in-out-back"
+                >
                   <Image
                     src={testimonial.image}
                     alt={testimonial.name}
@@ -200,11 +289,25 @@ const Services = () => {
                   />
                 </div>
                 <div>
-                  <h3 className="font-semibold">{testimonial.name}</h3>
-                  <p className="text-gray-600 text-sm">{testimonial.role}</p>
+                  <h3
+                    className="font-semibold"
+                    data-aos="fade-right"
+                    data-aos-duration="1400"
+                    data-aos-easing="ease-in-out-back"
+                  >
+                    {testimonial.name}
+                  </h3>
+                  <p
+                    className="text-gray-600 text-sm"
+                    data-aos="fade-right"
+                    data-aos-duration="1300"
+                    data-aos-easing="ease-in-out-back"
+                  >
+                    {testimonial.role}
+                  </p>
                 </div>
               </div>
-              <div className="flex mb-4">
+              <div className="flex mb-2">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <Star
                     key={i}
@@ -212,7 +315,14 @@ const Services = () => {
                   />
                 ))}
               </div>
-              <p className="text-gray-600">{testimonial.text}</p>
+              <p
+                className="text-gray-600"
+                data-aos="fade-down"
+                data-aos-duration="1500"
+                data-aos-easing="ease-in-out-back"
+              >
+                {testimonial.text}
+              </p>
             </Card>
           ))}
         </div>
