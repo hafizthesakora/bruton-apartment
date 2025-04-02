@@ -94,7 +94,7 @@ const About = () => {
                   data-aos-easing="ease-in-out-back"
                 >
                   <Image
-                    src="/assets/imagereader.jpeg"
+                    src="/assets/ab2.jpg"
                     alt="about"
                     width={600}
                     height={600}

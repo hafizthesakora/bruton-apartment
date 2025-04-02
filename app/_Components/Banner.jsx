@@ -7,7 +7,7 @@ const Banner = () => {
   return (
     <div className="relative min-h-[90vh] bg-gradient-to-br from-gray-50 to-white">
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[url('/assets/pattern.png')] opacity-5"></div>
+      <div className="absolute inset-0 opacity-5"></div>
 
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 items-center gap-20 justify-around py-10 md:py-24">
