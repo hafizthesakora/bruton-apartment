@@ -4,6 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Calendar, Clock, User, ArrowRight } from "lucide-react";
 
 const Blog = () => {
+
+
   const featuredPosts = [
     {
       id: 1,
@@ -99,8 +101,20 @@ const Blog = () => {
           />
         </div>
         <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">Our Blog</h1>
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
+          <h1 
+            className="text-5xl md:text-6xl font-bold mb-6"
+            data-aos="fade-down"
+            data-aos-duration="1000"
+            data-aos-easing="ease-in-out-back"
+          >
+            Our Blog
+          </h1>
+          <p 
+            className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
+            data-aos="fade-up"
+            data-aos-duration="1200"
+            data-aos-easing="ease-in-out-back"
+          >
             Insights, tips, and guides to help you make informed decisions about
             your rental journey
           </p>
@@ -109,7 +123,12 @@ const Blog = () => {
 
       {/* Categories */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-wrap gap-4 justify-center">
+        <div 
+          className="flex flex-wrap gap-4 justify-center"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-easing="ease-in-out-back"
+        >
           {categories.map((category, index) => (
             <button
               key={index}
@@ -118,6 +137,9 @@ const Blog = () => {
                   ? "bg-primary text-white"
                   : "bg-white text-gray-600 hover:bg-gray-50"
               }`}
+              data-aos="fade-up"
+              data-aos-duration={`${1200 + index * 100}`}
+              data-aos-easing="ease-in-out-back"
             >
               {category}
             </button>
@@ -127,12 +149,22 @@ const Blog = () => {
 
       {/* Featured Posts */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8">Featured Posts</h2>
+        <h2 
+          className="text-3xl font-bold text-gray-900 mb-8"
+          data-aos="fade-right"
+          data-aos-duration="1000"
+          data-aos-easing="ease-in-out-back"
+        >
+          Featured Posts
+        </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredPosts.map((post) => (
+          {featuredPosts.map((post, index) => (
             <Card
               key={post.id}
               className="overflow-hidden bg-white hover:shadow-xl transition-shadow duration-300 py-0"
+              data-aos="fade-up"
+              data-aos-duration={`${1000 + index * 200}`}
+              data-aos-easing="ease-in-out-back"
             >
               <div className="relative h-48">
                 <Image
@@ -140,17 +172,44 @@ const Blog = () => {
                   alt={post.title}
                   fill
                   className="object-cover"
+                  data-aos="zoom-in"
+                  data-aos-duration="1200"
+                  data-aos-easing="ease-in-out-back"
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-primary text-white px-3 py-1 rounded-full text-sm">
+                  <span 
+                    className="bg-primary text-white px-3 py-1 rounded-full text-sm"
+                    data-aos="fade-right"
+                    data-aos-duration="1400"
+                    data-aos-easing="ease-in-out-back"
+                  >
                     {post.category}
                   </span>
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-semibold mb-3">{post.title}</h3>
-                <p className="text-gray-600 mb-4">{post.excerpt}</p>
-                <div className="flex items-center justify-between text-sm text-gray-500">
+                <h3 
+                  className="text-xl font-semibold mb-3"
+                  data-aos="fade-up"
+                  data-aos-duration="1200"
+                  data-aos-easing="ease-in-out-back"
+                >
+                  {post.title}
+                </h3>
+                <p 
+                  className="text-gray-600 mb-4"
+                  data-aos="fade-up"
+                  data-aos-duration="1300"
+                  data-aos-easing="ease-in-out-back"
+                >
+                  {post.excerpt}
+                </p>
+                <div 
+                  className="flex items-center justify-between text-sm text-gray-500"
+                  data-aos="fade-up"
+                  data-aos-duration="1400"
+                  data-aos-easing="ease-in-out-back"
+                >
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
@@ -166,7 +225,12 @@ const Blog = () => {
                     {post.author}
                   </div>
                 </div>
-                <button className="mt-4 flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
+                <button 
+                  className="mt-4 flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                  data-aos="fade-up"
+                  data-aos-duration="1500"
+                  data-aos-easing="ease-in-out-back"
+                >
                   Read More
                   <ArrowRight className="w-4 h-4" />
                 </button>
@@ -178,12 +242,22 @@ const Blog = () => {
 
       {/* Recent Posts */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8">Recent Posts</h2>
+        <h2 
+          className="text-3xl font-bold text-gray-900 mb-8"
+          data-aos="fade-right"
+          data-aos-duration="1000"
+          data-aos-easing="ease-in-out-back"
+        >
+          Recent Posts
+        </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {recentPosts.map((post) => (
+          {recentPosts.map((post, index) => (
             <Card
               key={post.id}
               className="overflow-hidden bg-white hover:shadow-xl transition-shadow duration-300 py-0"
+              data-aos="fade-up"
+              data-aos-duration={`${1000 + index * 200}`}
+              data-aos-easing="ease-in-out-back"
             >
               <div className="relative h-48">
                 <Image
@@ -191,17 +265,44 @@ const Blog = () => {
                   alt={post.title}
                   fill
                   className="object-cover"
+                  data-aos="zoom-in"
+                  data-aos-duration="1200"
+                  data-aos-easing="ease-in-out-back"
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-primary text-white px-3 py-1 rounded-full text-sm">
+                  <span 
+                    className="bg-primary text-white px-3 py-1 rounded-full text-sm"
+                    data-aos="fade-right"
+                    data-aos-duration="1400"
+                    data-aos-easing="ease-in-out-back"
+                  >
                     {post.category}
                   </span>
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-semibold mb-3">{post.title}</h3>
-                <p className="text-gray-600 mb-4">{post.excerpt}</p>
-                <div className="flex items-center justify-between text-sm text-gray-500">
+                <h3 
+                  className="text-xl font-semibold mb-3"
+                  data-aos="fade-up"
+                  data-aos-duration="1200"
+                  data-aos-easing="ease-in-out-back"
+                >
+                  {post.title}
+                </h3>
+                <p 
+                  className="text-gray-600 mb-4"
+                  data-aos="fade-up"
+                  data-aos-duration="1300"
+                  data-aos-easing="ease-in-out-back"
+                >
+                  {post.excerpt}
+                </p>
+                <div 
+                  className="flex items-center justify-between text-sm text-gray-500"
+                  data-aos="fade-up"
+                  data-aos-duration="1400"
+                  data-aos-easing="ease-in-out-back"
+                >
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
@@ -217,7 +318,12 @@ const Blog = () => {
                     {post.author}
                   </div>
                 </div>
-                <button className="mt-4 flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
+                <button 
+                  className="mt-4 flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                  data-aos="fade-up"
+                  data-aos-duration="1500"
+                  data-aos-easing="ease-in-out-back"
+                >
                   Read More
                   <ArrowRight className="w-4 h-4" />
                 </button>
@@ -228,14 +334,36 @@ const Blog = () => {
       </div>
 
       {/* Newsletter Section */}
-      <div className="bg-gray-900 text-white py-20 mb-40 mt-20">
+      <div 
+        className="bg-gray-900 text-white py-20 mb-40 mt-20"
+        data-aos="fade-up"
+        data-aos-duration="1000"
+        data-aos-easing="ease-in-out-back"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-6">Stay Updated</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
+          <h2 
+            className="text-4xl font-bold mb-6"
+            data-aos="fade-down"
+            data-aos-duration="1200"
+            data-aos-easing="ease-in-out-back"
+          >
+            Stay Updated
+          </h2>
+          <p 
+            className="text-xl mb-8 max-w-2xl mx-auto"
+            data-aos="fade-up"
+            data-aos-duration="1300"
+            data-aos-easing="ease-in-out-back"
+          >
             Subscribe to our newsletter for the latest rental tips, market
             insights, and exclusive offers.
           </p>
-          <div className="flex gap-4 justify-center max-w-md mx-auto">
+          <div 
+            className="flex gap-4 justify-center max-w-md mx-auto"
+            data-aos="fade-up"
+            data-aos-duration="1400"
+            data-aos-easing="ease-in-out-back"
+          >
             <input
               type="email"
               placeholder="Enter your email"
