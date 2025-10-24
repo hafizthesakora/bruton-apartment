@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
   CircleDollarSignIcon,
   Handshake,
   HomeIcon,
-} from "lucide-react";
-import Image from "next/image";
-import React from "react";
+} from 'lucide-react';
+import Image from 'next/image';
+import React from 'react';
 
 const HomeFeatures = () => {
   return (
@@ -21,7 +21,7 @@ const HomeFeatures = () => {
               data-aos-easing="ease-in-out-back"
             >
               <div className="bg-gray-200/90 rounded-t-full w-24 md:w-40 p-2 md:p-3 shadow-md">
-                {" "}
+                {' '}
                 <div className=" bg-white shadow-md w-20 md:w-34 p-2 md:p-3 rounded-t-full">
                   <div className="w-16 md:w-28 p-4 md:p-5 bg-gradient-to-r from-primary to-[#3c63cda5] rounded-t-full">
                     <h1 className=" text-xs md:text-xl pt-2 md:pt-4 text-white font-semibold text-center">
@@ -32,7 +32,7 @@ const HomeFeatures = () => {
               </div>
             </div>
             <Image
-              src="/assets/next-door31.png"
+              src="/assets/BRTN GRDN-21.JPG"
               alt="about"
               width={600}
               height={400}

@@ -1,43 +1,44 @@
-import React from "react";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
+import React from 'react';
+import Image from 'next/image';
+import { Card } from '@/components/ui/card';
 import {
   Building2,
   Users,
-  Award,
+  Calendar,
+  MapPin,
   Home,
   Heart,
   Shield,
-  Rocket,
-} from "lucide-react";
+  Star,
+} from 'lucide-react';
 
 const AboutUs = () => {
   const teamMembers = [
     {
-      name: "Sarah Johnson",
-      role: "Founder & CEO",
-      image: "/assets/team1.jpg",
-      bio: "10+ years of experience in real estate and property management",
+      name: 'Mr. Bruton',
+      role: 'Founder & Owner',
+      image: '/assets/IMG_1195 2.JPEG',
+      bio: 'Passionate about providing exceptional hospitality and comfortable stays',
     },
     {
-      name: "Michael Chen",
-      role: "Chief Operations Officer",
-      image: "/assets/team2.jpg",
-      bio: "Expert in operational efficiency and customer service",
+      name: 'Property Manager',
+      role: 'Operations Head',
+      image: '/assets/IMG_1195 2.JPEG',
+      bio: 'Ensuring every guest enjoys a seamless and memorable experience',
     },
     {
-      name: "Emily Rodriguez",
-      role: "Head of Customer Relations",
-      image: "/assets/team3.jpg",
-      bio: "Passionate about creating exceptional customer experiences",
+      name: 'Guest Relations',
+      role: 'Customer Service',
+      image: '/assets/IMG_1195 2.JPEG',
+      bio: 'Dedicated to making your stay comfortable and stress-free',
     },
   ];
 
   const stats = [
-    { icon: Building2, value: "500+", label: "Properties Listed" },
-    { icon: Users, value: "1000+", label: "Happy Clients" },
-    { icon: Award, value: "15+", label: "Years Experience" },
-    { icon: Home, value: "50+", label: "Cities Covered" },
+    { icon: Users, value: '500+', label: 'Happy Guests' },
+    { icon: Calendar, value: '5+', label: 'Years Experience' },
+    { icon: MapPin, value: 'Prime', label: 'Location' },
+    { icon: Star, value: '4.8/5', label: 'Guest Rating' },
   ];
 
   return (
@@ -46,7 +47,7 @@ const AboutUs = () => {
       <div className="relative h-[60vh] flex items-center justify-center overflow-hidden p-5">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/assets/aboutbackground.jpg"
+            src="/assets/BRTN GRDN-1.JPEG"
             alt="Hero Background"
             fill
             className="object-cover brightness-30"
@@ -60,7 +61,7 @@ const AboutUs = () => {
             data-aos-duration="1200"
             data-aos-easing="ease-in-out-back"
           >
-            About Rent Home
+            About <span className="text-lime-400">Bruton Gardens</span>
           </h1>
           <p
             className="text-md md:text-2xl max-w-3xl mx-auto leading-relaxed"
@@ -68,8 +69,8 @@ const AboutUs = () => {
             data-aos-duration="1400"
             data-aos-easing="ease-in-out-back"
           >
-            We are dedicated to transforming the rental experience by providing
-            seamless, transparent, and innovative housing solutions.
+            A short stay apartment offering exceptional comfort, modern
+            amenities, and warm hospitality in the heart of the city.
           </p>
         </div>
       </div>
@@ -87,7 +88,7 @@ const AboutUs = () => {
               key={index}
               className="p-6 text-center bg-white shadow-xl hover:shadow-2xl transition-shadow duration-300"
             >
-              <stat.icon className="w-12 h-12 mx-auto mb-2 text-primary" />
+              <stat.icon className="w-12 h-12 mx-auto mb-2 text-lime-400" />
               <h3 className="text-3xl font-bold">{stat.value}</h3>
               <p className="text-gray-600">{stat.label}</p>
             </Card>
@@ -114,9 +115,10 @@ const AboutUs = () => {
                 data-aos-duration="1200"
                 data-aos-easing="ease-in-out-back"
               >
-                Founded in 2018, Renthome started with a simple mission: to make
-                finding and managing rental properties easier and more
-                transparent for everyone.
+                Bruton Gardens Apartment was established with a vision to
+                provide travelers and visitors with a home away from home. What
+                started as a family initiative has grown into a trusted short
+                stay destination.
               </p>
               <p
                 className="text-gray-600 text-lg leading-relaxed"
@@ -124,22 +126,23 @@ const AboutUs = () => {
                 data-aos-duration="1300"
                 data-aos-easing="ease-in-out-back"
               >
-                We leverage cutting-edge technology and a customer-first
-                approach to simplify the rental process, providing innovative
-                solutions that benefit both renters and property owners.
+                Our commitment to excellence, attention to detail, and genuine
+                hospitality ensures that every guest enjoys a comfortable,
+                memorable stay. Whether you're visiting for business or leisure,
+                we treat you like family.
               </p>
             </div>
             <div className="flex gap-4">
               <button
-                className="bg-primary text-white px-6 py-3 rounded-full hover:bg-primary/90 transition-colors"
+                className="bg-lime-400 text-gray-900 px-6 py-3 rounded-full hover:bg-lime-500 transition-colors font-semibold"
                 data-aos="fade-right"
                 data-aos-duration="1400"
                 data-aos-easing="ease-in-out-back"
               >
-                Learn More
+                Book Now
               </button>
               <button
-                className="border-2 border-primary text-primary px-6 py-3 rounded-full hover:bg-primary/10 transition-colors"
+                className="border-2 border-lime-400 text-lime-600 px-6 py-3 rounded-full hover:bg-lime-50 transition-colors font-semibold"
                 data-aos="fade-right"
                 data-aos-duration="1600"
                 data-aos-easing="ease-in-out-back"
@@ -155,7 +158,7 @@ const AboutUs = () => {
             data-aos-easing="ease-in-out-back"
           >
             <Image
-              src="/assets/main.jpg"
+              src="/assets/BRTN GRDN-6.JPEG"
               alt="Company Story"
               fill
               className="object-cover"
@@ -173,7 +176,7 @@ const AboutUs = () => {
             data-aos-duration="1000"
             data-aos-easing="ease-in-out-back"
           >
-            Our Leadership Team
+            Meet Our <span className="text-lime-400">Team</span>
           </h2>
           <div className="grid md:grid-cols-3 gap-8 pt-10">
             {teamMembers.map((member, index) => (
@@ -201,7 +204,7 @@ const AboutUs = () => {
                   {member.name}
                 </h3>
                 <p
-                  className="text-primary font-medium mb-3"
+                  className="text-lime-500 font-medium mb-3"
                   data-aos="fade-down"
                   data-aos-duration="1400"
                   data-aos-easing="ease-in-out-back"

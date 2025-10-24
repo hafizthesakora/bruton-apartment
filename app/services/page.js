@@ -1,6 +1,6 @@
-import React from "react";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
+import React from 'react';
+import Image from 'next/image';
+import { Card } from '@/components/ui/card';
 import {
   Home,
   Search,
@@ -9,60 +9,68 @@ import {
   Building2,
   Users,
   Star,
-} from "lucide-react";
+} from 'lucide-react';
 
 const Services = () => {
   const services = [
     {
       icon: Home,
-      title: "Property Management",
+      title: 'Apartment Management',
       description:
-        "Comprehensive property management services including maintenance, tenant screening, and rent collection.",
-      features: ["24/7 Maintenance", "Tenant Screening", "Rent Collection"],
+        'Full-service apartment management for your short-stay experience, including housekeeping, maintenance, and guest support.',
+      features: ['Daily Housekeeping', '24/7 Support', 'Maintenance Service'],
     },
     {
       icon: Search,
-      title: "Property Search",
+      title: 'Easy Booking',
       description:
-        "Advanced property search tools to help you find your perfect rental property quickly and efficiently.",
-      features: ["Advanced Filters", "Virtual Tours", "Saved Searches"],
+        'Simple and quick booking process to find your perfect short-stay apartment with flexible dates.',
+      features: ['Instant Booking', 'Virtual Tours', 'Flexible Dates'],
     },
     {
       icon: Shield,
-      title: "Rental Insurance",
+      title: 'Guest Protection',
       description:
-        "Protect your investment with our comprehensive rental insurance options.",
-      features: ["Property Coverage", "Liability Protection", "Quick Claims"],
+        'Comprehensive protection coverage for your peace of mind during your stay.',
+      features: [
+        'Security Deposit Protection',
+        '24/7 Emergency Support',
+        'Quick Resolution',
+      ],
     },
     {
       icon: CreditCard,
-      title: "Online Payments",
+      title: 'Secure Payments',
       description:
-        "Secure and convenient online payment solutions for rent and other property-related expenses.",
-      features: ["Secure Payments", "Automatic Billing", "Payment History"],
+        'Safe and convenient payment options for your short-stay booking and additional services.',
+      features: [
+        'Secure Checkout',
+        'Multiple Payment Methods',
+        'Instant Confirmation',
+      ],
     },
   ];
 
   const testimonials = [
     {
-      name: "John Smith",
-      role: "Property Owner",
-      image: "/assets/team1.jpg",
-      text: "RentHome has transformed how I manage my properties. Their service is exceptional!",
+      name: 'Sani Abatcha',
+      role: 'Business Traveler',
+      image: '/assets/IMG_1195 2.JPEG',
+      text: 'Perfect apartment for my 2-week business trip. Clean, comfortable, and great location!',
       rating: 5,
     },
     {
-      name: "Sarah Johnson",
-      role: "Tenant",
-      image: "/assets/team2.jpg",
-      text: "Finding my dream rental was so easy with RentHome. The team was incredibly helpful.",
+      name: 'Gilbert Mwai',
+      role: 'Tourist',
+      image: '/assets/IMG_1195 2.JPEG',
+      text: 'Amazing experience! The apartment felt like home. Will definitely book again.',
       rating: 5,
     },
     {
-      name: "Michael Chen",
-      role: "Investor",
-      image: "/assets/team3.jpg",
-      text: "The property management services are top-notch. Highly recommended!",
+      name: 'Samson Wanyoike',
+      role: 'Digital Nomad',
+      image: '/assets/IMG_1195 2.JPEG',
+      text: 'Great for extended stays. Fast WiFi, comfortable workspace, and responsive host!',
       rating: 5,
     },
   ];
@@ -73,7 +81,7 @@ const Services = () => {
       <div className="relative h-[50vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/assets/services.webp"
+            src="/assets/BRTN GRDN-6.JPEG"
             alt="Services Hero"
             fill
             className="object-cover brightness-30"
@@ -95,8 +103,8 @@ const Services = () => {
             data-aos-duration="1200"
             data-aos-easing="ease-in-out-back"
           >
-            Comprehensive rental solutions designed to make your property
-            journey seamless and successful
+            Everything you need for a comfortable short-stay experience in our
+            fully furnished apartments
           </p>
         </div>
       </div>
@@ -113,12 +121,12 @@ const Services = () => {
               data-aos-easing="ease-in-out-back"
             >
               <div
-                className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4"
+                className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center mb-4"
                 data-aos="fade-right"
                 data-aos-duration="1100"
                 data-aos-easing="ease-in-out-back"
               >
-                <service.icon className="w-6 h-6 text-primary" />
+                <service.icon className="w-6 h-6 text-lime-600" />
               </div>
               <h3
                 className="text-xl font-semibold mb-3"
@@ -145,7 +153,7 @@ const Services = () => {
                     data-aos-duration="1400"
                     data-aos-easing="ease-in-out-back"
                   >
-                    <Star className="w-4 h-4 text-primary mr-2" />
+                    <Star className="w-4 h-4 text-lime-600 mr-2" />
                     {feature}
                   </li>
                 ))}
@@ -166,17 +174,17 @@ const Services = () => {
                 data-aos-duration="1000"
                 data-aos-easing="ease-in-out-back"
               >
-                Why Choose Our Services?
+                Why Choose Our Apartments?
               </h2>
               <div className="space-y-4">
                 <div className="flex items-start space-x-4">
                   <div
-                    className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0"
                     data-aos="fade-right"
                     data-aos-duration="1100"
                     data-aos-easing="ease-in-out-back"
                   >
-                    <Building2 className="w-6 h-6 text-primary" />
+                    <Building2 className="w-6 h-6 text-lime-600" />
                   </div>
                   <div
                     data-aos="fade-left"
@@ -184,22 +192,22 @@ const Services = () => {
                     data-aos-easing="ease-in-out-back"
                   >
                     <h3 className="text-xl font-semibold mb-2">
-                      Extensive Property Network
+                      Prime Locations
                     </h3>
                     <p className="text-gray-600">
-                      Access to a wide range of properties across multiple
-                      locations
+                      Conveniently located apartments near business districts,
+                      tourist attractions, and transport hubs
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
                   <div
-                    className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0"
                     data-aos="fade-right"
                     data-aos-duration="1300"
                     data-aos-easing="ease-in-out-back"
                   >
-                    <Users className="w-6 h-6 text-primary" />
+                    <Users className="w-6 h-6 text-lime-600" />
                   </div>
                   <div
                     data-aos="fade-left"
@@ -207,21 +215,22 @@ const Services = () => {
                     data-aos-easing="ease-in-out-back"
                   >
                     <h3 className="text-xl font-semibold mb-2">
-                      Expert Support Team
+                      Dedicated Guest Support
                     </h3>
                     <p className="text-gray-600">
-                      Dedicated professionals ready to assist you at every step
+                      Round-the-clock assistance to ensure your stay is
+                      comfortable and hassle-free
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
                   <div
-                    className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0"
                     data-aos="fade-right"
                     data-aos-duration="1500"
                     data-aos-easing="ease-in-out-back"
                   >
-                    <Shield className="w-6 h-6 text-primary" />
+                    <Shield className="w-6 h-6 text-lime-600" />
                   </div>
                   <div
                     data-aos="fade-right"
@@ -229,10 +238,11 @@ const Services = () => {
                     data-aos-easing="ease-in-out-back"
                   >
                     <h3 className="text-xl font-semibold mb-2">
-                      Secure Transactions
+                      Safe & Secure
                     </h3>
                     <p className="text-gray-600">
-                      Safe and protected payment processing for all transactions
+                      Verified apartments with secure access and protected
+                      payment processing
                     </p>
                   </div>
                 </div>
@@ -245,7 +255,7 @@ const Services = () => {
               data-aos-easing="ease-in-out-back"
             >
               <Image
-                src="/assets/services-img.jpg"
+                src="/assets/BRTN GRDN-27.JPG"
                 alt="Services Feature"
                 fill
                 className="object-cover"
@@ -263,7 +273,7 @@ const Services = () => {
           data-aos-duration="1000"
           data-aos-easing="ease-in-out-back"
         >
-          What Our Clients Say
+          What Our Guests Say
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (

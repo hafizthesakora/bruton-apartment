@@ -1,6 +1,6 @@
-import React from "react";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
+import React from 'react';
+import Image from 'next/image';
+import { Card } from '@/components/ui/card';
 import {
   Wifi,
   ParkingCircle,
@@ -10,94 +10,67 @@ import {
   Coffee,
   AirVent,
   Utensils,
-} from "lucide-react";
+} from 'lucide-react';
 
 const Facilities = () => {
   const facilities = [
     {
-      category: "Basic Amenities",
+      category: 'Essential Amenities',
       items: [
         {
           icon: Wifi,
-          title: "High-Speed WiFi",
+          title: 'High-Speed WiFi',
           description:
-            "24/7 high-speed internet access throughout the property",
+            'Fast and reliable internet access perfect for work and streaming',
           isImage: false,
         },
         {
           icon: ParkingCircle,
-          title: "Parking Space",
-          description: "Dedicated parking spots for residents and guests",
+          title: 'Free Parking',
+          description: 'Complimentary parking space for all guests',
           isImage: false,
         },
         {
           icon: Lock,
-          title: "24/7 Security",
-          description: "Round-the-clock security with CCTV surveillance",
-          isImage: false,
-        },
-        {
-          icon: Building,
-          title: "Elevator Access",
-          description: "Modern elevators for easy building access",
-          isImage: false,
-        },
-      ],
-    },
-    {
-      category: "Recreational Facilities",
-      items: [
-        {
-          icon: "/assets/swimgpool.png",
-          title: "Swimming Pool",
-          description: "Infinity pool with panoramic city views",
-          isImage: true,
-        },
-        {
-          icon: "/assets/gym.png",
-          title: "Fitness Center",
-          description: "Fully equipped gym with modern equipment",
-          isImage: true,
-        },
-        {
-          icon: Tv,
-          title: "Entertainment Room",
-          description: "Common area with large TV and gaming consoles",
+          title: 'Secure Access',
+          description: '24/7 security with keyless entry and CCTV monitoring',
           isImage: false,
         },
         {
           icon: Coffee,
-          title: "Café Lounge",
-          description: "Cozy café area for social gatherings",
+          title: 'Café Corner',
+          description: 'Coffee maker and refreshment area',
           isImage: false,
         },
       ],
     },
+
     {
-      category: "Home Comforts",
+      category: 'In-Apartment Features',
       items: [
         {
-          icon: "/assets/kitchen.png",
-          title: "Modern Kitchen",
-          description: "Fully equipped kitchen with premium appliances",
+          icon: '/assets/kitchen.png',
+          title: 'Fully Equipped Kitchen',
+          description:
+            'Complete kitchen with cookware, utensils, and appliances',
           isImage: true,
         },
         {
-          icon: "/assets/Laundry.png",
-          title: "Laundry Room",
-          description: "In-unit laundry facilities",
+          icon: '/assets/Laundry.png',
+          title: 'Washer & Dryer',
+          description: 'In-unit laundry for your convenience',
           isImage: true,
         },
         {
           icon: AirVent,
-          title: "Air Conditioning",
-          description: "Central air conditioning system",
+          title: 'Climate Control',
+          description: 'Individual air conditioning in every room',
           isImage: false,
         },
         {
           icon: Utensils,
-          title: "Dining Area",
-          description: "Spacious dining area for family gatherings",
+          title: 'Dining Space',
+          description: 'Comfortable dining area for meals and work',
           isImage: false,
         },
       ],
@@ -110,7 +83,7 @@ const Facilities = () => {
       <div className="relative h-[50vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/assets/facilities.png"
+            src="/assets/facilities.JPEG"
             alt="Facilities Hero"
             fill
             className="object-cover brightness-30"
@@ -132,8 +105,7 @@ const Facilities = () => {
             data-aos-duration="1200"
             data-aos-easing="ease-in-out-back"
           >
-            Discover the premium amenities and features that make our properties
-            stand out
+            Everything you need for a comfortable short stay, all in one place
           </p>
         </div>
       </div>
@@ -160,7 +132,7 @@ const Facilities = () => {
                   data-aos-easing="ease-in-out-back"
                 >
                   <div
-                    className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4"
+                    className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center mb-4"
                     data-aos="fade-up"
                     data-aos-duration="1300"
                     data-aos-easing="ease-in-out-back"
@@ -174,7 +146,7 @@ const Facilities = () => {
                         className="w-6 h-6"
                       />
                     ) : (
-                      <item.icon className="w-6 h-6 text-primary" />
+                      <item.icon className="w-6 h-6 text-lime-600" />
                     )}
                   </div>
                   <h3
@@ -211,7 +183,7 @@ const Facilities = () => {
                 data-aos-duration="1000"
                 data-aos-easing="ease-in-out-back"
               >
-                Take a Virtual Tour
+                Explore Our Apartments
               </h2>
               <p
                 className="text-xl text-gray-600"
@@ -219,13 +191,13 @@ const Facilities = () => {
                 data-aos-duration="1200"
                 data-aos-easing="ease-in-out-back"
               >
-                Experience our facilities firsthand with our interactive virtual
-                tour. Explore every corner of our properties and discover the
-                premium amenities we offer.
+                Take a virtual tour of our fully furnished apartments and see
+                all the amenities included in your stay. Get a real feel for
+                your home away from home.
               </p>
               <div className="flex gap-4">
                 <button
-                  className="bg-primary text-white px-8 py-3 rounded-full hover:bg-primary/90 transition-colors"
+                  className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors"
                   data-aos="fade-right"
                   data-aos-duration="1300"
                   data-aos-easing="ease-in-out-back"
@@ -233,12 +205,12 @@ const Facilities = () => {
                   Start Tour
                 </button>
                 <button
-                  className="border-2 border-primary text-primary px-8 py-3 rounded-full hover:bg-primary/10 transition-colors"
+                  className="border-2 border-lime-600 text-lime-600 px-8 py-3 rounded-full hover:bg-lime-50 transition-colors"
                   data-aos="fade-right"
                   data-aos-duration="1700"
                   data-aos-easing="ease-in-out-back"
                 >
-                  Schedule Visit
+                  Book Now
                 </button>
               </div>
             </div>
@@ -249,7 +221,7 @@ const Facilities = () => {
               data-aos-easing="ease-in-out-back"
             >
               <Image
-                src="/assets/facilities1.jpg"
+                src="/assets/BRTN GRDN-26.JPG"
                 alt="Virtual Tour Preview"
                 fill
                 className="object-cover"
@@ -267,7 +239,7 @@ const Facilities = () => {
           data-aos-duration="1000"
           data-aos-easing="ease-in-out-back"
         >
-          Additional Features
+          What Makes Us Special
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
@@ -277,7 +249,7 @@ const Facilities = () => {
               data-aos-duration="1200"
               data-aos-easing="ease-in-out-back"
             >
-              Pet Friendly
+              Flexible Check-In
             </h3>
             <p
               className="text-gray-600"
@@ -285,8 +257,8 @@ const Facilities = () => {
               data-aos-duration="1400"
               data-aos-easing="ease-in-out-back"
             >
-              We welcome your furry friends with dedicated pet areas and
-              amenities.
+              Self check-in available 24/7 with our smart lock system for your
+              convenience.
             </p>
           </div>
           <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
@@ -296,7 +268,7 @@ const Facilities = () => {
               data-aos-duration="1200"
               data-aos-easing="ease-in-out-back"
             >
-              Green Spaces
+              Weekly Housekeeping
             </h3>
             <p
               className="text-gray-600"
@@ -304,8 +276,8 @@ const Facilities = () => {
               data-aos-duration="1400"
               data-aos-easing="ease-in-out-back"
             >
-              Beautifully landscaped gardens and outdoor seating areas for
-              relaxation.
+              Professional cleaning service included for stays longer than a
+              week.
             </p>
           </div>
           <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
@@ -315,7 +287,7 @@ const Facilities = () => {
               data-aos-duration="1200"
               data-aos-easing="ease-in-out-back"
             >
-              Community Events
+              Local Support
             </h3>
             <p
               className="text-gray-600"
@@ -323,14 +295,15 @@ const Facilities = () => {
               data-aos-duration="1400"
               data-aos-easing="ease-in-out-back"
             >
-              Regular social events and activities to foster community spirit.
+              On-site management team ready to assist with recommendations and
+              support.
             </p>
           </div>
         </div>
       </div>
 
       {/* CTA Section */}
-      <div className="bg-gray-900 text-white py-20 mb-40 mt-10">
+      <div className="bg-gray-900 text-white py-20 mt-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2
             className="text-4xl font-bold mb-6"
@@ -338,7 +311,7 @@ const Facilities = () => {
             data-aos-duration="1000"
             data-aos-easing="ease-in-out-back"
           >
-            Experience Our Premium Facilities
+            Ready for Your Stay?
           </h2>
           <p
             className="text-xl mb-8 max-w-2xl mx-auto"
@@ -346,17 +319,17 @@ const Facilities = () => {
             data-aos-duration="1200"
             data-aos-easing="ease-in-out-back"
           >
-            Book a viewing today and discover why our properties are the perfect
-            place to call home.
+            Book your apartment today and enjoy all our premium facilities
+            during your short stay.
           </p>
           <div className="flex gap-4 justify-center">
             <button
-              className="bg-white text-primary px-8 py-3 rounded-full hover:bg-gray-100 transition-colors"
+              className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors"
               data-aos="fade-right"
               data-aos-duration="1300"
               data-aos-easing="ease-in-out-back"
             >
-              Book Viewing
+              Check Availability
             </button>
             <button
               className="border-2 border-white text-white px-8 py-3 rounded-full hover:bg-white/10 transition-colors"

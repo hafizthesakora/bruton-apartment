@@ -1,7 +1,7 @@
-import ClientWrapper from "./ClientWrapper";
+import ClientWrapper from './ClientWrapper';
 
 export const metadata = {
-  title: "Ozalams - Find Your Perfect Home",
+  title: 'Bruton Apartment - Find Your Perfect Home',
   description:
     "Discover your dream property with Ozalams' comprehensive search tools and expert guidance.",
 };

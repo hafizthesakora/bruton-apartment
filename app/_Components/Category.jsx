@@ -1,49 +1,49 @@
-import { Handshake } from "lucide-react";
-import Image from "next/image";
-import React from "react";
+import { Facebook, Twitter, Instagram, Send } from 'lucide-react';
+import Image from 'next/image';
+import React from 'react';
 
 const categories = [
   {
-    src: "/assets/category1.jpg",
-    alt: "Bathroom Comfortable",
-    title: "Bathroom Comfortable",
-    className: "",
+    src: '/assets/furnish.JPG',
+    alt: 'Bathroom Comfortable',
+    title: 'Furnished Kitchen',
+    className: '',
   },
   {
-    src: "/assets/category2.jpg",
-    alt: "Bathroom Comfortable",
-    title: "Bathroom Comfortable",
-    className: "rounded-xl",
+    src: '/assets/BRTN GRDN-27.JPG',
+    alt: 'Bathroom Comfortable',
+    title: 'Car Park',
+    className: 'rounded-xl',
   },
   {
-    src: "/assets/category33.jpg",
-    alt: "Bathroom Comfortable",
-    title: "Bathroom Comfortable",
-    className: "rounded-xl",
+    src: '/assets/BRTN GRDN-6.JPEG',
+    alt: 'Bathroom Comfortable',
+    title: 'Serene Environment',
+    className: 'rounded-xl',
   },
   {
-    src: "/assets/category4.jpg",
-    alt: "Bathroom Comfortable",
-    title: "Bathroom Comfortable",
-    className: "",
+    src: '/assets/living.JPEG',
+    alt: 'Bathroom Comfortable',
+    title: 'Adequate Living Space',
+    className: '',
   },
   {
-    src: "/assets/category5.jpg",
-    alt: "Bathroom Comfortable",
-    title: "Bathroom Comfortable",
-    className: "rounded-xl",
+    src: '/assets/category5.jpg',
+    alt: 'Bathroom Comfortable',
+    title: 'Comfortable Bathroom',
+    className: 'rounded-xl',
   },
   {
-    src: "/assets/category66.jpg",
-    alt: "garden icon",
-    title: "garden icon",
-    className: "",
+    src: '/assets/bed.JPEG',
+    alt: 'garden icon',
+    title: 'Comfortable Bedspace',
+    className: '',
   },
 ];
 
 const Category = () => {
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto py-10 md:py-20">
       <div className="grid md:grid-cols-2 gap-10 items-center">
         <div className="">
           <div className="grid grid-cols-2 md:grid-cols-3 space-y-8 p-10 md:p-0 md:gap-5 gap-6">
@@ -57,8 +57,7 @@ const Category = () => {
                   alt={category.alt}
                   width={170}
                   height={170}
-                  // className={category.className}
-                  className="rounded-xl w-30 md:w-44"
+                  className="rounded-xl w-30 md:w-44 object-cover"
                   data-aos="fade-up"
                   data-aos-duration="1400"
                   data-aos-easing="ease-in-out-back"
@@ -74,31 +73,6 @@ const Category = () => {
               </div>
             ))}
           </div>
-          <div className="">
-            <div
-              className=" flex gap-2 pt-5 md:pt-10 justify-center"
-              data-aos="flip-right"
-              data-aos-duration="1400"
-              data-aos-easing="ease-in-out-back"
-            >
-              <form action="#" method="POST">
-                <div className="flex item-center">
-                  <input
-                    type="text"
-                    placeholder="Address, Schools City etc."
-                    className="border rounded-l-md p-4 md:w-[500px] w-full"
-                    required
-                  />
-                  <button
-                    className="bg-primary cursor-pointer text-lg text-white rounded-r-md px-8 py-3"
-                    type="submit"
-                  >
-                    Search
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
         </div>
         <div className="relative">
           <div className="absolute right-4 md:-right-10 md:top-78 top-42 z-10">
@@ -109,58 +83,58 @@ const Category = () => {
               data-aos-easing="ease-in-out-back"
             >
               <div
-                className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg"
+                className="flex gap-5 items-center p-1 md:p-3 bg-white rounded-lg hover:shadow-lg transition-shadow duration-300 cursor-pointer"
                 data-aos="fade-left"
                 data-aos-duration="1200"
                 data-aos-easing="ease-in-out-back"
               >
-                <Handshake
+                <Facebook
                   size={35}
-                  className="bg-primary p-2 rounded-sm text-white"
+                  className="bg-lime-400 p-2 rounded-sm text-gray-900"
                 />
-                Facebook
-              </div>{" "}
+                <span className="font-medium">Facebook</span>
+              </div>
               <div
-                className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg"
+                className="flex gap-5 items-center p-1 md:p-3 bg-white rounded-lg hover:shadow-lg transition-shadow duration-300 cursor-pointer"
                 data-aos="fade-left"
                 data-aos-duration="1300"
                 data-aos-easing="ease-in-out-back"
               >
-                <Handshake
+                <Twitter
                   size={35}
-                  className="bg-primary p-2 rounded-sm text-white"
+                  className="bg-lime-400 p-2 rounded-sm text-gray-900"
                 />
-                Twitter
-              </div>{" "}
+                <span className="font-medium">Twitter</span>
+              </div>
               <div
-                className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg"
+                className="flex gap-5 items-center p-1 md:p-3 bg-white rounded-lg hover:shadow-lg transition-shadow duration-300 cursor-pointer"
                 data-aos="fade-left"
                 data-aos-duration="1400"
                 data-aos-easing="ease-in-out-back"
               >
-                <Handshake
+                <Instagram
                   size={35}
-                  className="bg-primary p-2 rounded-sm text-white"
+                  className="bg-lime-400 p-2 rounded-sm text-gray-900"
                 />
-                Instagram
-              </div>{" "}
+                <span className="font-medium">Instagram</span>
+              </div>
               <div
-                className="flex gap-5 items-center p-1 md:p-3 bg-white  rounded-lg"
+                className="flex gap-5 items-center p-1 md:p-3 bg-white rounded-lg hover:shadow-lg transition-shadow duration-300 cursor-pointer"
                 data-aos="fade-left"
                 data-aos-duration="1500"
                 data-aos-easing="ease-in-out-back"
               >
-                <Handshake
+                <Send
                   size={35}
-                  className="bg-primary p-2 rounded-sm text-white"
+                  className="bg-lime-400 p-2 rounded-sm text-gray-900"
                 />
-                Telegram
+                <span className="font-medium">Telegram</span>
               </div>
             </div>
           </div>
           <div className="flex justify-end">
             <Image
-              src="/assets/next-door22.webp"
+              src="/assets/BRTN GRDN-17 2.JPG"
               alt="bedroom"
               width={600}
               height={600}
