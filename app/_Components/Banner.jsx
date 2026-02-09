@@ -1,11 +1,22 @@
-import { Search, MapPin, Calendar, SlidersHorizontal } from 'lucide-react';
-import React from 'react';
+'use client';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const Banner = () => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end start'],
+  });
+  const videoY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Video Background */}
-      <div className="absolute inset-0 w-full h-full">
+    <div
+      ref={ref}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-14"
+    >
+      {/* Video Background with Parallax */}
+      <motion.div className="absolute inset-0 w-full h-full" style={{ y: videoY }}>
         <video
           autoPlay
           loop
@@ -14,48 +25,71 @@ const Banner = () => {
           className="w-full h-full object-cover"
         >
           <source src="/assets/bruton.mp4" type="video/mp4" />
-          {/* Fallback image if video doesn't load */}
           <div className="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600"></div>
         </video>
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/30"></div>
-      </div>
+      </motion.div>
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-20">
         <div className="max-w-5xl mx-auto text-center space-y-8">
           {/* Header */}
           <div className="space-y-6">
-            <p className="text-white/90 text-lg font-medium tracking-wide uppercase">
+            <motion.p
+              className="text-white/90 text-lg font-medium tracking-wide uppercase"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               WELCOME TO BRUTON GARDENS
-            </p>
-            <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
+            </motion.p>
+            <motion.h1
+              className="text-5xl md:text-7xl font-bold text-white leading-tight"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+            >
               Find Your Perfect <span className="text-lime-400">Stay</span>
               <br />
               at Bruton Gardens <span className="text-lime-400">Apartment</span>
-            </h1>
-            <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto">
+            </motion.h1>
+            <motion.p
+              className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
               Discover luxury living in the heart of the city. Experience
               comfort, style, and convenience at{' '}
               <span className="text-lime-400 font-semibold">
                 Bruton Gardens
               </span>
               .
-            </p>
+            </motion.p>
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+          <motion.div
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
             <button className="bg-lime-400 hover:bg-lime-500 text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2">
               Booking
             </button>
             <button className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105">
               Schedule Viewing
             </button>
-          </div>
+          </motion.div>
 
-          {/* Social Icons - positioned at bottom left */}
-          <div className="absolute bottom-8 left-8 flex gap-4">
+          {/* Social Icons */}
+          <motion.div
+            className="absolute bottom-8 left-8 flex gap-4"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+          >
             <a
               href="#"
               className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 flex items-center justify-center text-white transition-all duration-300"
@@ -80,21 +114,7 @@ const Banner = () => {
                 <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
               </svg>
             </a>
-          </div>
-
-          {/* View Toggle - positioned at bottom right */}
-          {/* <div className="absolute bottom-8 right-8 flex gap-2">
-            <button className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 flex items-center justify-center text-white transition-all duration-300">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" />
-              </svg>
-            </button>
-            <button className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 flex items-center justify-center text-white transition-all duration-300">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
-              </svg>
-            </button>
-          </div> */}
+          </motion.div>
         </div>
       </div>
     </div>

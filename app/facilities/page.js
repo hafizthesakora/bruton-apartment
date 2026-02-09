@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
@@ -5,12 +6,11 @@ import {
   Wifi,
   ParkingCircle,
   Lock,
-  Building,
-  Tv,
   Coffee,
   AirVent,
   Utensils,
 } from 'lucide-react';
+import { FadeIn, StaggerContainer, StaggerItem, ScaleIn } from '../_Components/MotionWrapper';
 
 const Facilities = () => {
   const facilities = [
@@ -44,7 +44,6 @@ const Facilities = () => {
         },
       ],
     },
-
     {
       category: 'In-Apartment Features',
       items: [
@@ -78,7 +77,7 @@ const Facilities = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-14">
       {/* Hero Section */}
       <div className="relative h-[50vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -91,22 +90,16 @@ const Facilities = () => {
           />
         </div>
         <div className="relative z-10 text-center text-white px-4">
-          <h1
-            className="text-5xl md:text-6xl font-bold mb-6"
-            data-aos="fade-down"
-            data-aos-duration="1000"
-            data-aos-easing="ease-in-out-back"
-          >
-            Our Facilities
-          </h1>
-          <p
-            className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
-            data-aos="fade-up"
-            data-aos-duration="1200"
-            data-aos-easing="ease-in-out-back"
-          >
-            Everything you need for a comfortable short stay, all in one place
-          </p>
+          <FadeIn direction="down">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              Our Facilities
+            </h1>
+          </FadeIn>
+          <FadeIn direction="up" delay={0.15}>
+            <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
+              Everything you need for a comfortable short stay, all in one place
+            </p>
+          </FadeIn>
         </div>
       </div>
 
@@ -114,60 +107,40 @@ const Facilities = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         {facilities.map((category, index) => (
           <div key={index} className="mb-20">
-            <h2
-              className="text-3xl font-bold text-gray-900 mb-8"
-              data-aos="fade-right"
-              data-aos-duration="1000"
-              data-aos-easing="ease-in-out-back"
-            >
-              {category.category}
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <FadeIn direction="right">
+              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+                {category.category}
+              </h2>
+            </FadeIn>
+            <StaggerContainer staggerDelay={0.1} className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {category.items.map((item, idx) => (
-                <Card
-                  key={idx}
-                  className="p-6 bg-white hover:shadow-xl transition-shadow duration-300"
-                  data-aos="zoom-in"
-                  data-aos-duration="1200"
-                  data-aos-easing="ease-in-out-back"
-                >
-                  <div
-                    className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center mb-4"
-                    data-aos="fade-up"
-                    data-aos-duration="1300"
-                    data-aos-easing="ease-in-out-back"
-                  >
-                    {item.isImage ? (
-                      <Image
-                        src={item.icon}
-                        alt={item.title}
-                        width={24}
-                        height={24}
-                        className="w-6 h-6"
-                      />
-                    ) : (
-                      <item.icon className="w-6 h-6 text-lime-600" />
-                    )}
-                  </div>
-                  <h3
-                    className="text-xl font-semibold mb-2"
-                    data-aos="fade-down"
-                    data-aos-duration="1400"
-                    data-aos-easing="ease-in-out-back"
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    className="text-gray-600"
-                    data-aos="fade-left"
-                    data-aos-duration="1500"
-                    data-aos-easing="ease-in-out-back"
-                  >
-                    {item.description}
-                  </p>
-                </Card>
+                <StaggerItem key={idx}>
+                  <ScaleIn delay={0.05 * idx}>
+                    <Card className="p-6 bg-white hover:shadow-xl transition-shadow duration-300">
+                      <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center mb-4">
+                        {item.isImage ? (
+                          <Image
+                            src={item.icon}
+                            alt={item.title}
+                            width={24}
+                            height={24}
+                            className="w-6 h-6"
+                          />
+                        ) : (
+                          <item.icon className="w-6 h-6 text-lime-600" />
+                        )}
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        {item.title}
+                      </h3>
+                      <p className="text-gray-600">
+                        {item.description}
+                      </p>
+                    </Card>
+                  </ScaleIn>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           </div>
         ))}
       </div>
@@ -177,169 +150,106 @@ const Facilities = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h2
-                className="text-4xl font-bold text-gray-900"
-                data-aos="fade-right"
-                data-aos-duration="1000"
-                data-aos-easing="ease-in-out-back"
-              >
-                Explore Our Apartments
-              </h2>
-              <p
-                className="text-xl text-gray-600"
-                data-aos="fade-right"
-                data-aos-duration="1200"
-                data-aos-easing="ease-in-out-back"
-              >
-                Take a virtual tour of our fully furnished apartments and see
-                all the amenities included in your stay. Get a real feel for
-                your home away from home.
-              </p>
-              <div className="flex gap-4">
-                <button
-                  className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors"
-                  data-aos="fade-right"
-                  data-aos-duration="1300"
-                  data-aos-easing="ease-in-out-back"
-                >
-                  Start Tour
-                </button>
-                <button
-                  className="border-2 border-lime-600 text-lime-600 px-8 py-3 rounded-full hover:bg-lime-50 transition-colors"
-                  data-aos="fade-right"
-                  data-aos-duration="1700"
-                  data-aos-easing="ease-in-out-back"
-                >
-                  Book Now
-                </button>
+              <FadeIn direction="right">
+                <h2 className="text-4xl font-bold text-gray-900">
+                  Explore Our Apartments
+                </h2>
+              </FadeIn>
+              <FadeIn direction="right" delay={0.1}>
+                <p className="text-xl text-gray-600">
+                  Take a virtual tour of our fully furnished apartments and see
+                  all the amenities included in your stay. Get a real feel for
+                  your home away from home.
+                </p>
+              </FadeIn>
+              <FadeIn direction="right" delay={0.2}>
+                <div className="flex gap-4">
+                  <button className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors">
+                    Start Tour
+                  </button>
+                  <button className="border-2 border-lime-600 text-lime-600 px-8 py-3 rounded-full hover:bg-lime-50 transition-colors">
+                    Book Now
+                  </button>
+                </div>
+              </FadeIn>
+            </div>
+            <FadeIn direction="left" delay={0.15}>
+              <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
+                <Image
+                  src="/assets/BRTN GRDN-26.JPG"
+                  alt="Virtual Tour Preview"
+                  fill
+                  className="object-cover"
+                />
               </div>
-            </div>
-            <div
-              className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl"
-              data-aos="fade-left"
-              data-aos-duration="1000"
-              data-aos-easing="ease-in-out-back"
-            >
-              <Image
-                src="/assets/BRTN GRDN-26.JPG"
-                alt="Virtual Tour Preview"
-                fill
-                className="object-cover"
-              />
-            </div>
+            </FadeIn>
           </div>
         </div>
       </div>
 
       {/* Additional Features */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28">
-        <h2
-          className="text-4xl font-bold text-center text-gray-900 mb-12"
-          data-aos="fade-up"
-          data-aos-duration="1000"
-          data-aos-easing="ease-in-out-back"
-        >
-          What Makes Us Special
-        </h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
-            <h3
-              className="text-2xl font-semibold mb-4"
-              data-aos="fade-right"
-              data-aos-duration="1200"
-              data-aos-easing="ease-in-out-back"
-            >
-              Flexible Check-In
-            </h3>
-            <p
-              className="text-gray-600"
-              data-aos="fade-left"
-              data-aos-duration="1400"
-              data-aos-easing="ease-in-out-back"
-            >
-              Self check-in available 24/7 with our smart lock system for your
-              convenience.
-            </p>
-          </div>
-          <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
-            <h3
-              className="text-2xl font-semibold mb-4"
-              data-aos="fade-right"
-              data-aos-duration="1200"
-              data-aos-easing="ease-in-out-back"
-            >
-              Weekly Housekeeping
-            </h3>
-            <p
-              className="text-gray-600"
-              data-aos="fade-left"
-              data-aos-duration="1400"
-              data-aos-easing="ease-in-out-back"
-            >
-              Professional cleaning service included for stays longer than a
-              week.
-            </p>
-          </div>
-          <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
-            <h3
-              className="text-2xl font-semibold mb-4"
-              data-aos="fade-right"
-              data-aos-duration="1200"
-              data-aos-easing="ease-in-out-back"
-            >
-              Local Support
-            </h3>
-            <p
-              className="text-gray-600"
-              data-aos="fade-left"
-              data-aos-duration="1400"
-              data-aos-easing="ease-in-out-back"
-            >
-              On-site management team ready to assist with recommendations and
-              support.
-            </p>
-          </div>
-        </div>
+        <FadeIn direction="up">
+          <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            What Makes Us Special
+          </h2>
+        </FadeIn>
+        <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-3 gap-8">
+          {[
+            {
+              title: 'Flexible Check-In',
+              description:
+                'Self check-in available 24/7 with our smart lock system for your convenience.',
+            },
+            {
+              title: 'Weekly Housekeeping',
+              description:
+                'Professional cleaning service included for stays longer than a week.',
+            },
+            {
+              title: 'Local Support',
+              description:
+                'On-site management team ready to assist with recommendations and support.',
+            },
+          ].map((feature, index) => (
+            <StaggerItem key={index}>
+              <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
+                <h3 className="text-2xl font-semibold mb-4">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600">
+                  {feature.description}
+                </p>
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
       </div>
 
       {/* CTA Section */}
       <div className="bg-gray-900 text-white py-20 mt-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2
-            className="text-4xl font-bold mb-6"
-            data-aos="fade-up"
-            data-aos-duration="1000"
-            data-aos-easing="ease-in-out-back"
-          >
-            Ready for Your Stay?
-          </h2>
-          <p
-            className="text-xl mb-8 max-w-2xl mx-auto"
-            data-aos="fade-up"
-            data-aos-duration="1200"
-            data-aos-easing="ease-in-out-back"
-          >
-            Book your apartment today and enjoy all our premium facilities
-            during your short stay.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <button
-              className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors"
-              data-aos="fade-right"
-              data-aos-duration="1300"
-              data-aos-easing="ease-in-out-back"
-            >
-              Check Availability
-            </button>
-            <button
-              className="border-2 border-white text-white px-8 py-3 rounded-full hover:bg-white/10 transition-colors"
-              data-aos="fade-left"
-              data-aos-duration="1400"
-              data-aos-easing="ease-in-out-back"
-            >
-              Contact Us
-            </button>
-          </div>
+          <FadeIn direction="up">
+            <h2 className="text-4xl font-bold mb-6">
+              Ready for Your Stay?
+            </h2>
+          </FadeIn>
+          <FadeIn direction="up" delay={0.1}>
+            <p className="text-xl mb-8 max-w-2xl mx-auto">
+              Book your apartment today and enjoy all our premium facilities
+              during your short stay.
+            </p>
+          </FadeIn>
+          <FadeIn direction="up" delay={0.2}>
+            <div className="flex gap-4 justify-center">
+              <button className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors">
+                Check Availability
+              </button>
+              <button className="border-2 border-white text-white px-8 py-3 rounded-full hover:bg-white/10 transition-colors">
+                Contact Us
+              </button>
+            </div>
+          </FadeIn>
         </div>
       </div>
     </div>
