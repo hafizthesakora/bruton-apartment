@@ -128,16 +128,24 @@ export function ScaleIn({
 export function AnimatedCounter({ target, duration = 2, className = '' }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  const [displayValue, setDisplayValue] = useState('0');
+  const [displayValue, setDisplayValue] = useState(target);
 
   useEffect(() => {
     if (!isInView) return;
 
-    const numericTarget = parseFloat(target.replace(/[^0-9.]/g, ''));
-    const prefix = target.match(/^[^0-9]*/)?.[0] || '';
-    const suffix = target.match(/[^0-9.]*$/)?.[0] || '';
-    const hasDecimal = target.includes('.');
-    const decimalPlaces = hasDecimal ? (target.split('.')[1]?.replace(/[^0-9]/g, '').length || 0) : 0;
+    // Extract the first number from the target string
+    const match = target.match(/(\d+\.?\d*)/);
+    if (!match) {
+      // No number found (e.g. "Prime") — just show it directly
+      setDisplayValue(target);
+      return;
+    }
+
+    const numericTarget = parseFloat(match[1]);
+    const beforeNum = target.slice(0, match.index);
+    const afterNum = target.slice(match.index + match[1].length);
+    const hasDecimal = match[1].includes('.');
+    const decimalPlaces = hasDecimal ? match[1].split('.')[1].length : 0;
 
     let startTime;
     const animate = (currentTime) => {
@@ -148,9 +156,9 @@ export function AnimatedCounter({ target, duration = 2, className = '' }) {
       const current = numericTarget * eased;
 
       if (hasDecimal) {
-        setDisplayValue(`${prefix}${current.toFixed(decimalPlaces)}${suffix}`);
+        setDisplayValue(`${beforeNum}${current.toFixed(decimalPlaces)}${afterNum}`);
       } else {
-        setDisplayValue(`${prefix}${Math.floor(current)}${suffix}`);
+        setDisplayValue(`${beforeNum}${Math.floor(current)}${afterNum}`);
       }
 
       if (progress < 1) {

@@ -200,7 +200,7 @@ const Facilities = () => {
             What Makes Us Special
           </h2>
         </FadeIn>
-        <StaggerContainer staggerDelay={0.12} className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <StaggerContainer staggerDelay={0.12} className="grid md:grid-cols-3 gap-6">
           {[
             {
               title: 'Daily Housekeeping',
@@ -216,16 +216,6 @@ const Facilities = () => {
               title: 'CCTV & Trained Security',
               description:
                 'Comprehensive CCTV monitoring and highly trained security staff to ensure your safety at all times.',
-            },
-            {
-              title: 'Tour Options',
-              description:
-                'Explore the country with our curated tour packages. We connect you with trusted tour operators for unforgettable experiences.',
-            },
-            {
-              title: 'Car Rental Service',
-              description:
-                'Optional car rental service available for guests who want the freedom to explore at their own pace.',
             },
           ].map((feature, index) => (
             <StaggerItem key={index}>

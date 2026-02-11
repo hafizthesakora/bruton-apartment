@@ -8,7 +8,7 @@ import { FadeIn, StaggerContainer, StaggerItem, motion } from './MotionWrapper';
 const quickLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
-  { href: '/blog', label: 'Blog' },
+  { href: '/blog', label: 'Gallery & Blog' },
   { href: '/services', label: 'Services' },
 ];
 

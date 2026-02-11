@@ -13,12 +13,12 @@ import BookingModal from '../_Components/BookingModal';
 import ContactModal from '../_Components/ContactModal';
 
 const aboutSlideImages = [
+  '/assets/brut1.jpg',
+  '/assets/brut2.jpg',
   '/assets/BRTN GRDN-6.JPEG',
   '/assets/BRTN GRDN-1.JPEG',
-  '/assets/BRTN GRDN-4.JPEG',
-  '/assets/BRTN GRDN-9.JPEG',
-  '/assets/BRTN GRDN-27.JPG',
   '/assets/BRTN GRDN-22.JPG',
+  '/assets/BRTN GRDN-27.JPG',
 ];
 
 const AboutUs = () => {
@@ -179,7 +179,7 @@ const AboutUs = () => {
       </div>
 
       {/* Team Section */}
-      <div className="bg-gray-50 px-3 py-32 mb-20">
+      <div className="bg-gray-50 px-3 py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn direction="up">
             <h2 className="text-4xl md:text-5xl font-semibold text-center text-gray-900 mb-12">

@@ -4,14 +4,13 @@ import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import {
   Home,
-  Search,
   Shield,
   CreditCard,
   Building2,
   Users,
   Star,
 } from 'lucide-react';
-import { FadeIn, StaggerContainer, StaggerItem, ScaleIn } from '../_Components/MotionWrapper';
+import { FadeIn, StaggerContainer, StaggerItem, ScaleIn, motion, AnimatePresence } from '../_Components/MotionWrapper';
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -90,9 +89,44 @@ const Services = () => {
       rating: 5,
       time: '1 month ago',
     },
+    {
+      name: 'Ama Owusu',
+      text: 'The event center was stunning for our wedding reception. Everything was handled beautifully by the team.',
+      rating: 5,
+      time: '3 weeks ago',
+    },
+    {
+      name: 'Kwame Mensah',
+      text: 'Loved the restaurant! Authentic Ghanaian dishes with a modern twist. The jollof was exceptional.',
+      rating: 5,
+      time: '1 month ago',
+    },
+    {
+      name: 'Linda Addo',
+      text: 'Stayed for a week and felt completely at home. The daily housekeeping and Starlink WiFi made all the difference.',
+      rating: 5,
+      time: '2 weeks ago',
+    },
   ];
 
   const reviews = googleReviews || fallbackReviews;
+  const [currentReview, setCurrentReview] = useState(0);
+
+  useEffect(() => {
+    if (reviews.length <= 3) return;
+    const timer = setInterval(() => {
+      setCurrentReview((prev) => (prev + 1) % reviews.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [reviews.length]);
+
+  const getVisibleReviews = () => {
+    const visible = [];
+    for (let i = 0; i < 3; i++) {
+      visible.push(reviews[(currentReview + i) % reviews.length]);
+    }
+    return visible;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-14">
@@ -269,43 +303,63 @@ const Services = () => {
             )}
           </div>
         </FadeIn>
-        <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-3 gap-8">
-          {reviews.slice(0, 3).map((review, index) => (
-            <StaggerItem key={index}>
-              <Card className="p-6 bg-white hover:shadow-xl transition-shadow duration-300">
-                <div className="flex items-center mb-4">
-                  {review.photo ? (
-                    <img
-                      src={review.photo}
-                      alt={review.name}
-                      className="w-12 h-12 rounded-full object-cover mr-4"
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-lime-100 flex items-center justify-center mr-4">
-                      <span className="text-lime-600 font-bold text-lg">
-                        {review.name.charAt(0)}
-                      </span>
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentReview}
+              initial={{ opacity: 0, x: 60 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -60 }}
+              transition={{ duration: 0.4 }}
+              className="grid md:grid-cols-3 gap-8"
+            >
+              {getVisibleReviews().map((review, index) => (
+                <Card key={index} className="p-6 bg-white hover:shadow-xl transition-shadow duration-300">
+                  <div className="flex items-center mb-4">
+                    {review.photo ? (
+                      <img
+                        src={review.photo}
+                        alt={review.name}
+                        className="w-12 h-12 rounded-full object-cover mr-4"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-lime-100 flex items-center justify-center mr-4">
+                        <span className="text-lime-600 font-bold text-lg">
+                          {review.name.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="font-semibold">{review.name}</h3>
+                      <p className="text-gray-400 text-sm">{review.time}</p>
                     </div>
-                  )}
-                  <div>
-                    <h3 className="font-semibold">{review.name}</h3>
-                    <p className="text-gray-400 text-sm">{review.time}</p>
                   </div>
-                </div>
-                <div className="flex mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-5 h-5 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-                    />
-                  ))}
-                </div>
-                <p className="text-gray-600 line-clamp-4">{review.text}</p>
-              </Card>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+                  <div className="flex mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-5 h-5 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-gray-600 line-clamp-4">&ldquo;{review.text}&rdquo;</p>
+                </Card>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Dots */}
+          <div className="flex justify-center gap-2 mt-8">
+            {reviews.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentReview(i)}
+                className={`w-2 h-2 rounded-full transition-all ${i === currentReview ? 'bg-lime-400 w-5' : 'bg-gray-300'}`}
+              />
+            ))}
+          </div>
+        </div>
         {googleReviews && (
           <FadeIn direction="up" delay={0.3}>
             <p className="text-center text-gray-400 text-sm mt-6 flex items-center justify-center gap-2">

@@ -1,8 +1,8 @@
 'use client';
 import { Home, Building2, Key } from 'lucide-react';
 import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
-import { FadeIn, StaggerContainer, StaggerItem, motion, AnimatePresence } from './MotionWrapper';
+import React from 'react';
+import { FadeIn, StaggerContainer, StaggerItem } from './MotionWrapper';
 
 const aboutCards = [
   { image: '/assets/main-home1.jpg', icon: Home },
@@ -10,24 +10,7 @@ const aboutCards = [
   { image: '/assets/BRTN GRDN-25 2.JPEG', icon: Key },
 ];
 
-const carouselImages = [
-  '/assets/BRTN GRDN-22.JPG',
-  '/assets/BRTN GRDN-26.JPG',
-  '/assets/BRTN GRDN-3.JPEG',
-  '/assets/BRTN GRDN-5.JPEG',
-  '/assets/BRTN GRDN-27.JPG',
-];
-
 const About = () => {
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % carouselImages.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <>
       <div className="container pt-24 md:py-40 mx-auto p-6">
@@ -48,33 +31,13 @@ const About = () => {
             </FadeIn>
             <FadeIn direction="down" delay={0.1}>
               <div className="relative">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={current}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <Image
-                      src={carouselImages[current]}
-                      alt={`Bruton Gardens ${current + 1}`}
-                      width={600}
-                      height={400}
-                      className="object-center rounded-t-full px-10"
-                    />
-                  </motion.div>
-                </AnimatePresence>
-                {/* Dots */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                  {carouselImages.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setCurrent(i)}
-                      className={`w-2 h-2 rounded-full transition-all ${i === current ? 'bg-lime-400 w-5' : 'bg-white/60'}`}
-                    />
-                  ))}
-                </div>
+                <Image
+                  src="/assets/BRTN GRDN-22.JPG"
+                  alt="Bruton Gardens"
+                  width={600}
+                  height={400}
+                  className="object-center rounded-t-full px-10"
+                />
               </div>
             </FadeIn>
           </div>

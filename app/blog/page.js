@@ -231,7 +231,7 @@ const BlogPostCard = ({ post }) => (
 // ── Main Page Component ──────────────────────────────────────────────────────
 
 const BlogAndGallery = () => {
-  const [activeTab, setActiveTab] = useState('blog');
+  const [activeTab, setActiveTab] = useState('gallery');
   const [selectedCategory, setSelectedCategory] = useState('All Spaces');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
@@ -317,7 +317,7 @@ const BlogAndGallery = () => {
         <div className="absolute inset-0 z-0">
           <Image
             src="/assets/BRTN GRDN-26.JPG"
-            alt="Blog & Gallery Hero"
+            alt="Gallery & Blog Hero"
             fill
             className="object-cover brightness-30"
             priority
@@ -326,7 +326,7 @@ const BlogAndGallery = () => {
         <div className="relative z-10 text-center text-white px-4">
           <FadeIn direction="down">
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Blog & Gallery
+              Gallery & Blog
             </h1>
           </FadeIn>
           <FadeIn direction="up" delay={0.15}>
@@ -339,16 +339,6 @@ const BlogAndGallery = () => {
           <FadeIn direction="up" delay={0.25}>
             <div className="inline-flex bg-white/20 backdrop-blur-sm rounded-full p-1">
               <button
-                onClick={() => setActiveTab('blog')}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                  activeTab === 'blog'
-                    ? 'bg-lime-500 text-white shadow-lg'
-                    : 'text-white hover:bg-white/10'
-                }`}
-              >
-                Blog Posts
-              </button>
-              <button
                 onClick={() => setActiveTab('gallery')}
                 className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
                   activeTab === 'gallery'
@@ -357,6 +347,16 @@ const BlogAndGallery = () => {
                 }`}
               >
                 Gallery
+              </button>
+              <button
+                onClick={() => setActiveTab('blog')}
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                  activeTab === 'blog'
+                    ? 'bg-lime-500 text-white shadow-lg'
+                    : 'text-white hover:bg-white/10'
+                }`}
+              >
+                Blog Posts
               </button>
             </div>
           </FadeIn>
