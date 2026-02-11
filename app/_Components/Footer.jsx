@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-import { Facebook, Linkedin, MessageCircle, Twitter } from 'lucide-react';
+import { Facebook, MessageCircle, Twitter } from 'lucide-react';
 import Link from 'next/link';
 import { FadeIn, StaggerContainer, StaggerItem, motion } from './MotionWrapper';
 
@@ -12,10 +12,16 @@ const quickLinks = [
   { href: '/services', label: 'Services' },
 ];
 
+const TikTokIcon = ({ size = 24, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+  </svg>
+);
+
 const socialIcons = [
   { Icon: Facebook, label: 'Facebook' },
   { Icon: Twitter, label: 'Twitter' },
-  { Icon: Linkedin, label: 'LinkedIn' },
+  { Icon: TikTokIcon, label: 'TikTok' },
   { Icon: MessageCircle, label: 'WhatsApp' },
 ];
 
@@ -37,7 +43,7 @@ const Footer = () => {
               </FadeIn>
               <FadeIn direction="up" delay={0.1}>
                 <p className="text-md md:text-lg md:pe-16 pt-5 text-gray-700">
-                  Experience luxury living at Bruton Gardens Apartment. We offer
+                  Experience luxury living at Bruton Gardens & Apartments. We offer
                   modern, well-furnished apartments in a serene environment with
                   world-class amenities and exceptional service. Your comfort is
                   our priority.
@@ -68,7 +74,7 @@ const Footer = () => {
                 <h3 className="text-2xl font-semibold">Connect</h3>
               </FadeIn>
               <StaggerContainer staggerDelay={0.1} className="space-y-3 text-lg font-normal pt-8">
-                {['Facebook', 'Twitter', 'Instagram', 'WhatsApp'].map((name) => (
+                {['Facebook', 'Twitter', 'TikTok', 'WhatsApp'].map((name) => (
                   <StaggerItem key={name} direction="right">
                     <li className="hover:text-lime-400 cursor-pointer transition-colors list-none">
                       {name}
@@ -124,7 +130,7 @@ const Footer = () => {
           <FadeIn direction="up" delay={0.1}>
             <div className="md:flex justify-between items-center py-5 space-y-8 md:space-y-0 md:text-start text-center">
               <p className="text-gray-500">
-                &copy; 2026 Bruton Gardens Apartment. All rights reserved.
+                &copy; 2026 Bruton Gardens & Apartments. All rights reserved.
               </p>
               <div className="flex gap-5 justify-center">
                 {socialIcons.map(({ Icon, label }) => (

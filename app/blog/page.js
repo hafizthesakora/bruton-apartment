@@ -236,6 +236,32 @@ const BlogAndGallery = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [subscribeEmail, setSubscribeEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = async () => {
+    if (!subscribeEmail) return;
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Newsletter Subscriber',
+          email: subscribeEmail,
+          phone: '',
+          country: '',
+          message: `New newsletter subscription from: ${subscribeEmail}`,
+        }),
+      });
+    } catch {
+      // Silent — still show subscribed
+    }
+    setSubscribed(true);
+    setTimeout(() => {
+      setSubscribed(false);
+      setSubscribeEmail('');
+    }, 3000);
+  };
 
   const filteredImages = useMemo(() => {
     return allGalleryImages.filter((image) => {
@@ -374,10 +400,16 @@ const BlogAndGallery = () => {
                     <input
                       type="email"
                       placeholder="Enter your email"
+                      value={subscribeEmail}
+                      onChange={(e) => setSubscribeEmail(e.target.value)}
                       className="flex-1 px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-lime-500"
                     />
-                    <button className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors font-medium">
-                      Subscribe
+                    <button
+                      onClick={handleSubscribe}
+                      disabled={!subscribeEmail || subscribed}
+                      className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {subscribed ? 'Subscribed!' : 'Subscribe'}
                     </button>
                   </div>
                 </FadeIn>
@@ -605,11 +637,11 @@ const BlogAndGallery = () => {
         <div className="bg-gray-900 text-white py-20 mt-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <FadeIn direction="down">
-              <h2 className="text-4xl font-bold mb-6">Love What You See?</h2>
+              <h2 className="text-4xl font-bold mb-6">Love Our Space?</h2>
             </FadeIn>
             <FadeIn direction="up" delay={0.1}>
               <p className="text-xl mb-8 max-w-2xl mx-auto">
-                Experience the beauty of Bruton Gardens firsthand. Book your stay and
+                Experience the beauty of Bruton Gardens & Apartments firsthand. Book your stay and
                 immerse yourself in luxury and tranquility.
               </p>
             </FadeIn>

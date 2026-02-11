@@ -1,16 +1,31 @@
-import { google } from 'googleapis';
 import { NextResponse } from 'next/server';
 
-// Google Calendar API setup using service account
-function getCalendarClient() {
-  const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}');
+// Get an access token using Azure AD client credentials flow
+async function getAccessToken() {
+  const tenantId = process.env.AZURE_TENANT_ID;
+  const clientId = process.env.AZURE_CLIENT_ID;
+  const clientSecret = process.env.AZURE_CLIENT_SECRET;
 
-  const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: ['https://www.googleapis.com/auth/calendar'],
+  const tokenUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
+
+  const response = await fetch(tokenUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      scope: 'https://graph.microsoft.com/.default',
+      grant_type: 'client_credentials',
+    }),
   });
 
-  return google.calendar({ version: 'v3', auth });
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(`Token error: ${data.error_description || data.error}`);
+  }
+
+  return data.access_token;
 }
 
 export async function POST(request) {
@@ -25,15 +40,15 @@ export async function POST(request) {
       );
     }
 
-    const calendarId = process.env.GOOGLE_CALENDAR_ID;
-    if (!calendarId || !process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+    const outlookUser = process.env.OUTLOOK_USER_EMAIL;
+    if (!outlookUser || !process.env.AZURE_CLIENT_ID || !process.env.AZURE_TENANT_ID || !process.env.AZURE_CLIENT_SECRET) {
       return NextResponse.json(
-        { error: 'Calendar not configured. Please set up Google Calendar API credentials.' },
+        { error: 'Outlook calendar not configured.' },
         { status: 503 }
       );
     }
 
-    const calendar = getCalendarClient();
+    const accessToken = await getAccessToken();
 
     const viewingLabel = viewingType === 'virtual' ? 'Virtual Demo' : 'Physical Viewing';
     const location = viewingType === 'physical'
@@ -41,63 +56,73 @@ export async function POST(request) {
       : 'Virtual (link will be shared)';
 
     // Build start and end times
-    const startDateTime = new Date(`${date}T${time}:00`);
-    const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // 1 hour
+    const startDateTime = `${date}T${time}:00`;
+    const endHour = String(parseInt(time.split(':')[0]) + 1).padStart(2, '0');
+    const endDateTime = `${date}T${endHour}:${time.split(':')[1]}:00`;
 
     const event = {
-      summary: `Bruton Gardens - ${viewingLabel} with ${name}`,
-      description: [
-        `Viewing Type: ${viewingLabel}`,
-        `Guest Name: ${name}`,
-        `Email: ${email}`,
-        `Phone: ${phone}`,
-        `Notes: ${notes || 'None'}`,
-        '',
-        'Booked via Bruton Gardens Website',
-      ].join('\n'),
-      location,
+      subject: `Bruton Gardens - ${viewingLabel} with ${name}`,
+      body: {
+        contentType: 'HTML',
+        content: `
+          <h3>New Booking via Bruton Gardens Website</h3>
+          <p><strong>Viewing Type:</strong> ${viewingLabel}</p>
+          <p><strong>Guest Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Phone:</strong> ${phone}</p>
+          <p><strong>Notes:</strong> ${notes || 'None'}</p>
+        `,
+      },
       start: {
-        dateTime: startDateTime.toISOString(),
+        dateTime: startDateTime,
         timeZone: 'Africa/Accra',
       },
       end: {
-        dateTime: endDateTime.toISOString(),
+        dateTime: endDateTime,
         timeZone: 'Africa/Accra',
       },
-      attendees: [
-        { email, displayName: name },
-      ],
-      reminders: {
-        useDefault: false,
-        overrides: [
-          { method: 'email', minutes: 60 },
-          { method: 'popup', minutes: 30 },
-        ],
+      location: {
+        displayName: location,
       },
+      attendees: [
+        {
+          emailAddress: {
+            address: email,
+            name: name,
+          },
+          type: 'required',
+        },
+      ],
+      isReminderOn: true,
+      reminderMinutesBeforeStart: 30,
     };
 
-    // Create event on Bruton's calendar and send invites to attendee
-    const response = await calendar.events.insert({
-      calendarId,
-      resource: event,
-      sendUpdates: 'all', // Sends email invite to the attendee automatically
+    // Create event on Bruton's Outlook calendar — sends invite to guest automatically
+    const graphUrl = `https://graph.microsoft.com/v1.0/users/${outlookUser}/events`;
+
+    const response = await fetch(graphUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Graph API error:', data);
+      throw new Error(data.error?.message || 'Failed to create event');
+    }
 
     return NextResponse.json({
       success: true,
-      eventId: response.data.id,
-      htmlLink: response.data.htmlLink,
+      eventId: data.id,
       message: 'Booking confirmed! A calendar invite has been sent to your email.',
     });
   } catch (error) {
     console.error('Booking API error:', error);
-
-    if (error.code === 401 || error.code === 403) {
-      return NextResponse.json(
-        { error: 'Calendar authentication failed. Please check API credentials.' },
-        { status: 401 }
-      );
-    }
 
     return NextResponse.json(
       { error: 'Failed to create booking. Please try again.' },

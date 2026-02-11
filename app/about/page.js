@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import {
@@ -8,33 +8,55 @@ import {
   MapPin,
   Star,
 } from 'lucide-react';
-import { FadeIn, StaggerContainer, StaggerItem, ScaleIn, AnimatedCounter } from '../_Components/MotionWrapper';
+import { FadeIn, StaggerContainer, StaggerItem, ScaleIn, AnimatedCounter, motion, AnimatePresence } from '../_Components/MotionWrapper';
+import BookingModal from '../_Components/BookingModal';
+import ContactModal from '../_Components/ContactModal';
+
+const aboutSlideImages = [
+  '/assets/BRTN GRDN-6.JPEG',
+  '/assets/BRTN GRDN-1.JPEG',
+  '/assets/BRTN GRDN-4.JPEG',
+  '/assets/BRTN GRDN-9.JPEG',
+  '/assets/BRTN GRDN-27.JPG',
+  '/assets/BRTN GRDN-22.JPG',
+];
 
 const AboutUs = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % aboutSlideImages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   const teamMembers = [
     {
-      name: 'Mr. Bruton',
-      role: 'Founder & Owner',
-      image: '/assets/IMG_1195 2.JPEG',
+      name: 'Mrs. Portia Owusu Asante',
+      role: 'Director',
+      image: '/assets/team-portia.jpeg',
       bio: 'Passionate about providing exceptional hospitality and comfortable stays',
     },
     {
-      name: 'Property Manager',
-      role: 'Operations Head',
-      image: '/assets/IMG_1195 2.JPEG',
+      name: 'Nana Afia Nketia Danquah',
+      role: 'Facilities Manager',
+      image: '/assets/team-nana.jpeg',
       bio: 'Ensuring every guest enjoys a seamless and memorable experience',
     },
     {
-      name: 'Guest Relations',
-      role: 'Customer Service',
-      image: '/assets/IMG_1195 2.JPEG',
+      name: 'Tetteh Ebenezer',
+      role: 'Front of House',
+      image: '/assets/team-tetteh.jpeg',
       bio: 'Dedicated to making your stay comfortable and stress-free',
     },
   ];
 
   const stats = [
-    { icon: Users, value: '500+', label: 'Happy Guests' },
-    { icon: Calendar, value: '5+', label: 'Years Experience' },
+    { icon: Users, value: '100+', label: 'Happy Guests' },
+    { icon: Calendar, value: '1+', label: 'Years Experience' },
     { icon: MapPin, value: 'Prime', label: 'Location' },
     { icon: Star, value: '4.8/5', label: 'Guest Rating' },
   ];
@@ -55,13 +77,13 @@ const AboutUs = () => {
         <div className="relative z-10 text-center text-white px-4">
           <FadeIn direction="up">
             <h1 className="text-3xl md:text-6xl font-bold mb-6">
-              About <span className="text-lime-400">Bruton Gardens</span>
+              About <span className="text-lime-400">Bruton Gardens & Apartments</span>
             </h1>
           </FadeIn>
           <FadeIn direction="down" delay={0.2}>
             <p className="text-md md:text-2xl max-w-3xl mx-auto leading-relaxed">
               A short stay apartment offering exceptional comfort, modern
-              amenities, and warm hospitality in the heart of the city.
+              amenities, and warm hospitality on the outskirts of the city.
             </p>
           </FadeIn>
         </div>
@@ -96,7 +118,7 @@ const AboutUs = () => {
             <div className="space-y-4">
               <FadeIn direction="right" delay={0.1}>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  Bruton Gardens Apartment was established with a vision to
+                  Bruton Gardens & Apartments was established with a vision to
                   provide travelers and visitors with a home away from home. What
                   started as a family initiative has grown into a trusted short
                   stay destination.
@@ -113,10 +135,10 @@ const AboutUs = () => {
             </div>
             <FadeIn direction="right" delay={0.3}>
               <div className="flex gap-4">
-                <button className="bg-lime-400 text-gray-900 px-6 py-3 rounded-full hover:bg-lime-500 transition-colors font-semibold">
+                <button onClick={() => setBookingOpen(true)} className="bg-lime-400 text-gray-900 px-6 py-3 rounded-full hover:bg-lime-500 transition-colors font-semibold">
                   Book Now
                 </button>
-                <button className="border-2 border-lime-400 text-lime-600 px-6 py-3 rounded-full hover:bg-lime-50 transition-colors font-semibold">
+                <button onClick={() => setContactOpen(true)} className="border-2 border-lime-400 text-lime-600 px-6 py-3 rounded-full hover:bg-lime-50 transition-colors font-semibold">
                   Contact Us
                 </button>
               </div>
@@ -124,12 +146,33 @@ const AboutUs = () => {
           </div>
           <FadeIn direction="left" delay={0.2}>
             <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
-              <Image
-                src="/assets/BRTN GRDN-6.JPEG"
-                alt="Company Story"
-                fill
-                className="object-cover"
-              />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentSlide}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={aboutSlideImages[currentSlide]}
+                    alt={`Bruton Gardens ${currentSlide + 1}`}
+                    fill
+                    className="object-cover"
+                  />
+                </motion.div>
+              </AnimatePresence>
+              {/* Dots */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                {aboutSlideImages.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentSlide(i)}
+                    className={`w-2 h-2 rounded-full transition-all ${i === currentSlide ? 'bg-lime-400 w-5' : 'bg-white/60'}`}
+                  />
+                ))}
+              </div>
             </div>
           </FadeIn>
         </div>
@@ -172,6 +215,9 @@ const AboutUs = () => {
           </StaggerContainer>
         </div>
       </div>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
+      <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
     </div>
   );
 };

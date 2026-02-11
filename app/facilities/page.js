@@ -1,6 +1,7 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import {
   Wifi,
@@ -11,17 +12,22 @@ import {
   Utensils,
 } from 'lucide-react';
 import { FadeIn, StaggerContainer, StaggerItem, ScaleIn } from '../_Components/MotionWrapper';
+import BookingModal from '../_Components/BookingModal';
+import ContactModal from '../_Components/ContactModal';
 
 const Facilities = () => {
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const router = useRouter();
   const facilities = [
     {
       category: 'Essential Amenities',
       items: [
         {
           icon: Wifi,
-          title: 'High-Speed WiFi',
+          title: 'Ultrafast WiFi by Starlink',
           description:
-            'Fast and reliable internet access perfect for work and streaming',
+            'Blazing fast internet powered by Starlink, perfect for work and streaming',
           isImage: false,
         },
         {
@@ -164,10 +170,10 @@ const Facilities = () => {
               </FadeIn>
               <FadeIn direction="right" delay={0.2}>
                 <div className="flex gap-4">
-                  <button className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors">
+                  <button onClick={() => router.push('/blog')} className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors">
                     Start Tour
                   </button>
-                  <button className="border-2 border-lime-600 text-lime-600 px-8 py-3 rounded-full hover:bg-lime-50 transition-colors">
+                  <button onClick={() => setBookingOpen(true)} className="border-2 border-lime-600 text-lime-600 px-8 py-3 rounded-full hover:bg-lime-50 transition-colors">
                     Book Now
                   </button>
                 </div>
@@ -176,8 +182,8 @@ const Facilities = () => {
             <FadeIn direction="left" delay={0.15}>
               <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/assets/BRTN GRDN-26.JPG"
-                  alt="Virtual Tour Preview"
+                  src="/assets/BRTN GRDN-22.JPG"
+                  alt="Bruton Gardens Apartment"
                   fill
                   className="object-cover"
                 />
@@ -194,26 +200,36 @@ const Facilities = () => {
             What Makes Us Special
           </h2>
         </FadeIn>
-        <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-3 gap-8">
+        <StaggerContainer staggerDelay={0.12} className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
           {[
             {
-              title: 'Flexible Check-In',
+              title: 'Daily Housekeeping',
               description:
-                'Self check-in available 24/7 with our smart lock system for your convenience.',
+                'Professional daily cleaning service to keep your apartment fresh and spotless throughout your stay.',
             },
             {
-              title: 'Weekly Housekeeping',
+              title: '24-Hour Check-In',
               description:
-                'Professional cleaning service included for stays longer than a week.',
+                'Dedicated staff available around the clock to welcome you and ensure a smooth check-in at any hour.',
             },
             {
-              title: 'Local Support',
+              title: 'CCTV & Trained Security',
               description:
-                'On-site management team ready to assist with recommendations and support.',
+                'Comprehensive CCTV monitoring and highly trained security staff to ensure your safety at all times.',
+            },
+            {
+              title: 'Tour Options',
+              description:
+                'Explore the country with our curated tour packages. We connect you with trusted tour operators for unforgettable experiences.',
+            },
+            {
+              title: 'Car Rental Service',
+              description:
+                'Optional car rental service available for guests who want the freedom to explore at their own pace.',
             },
           ].map((feature, index) => (
             <StaggerItem key={index}>
-              <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
+              <div className="text-center p-8 bg-white rounded-2xl shadow-lg border-2 border-gray-200">
                 <h3 className="text-2xl font-semibold mb-4">
                   {feature.title}
                 </h3>
@@ -242,16 +258,19 @@ const Facilities = () => {
           </FadeIn>
           <FadeIn direction="up" delay={0.2}>
             <div className="flex gap-4 justify-center">
-              <button className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors">
+              <button onClick={() => setBookingOpen(true)} className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors">
                 Check Availability
               </button>
-              <button className="border-2 border-white text-white px-8 py-3 rounded-full hover:bg-white/10 transition-colors">
+              <button onClick={() => setContactOpen(true)} className="border-2 border-white text-white px-8 py-3 rounded-full hover:bg-white/10 transition-colors">
                 Contact Us
               </button>
             </div>
           </FadeIn>
         </div>
       </div>
+
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
+      <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
     </div>
   );
 };

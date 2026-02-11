@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import {
@@ -13,69 +13,86 @@ import {
 } from 'lucide-react';
 import { FadeIn, StaggerContainer, StaggerItem, ScaleIn } from '../_Components/MotionWrapper';
 
+const GoogleIcon = () => (
+  <svg className="w-5 h-5" viewBox="0 0 24 24">
+    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
+    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+  </svg>
+);
+
 const Services = () => {
+  const [googleReviews, setGoogleReviews] = useState(null);
+  const [googleRating, setGoogleRating] = useState(null);
+  const [totalReviews, setTotalReviews] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/reviews')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.reviews && data.reviews.length > 0) {
+          setGoogleReviews(data.reviews);
+          setGoogleRating(data.rating);
+          setTotalReviews(data.totalReviews);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const services = [
     {
       icon: Home,
-      title: 'Apartment Management',
+      title: 'Apartment Booking',
       description:
-        'Full-service apartment management for your short-stay experience, including housekeeping, maintenance, and guest support.',
-      features: ['Daily Housekeeping', '24/7 Support', 'Maintenance Service'],
+        'Whether it\u2019s a weekend getaway or a month-long work trip, our fully furnished apartments are available on AirBnB and direct booking. Enjoy hotel-level comfort with the privacy and space of your own home \u2014 complete with self check-in, fast WiFi, and everything you need from day one.',
+      features: ['AirBnB Integration', 'Flexible Dates', 'Instant Confirmation'],
     },
     {
-      icon: Search,
-      title: 'Easy Booking',
+      icon: Building2,
+      title: 'Event Center',
       description:
-        'Simple and quick booking process to find your perfect short-stay apartment with flexible dates.',
-      features: ['Instant Booking', 'Virtual Tours', 'Flexible Dates'],
-    },
-    {
-      icon: Shield,
-      title: 'Guest Protection',
-      description:
-        'Comprehensive protection coverage for your peace of mind during your stay.',
-      features: [
-        'Security Deposit Protection',
-        '24/7 Emergency Support',
-        'Quick Resolution',
-      ],
+        'Our versatile event center is designed to bring your vision to life. From corporate conferences and product launches to birthday celebrations and intimate gatherings, we provide a stylish, well-equipped space with dedicated support to ensure your event runs seamlessly.',
+      features: ['Corporate Events', 'Private Celebrations', 'Full Setup Support'],
     },
     {
       icon: CreditCard,
-      title: 'Secure Payments',
+      title: 'Catering Outsourcing',
       description:
-        'Safe and convenient payment options for your short-stay booking and additional services.',
-      features: [
-        'Secure Checkout',
-        'Multiple Payment Methods',
-        'Instant Confirmation',
-      ],
+        'Elevate any occasion with our professional catering partnerships. We connect you with trusted, top-tier caterers who craft bespoke menus tailored to your event \u2014 from elegant cocktail receptions to large-scale banquets, every dish is prepared to impress.',
+      features: ['Custom Menus', 'Professional Service', 'All Event Sizes'],
+    },
+    {
+      icon: Shield,
+      title: 'Restaurant',
+      description:
+        'Savour a carefully curated menu of local Ghanaian favourites and international dishes at our on-site restaurant. Prepared by experienced chefs using fresh, quality ingredients, every meal is a celebration of flavour \u2014 whether you\u2019re dining in or ordering to your apartment.',
+      features: ['Local & International Cuisine', 'Experienced Chefs', 'Dine-in & Delivery'],
     },
   ];
 
-  const testimonials = [
+  const fallbackReviews = [
     {
       name: 'Sani Abatcha',
-      role: 'Business Traveler',
-      image: '/assets/IMG_1195 2.JPEG',
       text: 'Perfect apartment for my 2-week business trip. Clean, comfortable, and great location!',
       rating: 5,
+      time: '2 months ago',
     },
     {
       name: 'Gilbert Mwai',
-      role: 'Tourist',
-      image: '/assets/IMG_1195 2.JPEG',
       text: 'Amazing experience! The apartment felt like home. Will definitely book again.',
       rating: 5,
+      time: '3 months ago',
     },
     {
       name: 'Samson Wanyoike',
-      role: 'Digital Nomad',
-      image: '/assets/IMG_1195 2.JPEG',
       text: 'Great for extended stays. Fast WiFi, comfortable workspace, and responsive host!',
       rating: 5,
+      time: '1 month ago',
     },
   ];
+
+  const reviews = googleReviews || fallbackReviews;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-14">
@@ -147,7 +164,7 @@ const Services = () => {
                   Why Choose Our Apartments?
                 </h2>
               </FadeIn>
-              <StaggerContainer staggerDelay={0.15} className="space-y-4">
+              <StaggerContainer staggerDelay={0.12} className="space-y-4">
                 <StaggerItem>
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -155,11 +172,11 @@ const Services = () => {
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold mb-2">
-                        Prime Locations
+                        Ultrafast WiFi by Starlink
                       </h3>
                       <p className="text-gray-600">
-                        Conveniently located apartments near business districts,
-                        tourist attractions, and transport hubs
+                        High-speed internet powered by Starlink, perfect for
+                        remote work, streaming, and staying connected
                       </p>
                     </div>
                   </div>
@@ -171,11 +188,27 @@ const Services = () => {
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold mb-2">
-                        Dedicated Guest Support
+                        Daily Housekeeping
                       </h3>
                       <p className="text-gray-600">
-                        Round-the-clock assistance to ensure your stay is
-                        comfortable and hassle-free
+                        Professional daily cleaning service to keep your apartment
+                        fresh and spotless throughout your stay
+                      </p>
+                    </div>
+                  </div>
+                </StaggerItem>
+                <StaggerItem>
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Star className="w-6 h-6 text-lime-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        Satellite TV & Soundproof Rooms
+                      </h3>
+                      <p className="text-gray-600">
+                        Enjoy premium satellite TV channels in soundproof rooms
+                        designed for your comfort and privacy
                       </p>
                     </div>
                   </div>
@@ -190,8 +223,8 @@ const Services = () => {
                         Safe & Secure
                       </h3>
                       <p className="text-gray-600">
-                        Verified apartments with secure access and protected
-                        payment processing
+                        CCTV monitoring and highly trained security staff to
+                        ensure your safety around the clock
                       </p>
                     </div>
                   </div>
@@ -212,50 +245,74 @@ const Services = () => {
         </div>
       </div>
 
-      {/* Testimonials Section */}
+      {/* Google Reviews Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 mb-32">
         <FadeIn direction="up">
-          <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
-            What Our Guests Say
-          </h2>
-        </FadeIn>
-        <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <StaggerItem key={index}>
-              <Card className="p-6 bg-white hover:shadow-xl transition-shadow duration-300">
-                <div className="flex items-center mb-4">
-                  <div className="relative w-12 h-12 rounded-full overflow-hidden mr-4">
-                    <Image
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">
-                      {testimonial.name}
-                    </h3>
-                    <p className="text-gray-600 text-sm">
-                      {testimonial.role}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex mb-2">
-                  {[...Array(testimonial.rating)].map((_, i) => (
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              What Our Guests Say
+            </h2>
+            {googleRating && (
+              <div className="flex items-center justify-center gap-3">
+                <GoogleIcon />
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className="w-5 h-5 text-yellow-400 fill-current"
+                      className={`w-5 h-5 ${i < Math.round(googleRating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
                     />
                   ))}
                 </div>
-                <p className="text-gray-600">
-                  {testimonial.text}
-                </p>
+                <span className="text-lg font-semibold">{googleRating}</span>
+                <span className="text-gray-500">({totalReviews} reviews on Google)</span>
+              </div>
+            )}
+          </div>
+        </FadeIn>
+        <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-3 gap-8">
+          {reviews.slice(0, 3).map((review, index) => (
+            <StaggerItem key={index}>
+              <Card className="p-6 bg-white hover:shadow-xl transition-shadow duration-300">
+                <div className="flex items-center mb-4">
+                  {review.photo ? (
+                    <img
+                      src={review.photo}
+                      alt={review.name}
+                      className="w-12 h-12 rounded-full object-cover mr-4"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-lime-100 flex items-center justify-center mr-4">
+                      <span className="text-lime-600 font-bold text-lg">
+                        {review.name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="font-semibold">{review.name}</h3>
+                    <p className="text-gray-400 text-sm">{review.time}</p>
+                  </div>
+                </div>
+                <div className="flex mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-5 h-5 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                    />
+                  ))}
+                </div>
+                <p className="text-gray-600 line-clamp-4">{review.text}</p>
               </Card>
             </StaggerItem>
           ))}
         </StaggerContainer>
+        {googleReviews && (
+          <FadeIn direction="up" delay={0.3}>
+            <p className="text-center text-gray-400 text-sm mt-6 flex items-center justify-center gap-2">
+              <GoogleIcon /> Reviews sourced from Google
+            </p>
+          </FadeIn>
+        )}
       </div>
     </div>
   );

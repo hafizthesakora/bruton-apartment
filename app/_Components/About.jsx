@@ -1,8 +1,8 @@
 'use client';
 import { Home, Building2, Key } from 'lucide-react';
 import Image from 'next/image';
-import React from 'react';
-import { FadeIn, StaggerContainer, StaggerItem } from './MotionWrapper';
+import React, { useState, useEffect } from 'react';
+import { FadeIn, StaggerContainer, StaggerItem, motion, AnimatePresence } from './MotionWrapper';
 
 const aboutCards = [
   { image: '/assets/main-home1.jpg', icon: Home },
@@ -10,7 +10,24 @@ const aboutCards = [
   { image: '/assets/BRTN GRDN-25 2.JPEG', icon: Key },
 ];
 
+const carouselImages = [
+  '/assets/BRTN GRDN-22.JPG',
+  '/assets/BRTN GRDN-26.JPG',
+  '/assets/BRTN GRDN-3.JPEG',
+  '/assets/BRTN GRDN-5.JPEG',
+  '/assets/BRTN GRDN-27.JPG',
+];
+
 const About = () => {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % carouselImages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <>
       <div className="container pt-24 md:py-40 mx-auto p-6">
@@ -30,28 +47,50 @@ const About = () => {
               </div>
             </FadeIn>
             <FadeIn direction="down" delay={0.1}>
-              <Image
-                src="/assets/BRTN GRDN-22.JPG"
-                alt="about"
-                width={600}
-                height={400}
-                className="object-center rounded-t-full px-10"
-              />
+              <div className="relative">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={current}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <Image
+                      src={carouselImages[current]}
+                      alt={`Bruton Gardens ${current + 1}`}
+                      width={600}
+                      height={400}
+                      className="object-center rounded-t-full px-10"
+                    />
+                  </motion.div>
+                </AnimatePresence>
+                {/* Dots */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                  {carouselImages.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrent(i)}
+                      className={`w-2 h-2 rounded-full transition-all ${i === current ? 'bg-lime-400 w-5' : 'bg-white/60'}`}
+                    />
+                  ))}
+                </div>
+              </div>
             </FadeIn>
           </div>
           <div className="order-1 md:order-2">
             <FadeIn direction="up" delay={0}>
               <h1 className="text-4xl md:text-7xl font-semibold py-5 capitalize">
                 Experience Luxury Living at{' '}
-                <span className="text-lime-400">Bruton Gardens</span>
+                <span className="text-lime-400">Bruton Gardens & Apartments</span>
               </h1>
             </FadeIn>
             <FadeIn direction="up" delay={0.15}>
               <p className="pt-5 text-lg text-gray-600">
                 Discover modern comfort and elegant design in our premium
                 apartments. Each unit is thoughtfully crafted to provide you with
-                the perfect blend of style, functionality, and convenience in the
-                heart of the city.
+                the perfect blend of style, functionality, and convenience on the
+                outskirts of the city.
               </p>
             </FadeIn>
             <div className="px-10 md:px-0">
