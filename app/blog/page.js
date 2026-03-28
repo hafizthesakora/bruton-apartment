@@ -230,6 +230,11 @@ const BlogPostCard = ({ post }) => (
 
 // ── Main Page Component ──────────────────────────────────────────────────────
 
+const DEFAULT_GALLERY = {
+  hero: { title: 'Gallery & Blog', subtitle: 'Explore our spaces and stay up to date with the latest from Bruton Gardens' },
+  blogCta: { heading: 'Love Our Space? Come Visit Bruton Gardens & Apartments', body: 'Experience the beauty of Bruton Gardens & Apartments firsthand. Book your stay and immerse yourself in luxury and tranquility.', button: 'Book Your Stay' },
+};
+
 const BlogAndGallery = () => {
   const [activeTab, setActiveTab] = useState('gallery');
   const [selectedCategory, setSelectedCategory] = useState('All Spaces');
@@ -238,6 +243,14 @@ const BlogAndGallery = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [subscribeEmail, setSubscribeEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [gc, setGc] = useState(DEFAULT_GALLERY);
+
+  useEffect(() => {
+    fetch('/api/content?page=gallery')
+      .then(r => r.json())
+      .then(data => { if (data && Object.keys(data).length) setGc(prev => ({ ...prev, ...data })); })
+      .catch(() => {});
+  }, []);
 
   const handleSubscribe = async () => {
     if (!subscribeEmail) return;
@@ -637,12 +650,11 @@ const BlogAndGallery = () => {
         <div className="bg-gray-900 text-white py-20 mt-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <FadeIn direction="down">
-              <h2 className="text-4xl font-bold mb-6">Love Our Space?</h2>
+              <h2 className="text-4xl font-bold mb-6">{gc.blogCta?.heading || DEFAULT_GALLERY.blogCta.heading}</h2>
             </FadeIn>
             <FadeIn direction="up" delay={0.1}>
               <p className="text-xl mb-8 max-w-2xl mx-auto">
-                Experience the beauty of Bruton Gardens & Apartments firsthand. Book your stay and
-                immerse yourself in luxury and tranquility.
+                {gc.blogCta?.body || DEFAULT_GALLERY.blogCta.body}
               </p>
             </FadeIn>
             <FadeIn direction="up" delay={0.2}>
@@ -651,7 +663,7 @@ const BlogAndGallery = () => {
                   href="/services"
                   className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors"
                 >
-                  Check Availability
+                  {gc.blogCta?.button || DEFAULT_GALLERY.blogCta.button}
                 </Link>
                 <Link
                   href="/facilities"

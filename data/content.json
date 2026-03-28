@@ -15,5 +15,165 @@
       "heading": "Take The First Step",
       "body": "Discover your perfect home at Bruton Gardens Apartment. Schedule a viewing today and experience luxury living at its finest."
     }
+  },
+  "about": {
+    "hero": {
+      "title": "About Bruton Gardens & Apartments",
+      "subtitle": "A short stay apartment offering exceptional comfort, modern amenities, and warm hospitality on the outskirts of the city."
+    },
+    "stats": [
+      { "value": "100+", "label": "Happy Guests" },
+      { "value": "1+", "label": "Years Experience" },
+      { "value": "Prime", "label": "Location" },
+      { "value": "4.8/5", "label": "Guest Rating" }
+    ],
+    "story": {
+      "heading": "Our Story",
+      "paragraph1": "Bruton Gardens & Apartments was established with a vision to provide travelers and visitors with a home away from home. What started as a family initiative has grown into a trusted short stay destination.",
+      "paragraph2": "Our commitment to excellence, attention to detail, and genuine hospitality ensures that every guest enjoys a comfortable, memorable stay. Whether you're visiting for business or leisure, we treat you like family.",
+      "primaryCta": "Book Now",
+      "secondaryCta": "Contact Us"
+    },
+    "team": {
+      "heading": "Meet Our Team",
+      "members": [
+        {
+          "name": "Mrs. Portia Owusu Asante",
+          "role": "Director",
+          "image": "/assets/team-portia.jpeg",
+          "bio": "Passionate about providing exceptional hospitality and comfortable stays"
+        },
+        {
+          "name": "Nana Afia Nketia Danquah",
+          "role": "Facilities Manager",
+          "image": "/assets/team-nana.jpeg",
+          "bio": "Ensuring every guest enjoys a seamless and memorable experience"
+        },
+        {
+          "name": "Tetteh Ebenezer",
+          "role": "Front of House",
+          "image": "/assets/team-tetteh.jpeg",
+          "bio": "Dedicated to making your stay comfortable and stress-free"
+        }
+      ]
+    }
+  },
+  "services": {
+    "hero": {
+      "title": "Our Services",
+      "subtitle": "Everything you need for a comfortable short-stay experience in our fully furnished apartments"
+    },
+    "cards": [
+      {
+        "title": "Apartment Booking",
+        "description": "Whether it's a weekend getaway or a month-long work trip, our fully furnished apartments are available on AirBnB and direct booking. Enjoy hotel-level comfort with the privacy and space of your own home — complete with self check-in, fast WiFi, and everything you need from day one.",
+        "features": ["AirBnB Integration", "Flexible Dates", "Instant Confirmation"]
+      },
+      {
+        "title": "Event Center",
+        "description": "Our versatile event center is designed to bring your vision to life. From corporate conferences and product launches to birthday celebrations and intimate gatherings, we provide a stylish, well-equipped space with dedicated support to ensure your event runs seamlessly.",
+        "features": ["Corporate Events", "Private Celebrations", "Full Setup Support"]
+      },
+      {
+        "title": "Catering Outsourcing",
+        "description": "Elevate any occasion with our professional catering partnerships. We connect you with trusted, top-tier caterers who craft bespoke menus tailored to your event — from elegant cocktail receptions to large-scale banquets, every dish is prepared to impress.",
+        "features": ["Custom Menus", "Professional Service", "All Event Sizes"]
+      },
+      {
+        "title": "Restaurant",
+        "description": "Savour a carefully curated menu of local Ghanaian favourites and international dishes at our on-site restaurant. Prepared by experienced chefs using fresh, quality ingredients, every meal is a celebration of flavour — whether you're dining in or ordering to your apartment.",
+        "features": ["Local & International Cuisine", "Experienced Chefs", "Dine-in & Delivery"]
+      }
+    ],
+    "whyChoose": {
+      "heading": "Why Choose Our Apartments?",
+      "items": [
+        {
+          "title": "Ultrafast WiFi by Starlink",
+          "description": "High-speed internet powered by Starlink, perfect for remote work, streaming, and staying connected"
+        },
+        {
+          "title": "Daily Housekeeping",
+          "description": "Professional daily cleaning service to keep your apartment fresh and spotless throughout your stay"
+        },
+        {
+          "title": "Satellite TV & Soundproof Rooms",
+          "description": "Enjoy premium satellite TV channels in soundproof rooms designed for your comfort and privacy"
+        },
+        {
+          "title": "Safe & Secure",
+          "description": "CCTV monitoring and highly trained security staff to ensure your safety around the clock"
+        }
+      ]
+    },
+    "reviews": {
+      "heading": "What Our Guests Say"
+    }
+  },
+  "facilities": {
+    "hero": {
+      "title": "Our Facilities",
+      "subtitle": "Everything you need for a comfortable short stay, all in one place"
+    },
+    "categories": [
+      {
+        "category": "Essential Amenities",
+        "items": [
+          { "title": "Ultrafast WiFi by Starlink", "description": "Blazing fast internet powered by Starlink, perfect for work and streaming" },
+          { "title": "Free Parking", "description": "Complimentary parking space for all guests" },
+          { "title": "Secure Access", "description": "24/7 security with keyless entry and CCTV monitoring" },
+          { "title": "Café Corner", "description": "Coffee maker and refreshment area" }
+        ]
+      },
+      {
+        "category": "In-Apartment Features",
+        "items": [
+          { "title": "Fully Equipped Kitchen", "description": "Complete kitchen with cookware, utensils, and appliances" },
+          { "title": "Washer & Dryer", "description": "In-unit laundry for your convenience" },
+          { "title": "Climate Control", "description": "Individual air conditioning in every room" },
+          { "title": "Dining Space", "description": "Comfortable dining area for meals and work" }
+        ]
+      }
+    ],
+    "explore": {
+      "heading": "Explore Our Apartments",
+      "body": "Take a virtual tour of our fully furnished apartments and see all the amenities included in your stay. Get a real feel for your home away from home.",
+      "primaryCta": "Start Tour",
+      "secondaryCta": "Book Now"
+    },
+    "special": {
+      "heading": "What Makes Us Special",
+      "items": [
+        {
+          "title": "Daily Housekeeping",
+          "description": "Professional daily cleaning service to keep your apartment fresh and spotless throughout your stay."
+        },
+        {
+          "title": "24-Hour Check-In",
+          "description": "Dedicated staff available around the clock to welcome you and ensure a smooth check-in at any hour."
+        },
+        {
+          "title": "CCTV & Trained Security",
+          "description": "Comprehensive CCTV monitoring and highly trained security staff to ensure your safety at all times."
+        }
+      ]
+    },
+    "cta": {
+      "heading": "Ready for Your Stay?",
+      "body": "Book your apartment today and enjoy all our premium facilities during your short stay.",
+      "primaryCta": "Check Availability",
+      "secondaryCta": "Contact Us"
+    }
+  },
+  "gallery": {
+    "hero": {
+      "title": "Gallery & Blog",
+      "subtitle": "Explore our spaces and stay up to date with the latest from Bruton Gardens"
+    },
+    "blogCta": {
+      "heading": "Love Our Space? Come Visit Bruton Gardens & Apartments",
+      "body": "Experience the perfect blend of luxury and comfort. Book your stay today and see why our guests keep coming back.",
+      "button": "Book Your Stay"
+    }
   }
 }

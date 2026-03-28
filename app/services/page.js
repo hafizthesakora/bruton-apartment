@@ -21,12 +21,31 @@ const GoogleIcon = () => (
   </svg>
 );
 
+const CARD_ICONS = [Home, Building2, CreditCard, Shield];
+
+const DEFAULT_SERVICES = {
+  hero: { title: 'Our Services', subtitle: 'Everything you need for a comfortable short-stay experience in our fully furnished apartments' },
+  cards: [
+    { title: 'Apartment Booking', description: "Whether it's a weekend getaway or a month-long work trip, our fully furnished apartments are available on AirBnB and direct booking.", features: ['AirBnB Integration', 'Flexible Dates', 'Instant Confirmation'] },
+    { title: 'Event Center', description: 'Our versatile event center is designed to bring your vision to life. From corporate conferences to birthday celebrations.', features: ['Corporate Events', 'Private Celebrations', 'Full Setup Support'] },
+    { title: 'Catering Outsourcing', description: 'Elevate any occasion with our professional catering partnerships. Bespoke menus tailored to your event.', features: ['Custom Menus', 'Professional Service', 'All Event Sizes'] },
+    { title: 'Restaurant', description: 'Savour a carefully curated menu of local Ghanaian favourites and international dishes at our on-site restaurant.', features: ['Local & International Cuisine', 'Experienced Chefs', 'Dine-in & Delivery'] },
+  ],
+  whyChoose: { heading: 'Why Choose Our Apartments?', items: [{ title: 'Ultrafast WiFi by Starlink', description: 'High-speed internet powered by Starlink, perfect for remote work, streaming, and staying connected' }, { title: 'Daily Housekeeping', description: 'Professional daily cleaning service to keep your apartment fresh and spotless throughout your stay' }, { title: 'Satellite TV & Soundproof Rooms', description: 'Enjoy premium satellite TV channels in soundproof rooms designed for your comfort and privacy' }, { title: 'Safe & Secure', description: 'CCTV monitoring and highly trained security staff to ensure your safety around the clock' }] },
+  reviews: { heading: 'What Our Guests Say' },
+};
+
 const Services = () => {
   const [googleReviews, setGoogleReviews] = useState(null);
   const [googleRating, setGoogleRating] = useState(null);
   const [totalReviews, setTotalReviews] = useState(null);
+  const [c, setC] = useState(DEFAULT_SERVICES);
 
   useEffect(() => {
+    fetch('/api/content?page=services')
+      .then(r => r.json())
+      .then(data => { if (data && Object.keys(data).length) setC(prev => ({ ...prev, ...data })); })
+      .catch(() => {});
     fetch('/api/reviews')
       .then((res) => res.json())
       .then((data) => {
@@ -39,36 +58,10 @@ const Services = () => {
       .catch(() => {});
   }, []);
 
-  const services = [
-    {
-      icon: Home,
-      title: 'Apartment Booking',
-      description:
-        'Whether it\u2019s a weekend getaway or a month-long work trip, our fully furnished apartments are available on AirBnB and direct booking. Enjoy hotel-level comfort with the privacy and space of your own home \u2014 complete with self check-in, fast WiFi, and everything you need from day one.',
-      features: ['AirBnB Integration', 'Flexible Dates', 'Instant Confirmation'],
-    },
-    {
-      icon: Building2,
-      title: 'Event Center',
-      description:
-        'Our versatile event center is designed to bring your vision to life. From corporate conferences and product launches to birthday celebrations and intimate gatherings, we provide a stylish, well-equipped space with dedicated support to ensure your event runs seamlessly.',
-      features: ['Corporate Events', 'Private Celebrations', 'Full Setup Support'],
-    },
-    {
-      icon: CreditCard,
-      title: 'Catering Outsourcing',
-      description:
-        'Elevate any occasion with our professional catering partnerships. We connect you with trusted, top-tier caterers who craft bespoke menus tailored to your event \u2014 from elegant cocktail receptions to large-scale banquets, every dish is prepared to impress.',
-      features: ['Custom Menus', 'Professional Service', 'All Event Sizes'],
-    },
-    {
-      icon: Shield,
-      title: 'Restaurant',
-      description:
-        'Savour a carefully curated menu of local Ghanaian favourites and international dishes at our on-site restaurant. Prepared by experienced chefs using fresh, quality ingredients, every meal is a celebration of flavour \u2014 whether you\u2019re dining in or ordering to your apartment.',
-      features: ['Local & International Cuisine', 'Experienced Chefs', 'Dine-in & Delivery'],
-    },
-  ];
+  const services = (c.cards || DEFAULT_SERVICES.cards).map((card, i) => ({
+    ...card,
+    icon: CARD_ICONS[i] || Home,
+  }));
 
   const fallbackReviews = [
     {
@@ -144,13 +137,12 @@ const Services = () => {
         <div className="relative z-10 text-center text-white px-4">
           <FadeIn direction="down">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Our Services
+              {c.hero?.title || DEFAULT_SERVICES.hero.title}
             </h1>
           </FadeIn>
           <FadeIn direction="up" delay={0.15}>
             <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
-              Everything you need for a comfortable short-stay experience in our
-              fully furnished apartments
+              {c.hero?.subtitle || DEFAULT_SERVICES.hero.subtitle}
             </p>
           </FadeIn>
         </div>
@@ -195,74 +187,23 @@ const Services = () => {
             <div className="space-y-6">
               <FadeIn direction="right">
                 <h2 className="text-4xl font-bold text-gray-900 pb-6">
-                  Why Choose Our Apartments?
+                  {c.whyChoose?.heading || DEFAULT_SERVICES.whyChoose.heading}
                 </h2>
               </FadeIn>
               <StaggerContainer staggerDelay={0.12} className="space-y-4">
-                <StaggerItem>
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Building2 className="w-6 h-6 text-lime-600" />
+                {(c.whyChoose?.items || DEFAULT_SERVICES.whyChoose.items).map((item, idx) => (
+                  <StaggerItem key={idx}>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Building2 className="w-6 h-6 text-lime-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                        <p className="text-gray-600">{item.description}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">
-                        Ultrafast WiFi by Starlink
-                      </h3>
-                      <p className="text-gray-600">
-                        High-speed internet powered by Starlink, perfect for
-                        remote work, streaming, and staying connected
-                      </p>
-                    </div>
-                  </div>
-                </StaggerItem>
-                <StaggerItem>
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Users className="w-6 h-6 text-lime-600" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">
-                        Daily Housekeeping
-                      </h3>
-                      <p className="text-gray-600">
-                        Professional daily cleaning service to keep your apartment
-                        fresh and spotless throughout your stay
-                      </p>
-                    </div>
-                  </div>
-                </StaggerItem>
-                <StaggerItem>
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Star className="w-6 h-6 text-lime-600" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">
-                        Satellite TV & Soundproof Rooms
-                      </h3>
-                      <p className="text-gray-600">
-                        Enjoy premium satellite TV channels in soundproof rooms
-                        designed for your comfort and privacy
-                      </p>
-                    </div>
-                  </div>
-                </StaggerItem>
-                <StaggerItem>
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Shield className="w-6 h-6 text-lime-600" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">
-                        Safe & Secure
-                      </h3>
-                      <p className="text-gray-600">
-                        CCTV monitoring and highly trained security staff to
-                        ensure your safety around the clock
-                      </p>
-                    </div>
-                  </div>
-                </StaggerItem>
+                  </StaggerItem>
+                ))}
               </StaggerContainer>
             </div>
             <FadeIn direction="left" delay={0.2}>
@@ -284,7 +225,7 @@ const Services = () => {
         <FadeIn direction="up">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              What Our Guests Say
+              {c.reviews?.heading || DEFAULT_SERVICES.reviews.heading}
             </h2>
             {googleRating && (
               <div className="flex items-center justify-center gap-3">

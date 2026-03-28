@@ -21,10 +21,27 @@ const aboutSlideImages = [
   '/assets/BRTN GRDN-27.JPG',
 ];
 
+const DEFAULT_ABOUT = {
+  hero: { title: 'About Bruton Gardens & Apartments', subtitle: 'A short stay apartment offering exceptional comfort, modern amenities, and warm hospitality on the outskirts of the city.' },
+  stats: [{ value: '100+', label: 'Happy Guests' }, { value: '1+', label: 'Years Experience' }, { value: 'Prime', label: 'Location' }, { value: '4.8/5', label: 'Guest Rating' }],
+  story: { heading: 'Our Story', paragraph1: 'Bruton Gardens & Apartments was established with a vision to provide travelers and visitors with a home away from home. What started as a family initiative has grown into a trusted short stay destination.', paragraph2: "Our commitment to excellence, attention to detail, and genuine hospitality ensures that every guest enjoys a comfortable, memorable stay. Whether you're visiting for business or leisure, we treat you like family.", primaryCta: 'Book Now', secondaryCta: 'Contact Us' },
+  team: { heading: 'Meet Our Team', members: [{ name: 'Mrs. Portia Owusu Asante', role: 'Director', image: '/assets/team-portia.jpeg', bio: 'Passionate about providing exceptional hospitality and comfortable stays' }, { name: 'Nana Afia Nketia Danquah', role: 'Facilities Manager', image: '/assets/team-nana.jpeg', bio: 'Ensuring every guest enjoys a seamless and memorable experience' }, { name: 'Tetteh Ebenezer', role: 'Front of House', image: '/assets/team-tetteh.jpeg', bio: 'Dedicated to making your stay comfortable and stress-free' }] },
+};
+
+const statIcons = [Users, Calendar, MapPin, Star];
+
 const AboutUs = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [c, setC] = useState(DEFAULT_ABOUT);
+
+  useEffect(() => {
+    fetch('/api/content?page=about')
+      .then(r => r.json())
+      .then(data => { if (data && Object.keys(data).length) setC(prev => ({ ...prev, ...data })); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -33,33 +50,8 @@ const AboutUs = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const teamMembers = [
-    {
-      name: 'Mrs. Portia Owusu Asante',
-      role: 'Director',
-      image: '/assets/team-portia.jpeg',
-      bio: 'Passionate about providing exceptional hospitality and comfortable stays',
-    },
-    {
-      name: 'Nana Afia Nketia Danquah',
-      role: 'Facilities Manager',
-      image: '/assets/team-nana.jpeg',
-      bio: 'Ensuring every guest enjoys a seamless and memorable experience',
-    },
-    {
-      name: 'Tetteh Ebenezer',
-      role: 'Front of House',
-      image: '/assets/team-tetteh.jpeg',
-      bio: 'Dedicated to making your stay comfortable and stress-free',
-    },
-  ];
-
-  const stats = [
-    { icon: Users, value: '100+', label: 'Happy Guests' },
-    { icon: Calendar, value: '1+', label: 'Years Experience' },
-    { icon: MapPin, value: 'Prime', label: 'Location' },
-    { icon: Star, value: '4.8/5', label: 'Guest Rating' },
-  ];
+  const teamMembers = c.team?.members || DEFAULT_ABOUT.team.members;
+  const stats = (c.stats || DEFAULT_ABOUT.stats).map((s, i) => ({ ...s, icon: statIcons[i] || Star }));
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-14">
@@ -76,14 +68,11 @@ const AboutUs = () => {
         </div>
         <div className="relative z-10 text-center text-white px-4">
           <FadeIn direction="up">
-            <h1 className="text-3xl md:text-6xl font-bold mb-6">
-              About <span className="text-lime-400">Bruton Gardens & Apartments</span>
-            </h1>
+            <h1 className="text-3xl md:text-6xl font-bold mb-6">{c.hero?.title || DEFAULT_ABOUT.hero.title}</h1>
           </FadeIn>
           <FadeIn direction="down" delay={0.2}>
             <p className="text-md md:text-2xl max-w-3xl mx-auto leading-relaxed">
-              A short stay apartment offering exceptional comfort, modern
-              amenities, and warm hospitality on the outskirts of the city.
+              {c.hero?.subtitle || DEFAULT_ABOUT.hero.subtitle}
             </p>
           </FadeIn>
         </div>
@@ -112,34 +101,28 @@ const AboutUs = () => {
           <div className="space-y-6">
             <FadeIn direction="right">
               <h2 className="text-4xl md:text-5xl font-semibold text-gray-900">
-                Our Story
+                {c.story?.heading || DEFAULT_ABOUT.story.heading}
               </h2>
             </FadeIn>
             <div className="space-y-4">
               <FadeIn direction="right" delay={0.1}>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  Bruton Gardens & Apartments was established with a vision to
-                  provide travelers and visitors with a home away from home. What
-                  started as a family initiative has grown into a trusted short
-                  stay destination.
+                  {c.story?.paragraph1 || DEFAULT_ABOUT.story.paragraph1}
                 </p>
               </FadeIn>
               <FadeIn direction="right" delay={0.2}>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  Our commitment to excellence, attention to detail, and genuine
-                  hospitality ensures that every guest enjoys a comfortable,
-                  memorable stay. Whether you&apos;re visiting for business or leisure,
-                  we treat you like family.
+                  {c.story?.paragraph2 || DEFAULT_ABOUT.story.paragraph2}
                 </p>
               </FadeIn>
             </div>
             <FadeIn direction="right" delay={0.3}>
               <div className="flex gap-4">
                 <button onClick={() => setBookingOpen(true)} className="bg-lime-400 text-gray-900 px-6 py-3 rounded-full hover:bg-lime-500 transition-colors font-semibold">
-                  Book Now
+                  {c.story?.primaryCta || DEFAULT_ABOUT.story.primaryCta}
                 </button>
                 <button onClick={() => setContactOpen(true)} className="border-2 border-lime-400 text-lime-600 px-6 py-3 rounded-full hover:bg-lime-50 transition-colors font-semibold">
-                  Contact Us
+                  {c.story?.secondaryCta || DEFAULT_ABOUT.story.secondaryCta}
                 </button>
               </div>
             </FadeIn>
@@ -183,7 +166,7 @@ const AboutUs = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn direction="up">
             <h2 className="text-4xl md:text-5xl font-semibold text-center text-gray-900 mb-12">
-              Meet Our <span className="text-lime-400">Team</span>
+              {c.team?.heading || DEFAULT_ABOUT.team.heading}
             </h2>
           </FadeIn>
           <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-3 gap-8 pt-10">
