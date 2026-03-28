@@ -21,7 +21,7 @@ const ImageCarousel = () => {
   const [images, setImages] = useState(defaultCarouselImages);
 
   useEffect(() => {
-    fetch('/api/carousel')
+    fetch('/api/carousel?name=home-services')
       .then((r) => r.json())
       .then((data) => {
         if (data?.images?.length) setImages(data.images);

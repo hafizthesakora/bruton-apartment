@@ -1,16 +1,9 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Facebook, MessageCircle, Twitter } from 'lucide-react';
 import Link from 'next/link';
 import { FadeIn, StaggerContainer, StaggerItem, motion } from './MotionWrapper';
-
-const quickLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/blog', label: 'Gallery & Blog' },
-  { href: '/services', label: 'Services' },
-];
 
 const TikTokIcon = ({ size = 24, className = '' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -18,51 +11,77 @@ const TikTokIcon = ({ size = 24, className = '' }) => (
   </svg>
 );
 
-const socialIcons = [
-  { Icon: Facebook, label: 'Facebook' },
-  { Icon: Twitter, label: 'Twitter' },
-  { Icon: TikTokIcon, label: 'TikTok' },
-  { Icon: MessageCircle, label: 'WhatsApp' },
-];
+const SOCIAL_ICON_MAP = {
+  Facebook: Facebook,
+  Twitter: Twitter,
+  TikTok: TikTokIcon,
+  WhatsApp: MessageCircle,
+};
+
+const DEFAULT_FOOTER = {
+  description: 'Experience luxury living at Bruton Gardens & Apartments. We offer modern, well-furnished apartments in a serene environment with world-class amenities and exceptional service. Your comfort is our priority.',
+  quickLinksHeading: 'Quick Links',
+  quickLinks: [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/blog', label: 'Gallery & Blog' },
+    { href: '/services', label: 'Services' },
+    { href: '/facilities', label: 'Facilities' },
+  ],
+  connectHeading: 'Connect',
+  socialLinks: [
+    { name: 'Facebook', url: '#' },
+    { name: 'Twitter', url: '#' },
+    { name: 'TikTok', url: '#' },
+    { name: 'WhatsApp', url: '#' },
+  ],
+  featuredItems: [
+    { image: '/assets/hall.JPEG', title: 'Event Center', subtitle: 'Elegant & Modern Design' },
+    { image: '/assets/main-home1.jpg', title: 'Premium Units', subtitle: 'Fully Furnished Apartments' },
+    { image: '/assets/BRTN GRDN-26.JPG', title: 'Beautiful Gardens', subtitle: 'Serene Environment' },
+  ],
+  copyright: '© 2026 Bruton Gardens & Apartments. All rights reserved.',
+};
 
 const Footer = () => {
+  const [f, setF] = useState(DEFAULT_FOOTER);
+  const [footerBg, setFooterBg] = useState('#f4f5fa');
+
+  useEffect(() => {
+    fetch('/api/content?page=footer')
+      .then(r => r.json())
+      .then(data => { if (data && Object.keys(data).length) setF(prev => ({ ...prev, ...data })); })
+      .catch(() => {});
+    fetch('/api/settings')
+      .then(r => r.json())
+      .then(data => { if (data?.design?.footerBg) setFooterBg(data.design.footerBg); })
+      .catch(() => {});
+  }, []);
+
   return (
-    <div className="bg-[#f4f5fac8]">
+    <div style={{ backgroundColor: footerBg }}>
       <div className="container mx-auto py-10 px-7">
         <div className="grid md:grid-cols-3 gap-10 items-start">
+          {/* Brand + description */}
           <div>
-            <div>
-              <FadeIn direction="up">
-                <Image
-                  src="/logo.png"
-                  alt="logo"
-                  width={200}
-                  height={100}
-                  className="pb-5"
-                />
-              </FadeIn>
-              <FadeIn direction="up" delay={0.1}>
-                <p className="text-md md:text-lg md:pe-16 pt-5 text-gray-700">
-                  Experience luxury living at Bruton Gardens & Apartments. We offer
-                  modern, well-furnished apartments in a serene environment with
-                  world-class amenities and exceptional service. Your comfort is
-                  our priority.
-                </p>
-              </FadeIn>
-            </div>
+            <FadeIn direction="up">
+              <Image src="/logo.png" alt="logo" width={200} height={100} className="pb-5" />
+            </FadeIn>
+            <FadeIn direction="up" delay={0.1}>
+              <p className="text-md md:text-lg md:pe-16 pt-5 text-gray-700">{f.description}</p>
+            </FadeIn>
           </div>
+
+          {/* Quick Links + Connect */}
           <div className="flex gap-10 justify-around py-10 md:py-0">
             <div>
               <FadeIn direction="up">
-                <h3 className="text-2xl font-semibold">Quick Links</h3>
+                <h3 className="text-2xl font-semibold">{f.quickLinksHeading}</h3>
               </FadeIn>
               <StaggerContainer staggerDelay={0.1} className="space-y-3 text-lg font-normal pt-8 flex flex-col">
-                {quickLinks.map((link) => (
+                {f.quickLinks.map((link) => (
                   <StaggerItem key={link.href} direction="right">
-                    <Link
-                      href={link.href}
-                      className="hover:text-lime-400 transition-all hover:translate-x-1 inline-block"
-                    >
+                    <Link href={link.href} className="hover:text-lime-400 transition-all hover:translate-x-1 inline-block">
                       {link.label}
                     </Link>
                   </StaggerItem>
@@ -71,38 +90,29 @@ const Footer = () => {
             </div>
             <div>
               <FadeIn direction="up">
-                <h3 className="text-2xl font-semibold">Connect</h3>
+                <h3 className="text-2xl font-semibold">{f.connectHeading}</h3>
               </FadeIn>
               <StaggerContainer staggerDelay={0.1} className="space-y-3 text-lg font-normal pt-8">
-                {['Facebook', 'Twitter', 'TikTok', 'WhatsApp'].map((name) => (
-                  <StaggerItem key={name} direction="right">
-                    <li className="hover:text-lime-400 cursor-pointer transition-colors list-none">
-                      {name}
-                    </li>
+                {f.socialLinks.map((social) => (
+                  <StaggerItem key={social.name} direction="right">
+                    <a
+                      href={social.url || '#'}
+                      target={social.url && social.url !== '#' ? '_blank' : undefined}
+                      rel="noopener noreferrer"
+                      className="hover:text-lime-400 cursor-pointer transition-colors block"
+                    >
+                      {social.name}
+                    </a>
                   </StaggerItem>
                 ))}
               </StaggerContainer>
             </div>
           </div>
+
+          {/* Featured items */}
           <div className="flex justify-around">
             <StaggerContainer staggerDelay={0.15} className="space-y-4">
-              {[
-                {
-                  image: '/assets/hall.JPEG',
-                  title: 'Event Center',
-                  subtitle: 'Elegant & Modern Design',
-                },
-                {
-                  image: '/assets/main-home1.jpg',
-                  title: 'Premium Units',
-                  subtitle: 'Fully Furnished Apartments',
-                },
-                {
-                  image: '/assets/BRTN GRDN-26.JPG',
-                  title: 'Beautiful Gardens',
-                  subtitle: 'Serene Environment',
-                },
-              ].map((item, index) => (
+              {f.featuredItems.map((item, index) => (
                 <StaggerItem key={index}>
                   <Link href="/blog" className="flex items-center space-x-7 group">
                     <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
@@ -115,9 +125,7 @@ const Footer = () => {
                       />
                     </div>
                     <div>
-                      <h3 className="text-black text-lg font-medium group-hover:text-lime-500 transition-colors">
-                        {item.title}
-                      </h3>
+                      <h3 className="text-black text-lg font-medium group-hover:text-lime-500 transition-colors">{item.title}</h3>
                       <p className="text-gray-700">{item.subtitle}</p>
                     </div>
                   </Link>
@@ -126,23 +134,29 @@ const Footer = () => {
             </StaggerContainer>
           </div>
         </div>
+
+        {/* Bottom bar */}
         <div className="border-t-2 border-gray-200 mt-10">
           <FadeIn direction="up" delay={0.1}>
             <div className="md:flex justify-between items-center py-5 space-y-8 md:space-y-0 md:text-start text-center">
-              <p className="text-gray-500">
-                &copy; 2026 Bruton Gardens & Apartments. All rights reserved.
-              </p>
+              <p className="text-gray-500">{f.copyright}</p>
               <div className="flex gap-5 justify-center">
-                {socialIcons.map(({ Icon, label }) => (
-                  <motion.div
-                    key={label}
-                    whileHover={{ scale: 1.25, color: '#a3e635' }}
-                    transition={{ duration: 0.2 }}
-                    className="cursor-pointer"
-                  >
-                    <Icon size={20} className="hover:text-lime-400 transition-colors" />
-                  </motion.div>
-                ))}
+                {f.socialLinks.map((social) => {
+                  const Icon = SOCIAL_ICON_MAP[social.name] || MessageCircle;
+                  return (
+                    <motion.a
+                      key={social.name}
+                      href={social.url || '#'}
+                      target={social.url && social.url !== '#' ? '_blank' : undefined}
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.25, color: '#a3e635' }}
+                      transition={{ duration: 0.2 }}
+                      className="cursor-pointer"
+                    >
+                      <Icon size={20} className="hover:text-lime-400 transition-colors" />
+                    </motion.a>
+                  );
+                })}
               </div>
             </div>
           </FadeIn>

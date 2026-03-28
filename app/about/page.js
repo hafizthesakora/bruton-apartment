@@ -12,7 +12,7 @@ import { FadeIn, StaggerContainer, StaggerItem, ScaleIn, AnimatedCounter, motion
 import BookingModal from '../_Components/BookingModal';
 import ContactModal from '../_Components/ContactModal';
 
-const aboutSlideImages = [
+const defaultSlideImages = [
   '/assets/brut1.jpg',
   '/assets/brut2.jpg',
   '/assets/BRTN GRDN-6.JPEG',
@@ -36,16 +36,22 @@ const AboutUs = () => {
   const [contactOpen, setContactOpen] = useState(false);
   const [c, setC] = useState(DEFAULT_ABOUT);
 
+  const [slideImages, setSlideImages] = useState(defaultSlideImages);
+
   useEffect(() => {
     fetch('/api/content?page=about')
       .then(r => r.json())
       .then(data => { if (data && Object.keys(data).length) setC(prev => ({ ...prev, ...data })); })
       .catch(() => {});
+    fetch('/api/carousel?name=about-slideshow')
+      .then(r => r.json())
+      .then(data => { if (data?.images?.length) setSlideImages(data.images.map(img => img.src)); })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % aboutSlideImages.length);
+      setCurrentSlide((prev) => (prev + 1) % slideImages.length);
     }, 4000);
     return () => clearInterval(timer);
   }, []);
@@ -59,7 +65,7 @@ const AboutUs = () => {
       <div className="relative h-[60vh] flex items-center justify-center overflow-hidden p-5">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/assets/BRTN GRDN-1.JPEG"
+            src={c.hero?.heroImage || '/assets/BRTN GRDN-1.JPEG'}
             alt="Hero Background"
             fill
             className="object-cover brightness-30"
@@ -139,7 +145,7 @@ const AboutUs = () => {
                   className="absolute inset-0"
                 >
                   <Image
-                    src={aboutSlideImages[currentSlide]}
+                    src={slideImages[currentSlide]}
                     alt={`Bruton Gardens ${currentSlide + 1}`}
                     fill
                     className="object-cover"
@@ -148,7 +154,7 @@ const AboutUs = () => {
               </AnimatePresence>
               {/* Dots */}
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                {aboutSlideImages.map((_, i) => (
+                {slideImages.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setCurrentSlide(i)}

@@ -1,9 +1,35 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Save, RefreshCw, CheckCircle, Info } from 'lucide-react';
+import { Save, RefreshCw, CheckCircle, Info, Palette } from 'lucide-react';
+
+function ColorField({ label, hint, value, onChange }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+        {label}
+        {hint && <span className="ml-2 text-xs font-normal text-gray-400">{hint}</span>}
+      </label>
+      <div className="flex items-center gap-3">
+        <input
+          type="color"
+          value={value || '#000000'}
+          onChange={e => onChange(e.target.value)}
+          className="w-10 h-10 rounded-lg border border-gray-200 cursor-pointer p-0.5"
+        />
+        <input
+          type="text"
+          value={value || ''}
+          onChange={e => onChange(e.target.value)}
+          className="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-mono focus:outline-none focus:border-lime-400 focus:ring-1 focus:ring-lime-400"
+          placeholder="#a3e635"
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function SettingsPage() {
-  const [settings, setSettings] = useState({ recipientEmail: '', siteName: '' });
+  const [settings, setSettings] = useState({ recipientEmail: '', siteName: '', design: { accentColor: '#a3e635', adminSidebarBg: '#0f172a', adminAccentColor: '#a3e635', footerBg: '#f4f5fa' } });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -77,6 +103,40 @@ export default function SettingsPage() {
                   placeholder="info@brutongardens.com"
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Design */}
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="flex items-center gap-2 mb-5 pb-3 border-b border-gray-100">
+              <Palette size={16} className="text-lime-500" />
+              <h3 className="font-semibold text-gray-900">Design & Colors</h3>
+            </div>
+            <div className="space-y-4">
+              <ColorField
+                label="Footer Background Color"
+                hint="background color of the site footer"
+                value={settings.design?.footerBg}
+                onChange={v => setSettings({ ...settings, design: { ...settings.design, footerBg: v } })}
+              />
+              <ColorField
+                label="Admin Sidebar Background"
+                hint="dark sidebar in the admin panel"
+                value={settings.design?.adminSidebarBg}
+                onChange={v => setSettings({ ...settings, design: { ...settings.design, adminSidebarBg: v } })}
+              />
+              <ColorField
+                label="Admin Accent Color"
+                hint="active link highlight in the admin sidebar"
+                value={settings.design?.adminAccentColor}
+                onChange={v => setSettings({ ...settings, design: { ...settings.design, adminAccentColor: v } })}
+              />
+              <ColorField
+                label="Site Accent Color"
+                hint="primary lime/green brand color used across the site"
+                value={settings.design?.accentColor}
+                onChange={v => setSettings({ ...settings, design: { ...settings.design, accentColor: v } })}
+              />
             </div>
           </div>
 

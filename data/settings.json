@@ -1,4 +1,10 @@
 {
   "recipientEmail": "info@brutongardens.com",
-  "siteName": "Bruton Gardens & Apartments"
+  "siteName": "Bruton Gardens & Apartments",
+  "design": {
+    "accentColor": "#a3e635",
+    "adminSidebarBg": "#0f172a",
+    "adminAccentColor": "#a3e635",
+    "footerBg": "#f4f5fa"
+  }
 }

@@ -1,9 +1,23 @@
 {
-  "images": [
-    { "id": "1", "src": "/assets/BRTN GRDN-1.JPEG", "alt": "Bruton Gardens Interior", "caption": "" },
-    { "id": "2", "src": "/assets/BRTN GRDN-22.JPG", "alt": "Bruton Gardens Living Area", "caption": "" },
-    { "id": "3", "src": "/assets/BRTN GRDN-26.JPG", "alt": "Bruton Gardens Bedroom", "caption": "" },
-    { "id": "4", "src": "/assets/BRTN GRDN-6.JPEG", "alt": "Bruton Gardens Amenities", "caption": "" },
-    { "id": "5", "src": "/assets/BRTN GRDN-27.JPG", "alt": "Bruton Gardens Pool Area", "caption": "" }
-  ]
+  "home-services": {
+    "label": "Home — Services Section Carousel",
+    "images": [
+      { "id": "1", "src": "/assets/BRTN GRDN-1.JPEG", "alt": "Bruton Gardens Interior", "caption": "" },
+      { "id": "2", "src": "/assets/BRTN GRDN-22.JPG", "alt": "Bruton Gardens Living Area", "caption": "" },
+      { "id": "3", "src": "/assets/BRTN GRDN-26.JPG", "alt": "Bruton Gardens Bedroom", "caption": "" },
+      { "id": "4", "src": "/assets/BRTN GRDN-6.JPEG", "alt": "Bruton Gardens Amenities", "caption": "" },
+      { "id": "5", "src": "/assets/BRTN GRDN-27.JPG", "alt": "Bruton Gardens Pool Area", "caption": "" }
+    ]
+  },
+  "about-slideshow": {
+    "label": "About Page — Story Slideshow",
+    "images": [
+      { "id": "1", "src": "/assets/brut1.jpg", "alt": "Bruton Gardens", "caption": "" },
+      { "id": "2", "src": "/assets/brut2.jpg", "alt": "Bruton Gardens", "caption": "" },
+      { "id": "3", "src": "/assets/BRTN GRDN-6.JPEG", "alt": "Bruton Gardens", "caption": "" },
+      { "id": "4", "src": "/assets/BRTN GRDN-1.JPEG", "alt": "Bruton Gardens", "caption": "" },
+      { "id": "5", "src": "/assets/BRTN GRDN-22.JPG", "alt": "Bruton Gardens", "caption": "" },
+      { "id": "6", "src": "/assets/BRTN GRDN-27.JPG", "alt": "Bruton Gardens", "caption": "" }
+    ]
+  }
 }

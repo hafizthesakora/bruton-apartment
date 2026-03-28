@@ -7,6 +7,7 @@ export async function POST(request) {
   try {
     const formData = await request.formData();
     const file = formData.get('file');
+    const carouselName = formData.get('carousel') || 'home-services';
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
@@ -29,7 +30,11 @@ export async function POST(request) {
     await writeFile(path.join(uploadsDir, filename), buffer);
 
     const src = `/uploads/${filename}`;
-    const data = readJSON('carousel.json') || { images: [] };
+    const all = readJSON('carousel.json') || {};
+
+    if (!all[carouselName]) {
+      all[carouselName] = { label: carouselName, images: [] };
+    }
 
     const newImage = {
       id: `${Date.now()}`,
@@ -38,8 +43,8 @@ export async function POST(request) {
       caption: '',
     };
 
-    data.images.push(newImage);
-    writeJSON('carousel.json', data);
+    all[carouselName].images.push(newImage);
+    writeJSON('carousel.json', all);
 
     return NextResponse.json({ success: true, image: newImage });
   } catch (err) {

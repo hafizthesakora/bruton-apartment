@@ -9,7 +9,14 @@
     },
     "about": {
       "heading": "Experience Luxury Living at Bruton Gardens & Apartments",
-      "body": "Discover modern comfort and elegant design in our premium apartments. Each unit is thoughtfully crafted to provide you with the perfect blend of style, functionality, and convenience on the outskirts of the city."
+      "body": "Discover modern comfort and elegant design in our premium apartments. Each unit is thoughtfully crafted to provide you with the perfect blend of style, functionality, and convenience on the outskirts of the city.",
+      "premiumBadge": "Premium Living",
+      "mainImage": "/assets/BRTN GRDN-22.JPG",
+      "cards": [
+        { "image": "/assets/main-home1.jpg" },
+        { "image": "/assets/BRTN GRDN-3.JPEG" },
+        { "image": "/assets/BRTN GRDN-25 2.JPEG" }
+      ]
     },
     "services": {
       "heading": "Take The First Step",
@@ -19,7 +26,8 @@
   "about": {
     "hero": {
       "title": "About Bruton Gardens & Apartments",
-      "subtitle": "A short stay apartment offering exceptional comfort, modern amenities, and warm hospitality on the outskirts of the city."
+      "subtitle": "A short stay apartment offering exceptional comfort, modern amenities, and warm hospitality on the outskirts of the city.",
+      "heroImage": "/assets/BRTN GRDN-1.JPEG"
     },
     "stats": [
       { "value": "100+", "label": "Happy Guests" },
@@ -175,5 +183,29 @@
       "body": "Experience the perfect blend of luxury and comfort. Book your stay today and see why our guests keep coming back.",
       "button": "Book Your Stay"
     }
+  },
+  "footer": {
+    "description": "Experience luxury living at Bruton Gardens & Apartments. We offer modern, well-furnished apartments in a serene environment with world-class amenities and exceptional service. Your comfort is our priority.",
+    "quickLinksHeading": "Quick Links",
+    "quickLinks": [
+      { "href": "/", "label": "Home" },
+      { "href": "/about", "label": "About" },
+      { "href": "/blog", "label": "Gallery & Blog" },
+      { "href": "/services", "label": "Services" },
+      { "href": "/facilities", "label": "Facilities" }
+    ],
+    "connectHeading": "Connect",
+    "socialLinks": [
+      { "name": "Facebook", "url": "#" },
+      { "name": "Twitter", "url": "#" },
+      { "name": "TikTok", "url": "#" },
+      { "name": "WhatsApp", "url": "#" }
+    ],
+    "featuredItems": [
+      { "image": "/assets/hall.JPEG", "title": "Event Center", "subtitle": "Elegant & Modern Design" },
+      { "image": "/assets/main-home1.jpg", "title": "Premium Units", "subtitle": "Fully Furnished Apartments" },
+      { "image": "/assets/BRTN GRDN-26.JPG", "title": "Beautiful Gardens", "subtitle": "Serene Environment" }
+    ],
+    "copyright": "© 2026 Bruton Gardens & Apartments. All rights reserved."
   }
 }

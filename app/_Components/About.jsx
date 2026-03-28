@@ -4,16 +4,21 @@ import Image from 'next/image';
 import React from 'react';
 import { FadeIn, StaggerContainer, StaggerItem } from './MotionWrapper';
 
-const aboutCards = [
-  { image: '/assets/main-home1.jpg', icon: Home },
-  { image: '/assets/BRTN GRDN-3.JPEG', icon: Building2 },
-  { image: '/assets/BRTN GRDN-25 2.JPEG', icon: Key },
+const CARD_ICONS = [Home, Building2, Key];
+
+const defaultCards = [
+  { image: '/assets/main-home1.jpg' },
+  { image: '/assets/BRTN GRDN-3.JPEG' },
+  { image: '/assets/BRTN GRDN-25 2.JPEG' },
 ];
 
 const About = ({ content = {} }) => {
   const {
     heading = 'Experience Luxury Living at Bruton Gardens & Apartments',
     body = 'Discover modern comfort and elegant design in our premium apartments. Each unit is thoughtfully crafted to provide you with the perfect blend of style, functionality, and convenience on the outskirts of the city.',
+    premiumBadge = 'Premium Living',
+    mainImage = '/assets/BRTN GRDN-22.JPG',
+    cards = defaultCards,
   } = content;
 
   return (
@@ -27,7 +32,7 @@ const About = ({ content = {} }) => {
                   <div className="bg-white shadow-md w-34 p-3 rounded-t-full">
                     <div className="w-28 p-5 bg-gradient-to-r from-lime-400 to-lime-500 rounded-t-full">
                       <h1 className="text-lg pt-4 text-gray-900 font-semibold text-center">
-                        Premium Living
+                        {premiumBadge}
                       </h1>
                     </div>
                   </div>
@@ -37,7 +42,7 @@ const About = ({ content = {} }) => {
             <FadeIn direction="down" delay={0.1}>
               <div className="relative">
                 <Image
-                  src="/assets/BRTN GRDN-22.JPG"
+                  src={mainImage}
                   alt="Bruton Gardens"
                   width={600}
                   height={400}
@@ -57,27 +62,30 @@ const About = ({ content = {} }) => {
             </FadeIn>
             <div className="px-10 md:px-0">
               <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-3 gap-10 pt-16">
-                {aboutCards.map((card, index) => (
-                  <StaggerItem key={index}>
-                    <div className="p-6 md:p-4 bg-gray-100 rounded-t-full text-center relative">
-                      <Image
-                        src={card.image}
-                        alt="about"
-                        width={600}
-                        height={600}
-                        className="rounded-t-full h-40 object-cover"
-                      />
-                      <h1 className="py-3 text-lg font-semibold"></h1>
-                      <div className="absolute top-0 right-0 bg-gray-100/50 p-[5px] rounded-xl shadow-md">
-                        <div className="bg-gray-100 p-[5px] rounded-xl">
-                          <div className="bg-lime-400 rounded-xl p-2 w-13">
-                            <card.icon size={35} className="text-gray-900 p-1" />
+                {cards.map((card, index) => {
+                  const Icon = CARD_ICONS[index] || Home;
+                  return (
+                    <StaggerItem key={index}>
+                      <div className="p-6 md:p-4 bg-gray-100 rounded-t-full text-center relative">
+                        <Image
+                          src={card.image}
+                          alt="about"
+                          width={600}
+                          height={600}
+                          className="rounded-t-full h-40 object-cover"
+                        />
+                        <h1 className="py-3 text-lg font-semibold"></h1>
+                        <div className="absolute top-0 right-0 bg-gray-100/50 p-[5px] rounded-xl shadow-md">
+                          <div className="bg-gray-100 p-[5px] rounded-xl">
+                            <div className="bg-lime-400 rounded-xl p-2 w-13">
+                              <Icon size={35} className="text-gray-900 p-1" />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </StaggerItem>
-                ))}
+                    </StaggerItem>
+                  );
+                })}
               </StaggerContainer>
             </div>
           </div>

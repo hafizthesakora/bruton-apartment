@@ -9,7 +9,7 @@ import {
 const DEFAULTS = {
   home: {
     hero: { tagline: 'WELCOME TO BRUTON GARDENS & APARTMENTS', title: 'Find Your Perfect Stay at Bruton Gardens & Apartments', subtitle: 'Discover luxury living on the outskirts of the city.', primaryCta: 'Booking', secondaryCta: 'Schedule Viewing' },
-    about: { heading: 'Experience Luxury Living at Bruton Gardens & Apartments', body: 'Discover modern comfort and elegant design in our premium apartments.' },
+    about: { heading: 'Experience Luxury Living at Bruton Gardens & Apartments', body: 'Discover modern comfort and elegant design in our premium apartments.', premiumBadge: 'Premium Living', mainImage: '/assets/BRTN GRDN-22.JPG', cards: [{ image: '/assets/main-home1.jpg' }, { image: '/assets/BRTN GRDN-3.JPEG' }, { image: '/assets/BRTN GRDN-25 2.JPEG' }] },
     services: { heading: 'Take The First Step', body: 'Discover your perfect home at Bruton Gardens Apartment.' },
   },
   about: {
@@ -17,6 +17,15 @@ const DEFAULTS = {
     stats: [{ value: '100+', label: 'Happy Guests' }, { value: '1+', label: 'Years Experience' }, { value: 'Prime', label: 'Location' }, { value: '4.8/5', label: 'Guest Rating' }],
     story: { heading: 'Our Story', paragraph1: 'Bruton Gardens & Apartments was established with a vision to provide travelers with a home away from home.', paragraph2: 'Our commitment to excellence ensures that every guest enjoys a comfortable, memorable stay.', primaryCta: 'Book Now', secondaryCta: 'Contact Us' },
     team: { heading: 'Meet Our Team', members: [{ name: 'Mrs. Portia Owusu Asante', role: 'Director', image: '/assets/team-portia.jpeg', bio: 'Passionate about providing exceptional hospitality and comfortable stays' }, { name: 'Nana Afia Nketia Danquah', role: 'Facilities Manager', image: '/assets/team-nana.jpeg', bio: 'Ensuring every guest enjoys a seamless and memorable experience' }, { name: 'Tetteh Ebenezer', role: 'Front of House', image: '/assets/team-tetteh.jpeg', bio: 'Dedicated to making your stay comfortable and stress-free' }] },
+  },
+  footer: {
+    description: 'Experience luxury living at Bruton Gardens & Apartments. We offer modern, well-furnished apartments in a serene environment with world-class amenities and exceptional service.',
+    quickLinksHeading: 'Quick Links',
+    quickLinks: [{ href: '/', label: 'Home' }, { href: '/about', label: 'About' }, { href: '/blog', label: 'Gallery & Blog' }, { href: '/services', label: 'Services' }, { href: '/facilities', label: 'Facilities' }],
+    connectHeading: 'Connect',
+    socialLinks: [{ name: 'Facebook', url: '#' }, { name: 'Twitter', url: '#' }, { name: 'TikTok', url: '#' }, { name: 'WhatsApp', url: '#' }],
+    featuredItems: [{ image: '/assets/hall.JPEG', title: 'Event Center', subtitle: 'Elegant & Modern Design' }, { image: '/assets/main-home1.jpg', title: 'Premium Units', subtitle: 'Fully Furnished Apartments' }, { image: '/assets/BRTN GRDN-26.JPG', title: 'Beautiful Gardens', subtitle: 'Serene Environment' }],
+    copyright: '© 2026 Bruton Gardens & Apartments. All rights reserved.',
   },
   services: {
     hero: { title: 'Our Services', subtitle: 'Everything you need for a comfortable short-stay experience.' },
@@ -51,6 +60,7 @@ const PAGES = [
   { key: 'services', label: 'Services', path: '/services', color: 'green' },
   { key: 'facilities', label: 'Facilities', path: '/facilities', color: 'amber' },
   { key: 'gallery', label: 'Gallery & Blog', path: '/blog', color: 'pink' },
+  { key: 'footer', label: 'Footer', path: '/', color: 'lime' },
 ];
 
 // ─── Tiny UI helpers ────────────────────────────────────────────────────────
@@ -269,13 +279,92 @@ function PageHeroPreview({ title, subtitle }) {
   );
 }
 
+function HomeAboutPreview({ d }) {
+  return (
+    <div className="p-5 grid grid-cols-2 gap-4 items-start">
+      <div className="space-y-3">
+        <div className="inline-block bg-lime-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-t-full">{d?.premiumBadge}</div>
+        <h2 className="font-bold text-gray-900 text-sm leading-tight">{d?.heading}</h2>
+        <p className="text-gray-500 text-xs leading-relaxed">{d?.body}</p>
+        <div className="grid grid-cols-3 gap-2 mt-2">
+          {(d?.cards || []).map((card, i) => (
+            <div key={i} className="bg-gray-100 rounded-t-full h-16 flex items-center justify-center">
+              <span className="text-xs text-gray-400 text-center px-1 break-all">{card.image?.split('/').pop()}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-full h-36 flex items-center justify-center">
+        <span className="text-xs text-gray-400 text-center px-2">{d?.mainImage?.split('/').pop() || 'Main image'}</span>
+      </div>
+    </div>
+  );
+}
+
+function FooterPreview({ d, section }) {
+  if (section === 'brand') return (
+    <div className="p-5 bg-gray-50">
+      <div className="w-20 h-8 bg-gray-300 rounded mb-3" />
+      <p className="text-gray-600 text-xs leading-relaxed max-w-xs">{d?.description}</p>
+      <p className="text-gray-400 text-xs mt-4 pt-3 border-t border-gray-200">{d?.copyright}</p>
+    </div>
+  );
+  if (section === 'quickLinks') return (
+    <div className="p-5">
+      <h3 className="font-bold text-gray-900 text-sm mb-3">{d?.quickLinksHeading}</h3>
+      <div className="space-y-2">
+        {(d?.quickLinks || []).map((link, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-lime-400" />
+            <span className="text-xs text-gray-600">{link.label}</span>
+            <span className="text-xs text-gray-400 font-mono">{link.href}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+  if (section === 'socialLinks') return (
+    <div className="p-5">
+      <h3 className="font-bold text-gray-900 text-sm mb-3">{d?.connectHeading}</h3>
+      <div className="space-y-2">
+        {(d?.socialLinks || []).map((s, i) => (
+          <div key={i} className="flex items-center justify-between">
+            <span className="text-xs font-medium text-gray-700">{s.name}</span>
+            <span className="text-xs text-gray-400 font-mono truncate max-w-[150px]">{s.url || '#'}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+  if (section === 'featuredItems') return (
+    <div className="p-5 space-y-3">
+      {(d?.featuredItems || []).map((item, i) => (
+        <div key={i} className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-lg bg-gray-200 flex-shrink-0 flex items-center justify-center">
+            <span className="text-xs text-gray-400 text-center">{item.image?.split('/').pop()}</span>
+          </div>
+          <div>
+            <p className="font-semibold text-gray-900 text-xs">{item.title}</p>
+            <p className="text-gray-500 text-xs">{item.subtitle}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+  return null;
+}
+
 // ─── Section renderers ──────────────────────────────────────────────────────
 function renderPreview(page, section, d) {
   if (!d) return <div className="p-8 text-center text-gray-400 text-sm">Select a section to preview</div>;
 
+  if (page === 'footer') {
+    return <FooterPreview d={d} section={section} />;
+  }
+
   if (page === 'home') {
     if (section === 'hero') return <HeroPreview d={d} />;
-    if (section === 'about') return <TwoColPreview heading={d.heading} body={d.body} imageLabel="About photo" />;
+    if (section === 'about') return <HomeAboutPreview d={d} />;
     if (section === 'services') return (
       <div className="p-5">
         <h2 className="font-bold text-gray-900 text-base mb-2">{d.heading}</h2>
@@ -288,7 +377,12 @@ function renderPreview(page, section, d) {
   }
 
   if (page === 'about') {
-    if (section === 'hero') return <PageHeroPreview title={d.title} subtitle={d.subtitle} />;
+    if (section === 'hero') return (
+      <div>
+        <PageHeroPreview title={d.title} subtitle={d.subtitle} />
+        {d?.heroImage && <div className="p-3 bg-gray-50 border-t border-gray-100 text-xs text-gray-400">Hero image: <span className="font-mono">{d.heroImage}</span></div>}
+      </div>
+    );
     if (section === 'stats') return <StatsPreview stats={d} />;
     if (section === 'story') return <TwoColPreview heading={d.heading} body={d.paragraph1 + ' ' + d.paragraph2} ctaLeft={d.primaryCta} ctaRight={d.secondaryCta} imageLabel="Story slideshow" />;
     if (section === 'team') return <TeamPreview heading={d.heading} members={d.members} />;
@@ -648,15 +742,142 @@ function BlogCtaEditor({ d, set }) {
   </>;
 }
 
+function HomeAboutEditor({ d, setFull }) {
+  function updateCard(i, val) {
+    const cards = [...(d?.cards || [])];
+    cards[i] = { ...cards[i], image: val };
+    setFull({ ...d, cards });
+  }
+  return <>
+    <F label="Heading" value={d?.heading} onChange={v => setFull({ ...d, heading: v })} />
+    <F label="Body Text" value={d?.body} onChange={v => setFull({ ...d, body: v })} multiline />
+    <F label="Premium Badge Text" value={d?.premiumBadge} onChange={v => setFull({ ...d, premiumBadge: v })} hint="e.g. Premium Living" />
+    <F label="Main Image Path" value={d?.mainImage} onChange={v => setFull({ ...d, mainImage: v })} hint="large image on the left" mono />
+    <div>
+      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Card Images (3 small cards)</p>
+      <div className="space-y-2">
+        {[0, 1, 2].map(i => (
+          <F key={i} label={`Card ${i + 1} Image`} value={d?.cards?.[i]?.image || ''} onChange={v => updateCard(i, v)} mono />
+        ))}
+      </div>
+    </div>
+  </>;
+}
+
+function AboutHeroEditor({ d, set }) {
+  return <>
+    <F label="Page Title" value={d?.title} onChange={v => set('title', v)} />
+    <F label="Subtitle" value={d?.subtitle} onChange={v => set('subtitle', v)} multiline />
+    <F label="Hero Background Image" value={d?.heroImage} onChange={v => set('heroImage', v)} hint="path to the full-bleed background photo" mono />
+  </>;
+}
+
+function FooterBrandEditor({ d, setFull }) {
+  return <>
+    <F label="Description Text" value={d?.description} onChange={v => setFull({ ...d, description: v })} multiline />
+    <F label="Copyright Line" value={d?.copyright} onChange={v => setFull({ ...d, copyright: v })} hint="e.g. © 2026 Bruton Gardens..." />
+  </>;
+}
+
+function FooterLinksEditor({ d, setFull }) {
+  function updateLink(i, key, val) {
+    const links = [...(d?.quickLinks || [])];
+    links[i] = { ...links[i], [key]: val };
+    setFull({ ...d, quickLinks: links });
+  }
+  function addLink() { setFull({ ...d, quickLinks: [...(d?.quickLinks || []), { href: '/', label: '' }] }); }
+  function removeLink(i) { setFull({ ...d, quickLinks: (d?.quickLinks || []).filter((_, idx) => idx !== i) }); }
+
+  return (
+    <div className="space-y-4">
+      <F label="Section Heading" value={d?.quickLinksHeading} onChange={v => setFull({ ...d, quickLinksHeading: v })} />
+      <div className="border-t border-gray-100 pt-4 space-y-2">
+        {(d?.quickLinks || []).map((link, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className="flex-1 grid grid-cols-2 gap-2">
+              <F label={i === 0 ? 'Label' : ''} value={link.label} onChange={v => updateLink(i, 'label', v)} />
+              <F label={i === 0 ? 'Path (href)' : ''} value={link.href} onChange={v => updateLink(i, 'href', v)} mono />
+            </div>
+            <button onClick={() => removeLink(i)} className="mt-auto p-1.5 text-gray-300 hover:text-red-400"><Trash2 size={14} /></button>
+          </div>
+        ))}
+        <button onClick={addLink} className="flex items-center gap-1.5 text-lime-600 hover:text-lime-700 text-xs font-medium">
+          <Plus size={14} /> Add Link
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function FooterSocialsEditor({ d, setFull }) {
+  function updateSocial(i, key, val) {
+    const links = [...(d?.socialLinks || [])];
+    links[i] = { ...links[i], [key]: val };
+    setFull({ ...d, socialLinks: links });
+  }
+  function addSocial() { setFull({ ...d, socialLinks: [...(d?.socialLinks || []), { name: '', url: '' }] }); }
+  function removeSocial(i) { setFull({ ...d, socialLinks: (d?.socialLinks || []).filter((_, idx) => idx !== i) }); }
+
+  return (
+    <div className="space-y-4">
+      <F label="Section Heading" value={d?.connectHeading} onChange={v => setFull({ ...d, connectHeading: v })} />
+      <p className="text-xs text-gray-400">Supported icon names: Facebook, Twitter, TikTok, WhatsApp</p>
+      <div className="space-y-2">
+        {(d?.socialLinks || []).map((s, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className="flex-1 grid grid-cols-2 gap-2">
+              <F label={i === 0 ? 'Name' : ''} value={s.name} onChange={v => updateSocial(i, 'name', v)} />
+              <F label={i === 0 ? 'URL' : ''} value={s.url} onChange={v => updateSocial(i, 'url', v)} mono />
+            </div>
+            <button onClick={() => removeSocial(i)} className="mt-auto p-1.5 text-gray-300 hover:text-red-400"><Trash2 size={14} /></button>
+          </div>
+        ))}
+        <button onClick={addSocial} className="flex items-center gap-1.5 text-lime-600 hover:text-lime-700 text-xs font-medium">
+          <Plus size={14} /> Add Social Link
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function FooterFeaturedEditor({ d, setFull }) {
+  function updateItem(i, key, val) {
+    const items = [...(d?.featuredItems || [])];
+    items[i] = { ...items[i], [key]: val };
+    setFull({ ...d, featuredItems: items });
+  }
+  function addItem() { setFull({ ...d, featuredItems: [...(d?.featuredItems || []), { image: '', title: '', subtitle: '' }] }); }
+  function removeItem(i) { setFull({ ...d, featuredItems: (d?.featuredItems || []).filter((_, idx) => idx !== i) }); }
+
+  return (
+    <div className="space-y-4">
+      {(d?.featuredItems || []).map((item, i) => (
+        <div key={i} className="bg-gray-50 rounded-xl p-4 space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-xs font-semibold text-gray-400">Item {i + 1}</span>
+            <button onClick={() => removeItem(i)} className="text-gray-300 hover:text-red-400"><Trash2 size={14} /></button>
+          </div>
+          <F label="Title" value={item.title} onChange={v => updateItem(i, 'title', v)} />
+          <F label="Subtitle" value={item.subtitle} onChange={v => updateItem(i, 'subtitle', v)} />
+          <F label="Image Path" value={item.image} onChange={v => updateItem(i, 'image', v)} mono />
+        </div>
+      ))}
+      <button onClick={addItem} className="flex items-center gap-1.5 text-lime-600 hover:text-lime-700 text-xs font-medium">
+        <Plus size={14} /> Add Item
+      </button>
+    </div>
+  );
+}
+
 // ─── Section config per page ────────────────────────────────────────────────
 const SECTIONS = {
   home: [
     { id: 'hero', label: 'Hero Banner', hint: 'Main headline, tagline & CTA buttons' },
-    { id: 'about', label: 'About Section', hint: 'Heading & body text on the home about block' },
+    { id: 'about', label: 'About Section', hint: 'Heading, body, badge, main image & three card images' },
     { id: 'services', label: 'Services Intro', hint: 'Heading & description above the services video' },
   ],
   about: [
-    { id: 'hero', label: 'Page Hero', hint: 'Title & subtitle in the dark header banner' },
+    { id: 'hero', label: 'Page Hero', hint: 'Title, subtitle & hero background image' },
     { id: 'stats', label: 'Stats Row', hint: 'The 4 statistic cards (value + label)' },
     { id: 'story', label: 'Our Story', hint: 'Two-column story section with paragraphs & CTA' },
     { id: 'team', label: 'Team Members', hint: 'Name, role, bio & photo for each team member' },
@@ -677,6 +898,12 @@ const SECTIONS = {
   gallery: [
     { id: 'hero', label: 'Page Hero', hint: 'Title & subtitle for the Gallery & Blog page' },
     { id: 'blogCta', label: 'Blog CTA', hint: '"Love Our Space?" banner section' },
+  ],
+  footer: [
+    { id: 'brand', label: 'Brand & Description', hint: 'Logo description text and copyright line' },
+    { id: 'quickLinks', label: 'Quick Links', hint: 'Navigation links shown in the footer' },
+    { id: 'socialLinks', label: 'Social Links', hint: 'Social network names and URLs' },
+    { id: 'featuredItems', label: 'Featured Items', hint: 'Three image+title+subtitle items on the right' },
   ],
 };
 
@@ -749,20 +976,29 @@ export default function ContentPage() {
   }
 
   const pd = content[activePage];
-  const sd = pd?.[activeSection];
+  // Footer sections all share one flat object (no sub-sections)
+  const sd = activePage === 'footer' ? pd : pd?.[activeSection];
 
   function renderEditor() {
     if (!pd) return null;
     const set = (k, v) => setField(activePage, activeSection, k, v);
-    const setFull = (v) => setSection(activePage, activeSection, v);
+    const setFull = activePage === 'footer'
+      ? (v) => setContent(prev => ({ ...prev, footer: v }))
+      : (v) => setSection(activePage, activeSection, v);
 
     if (activePage === 'home') {
       if (activeSection === 'hero') return <HomeHeroEditor d={sd} set={set} />;
-      if (activeSection === 'about') return <SimpleTwoFieldEditor d={sd} set={set} />;
+      if (activeSection === 'about') return <HomeAboutEditor d={sd} setFull={setFull} />;
       if (activeSection === 'services') return <SimpleTwoFieldEditor d={sd} set={set} />;
     }
+    if (activePage === 'footer') {
+      if (activeSection === 'brand') return <FooterBrandEditor d={sd} setFull={setFull} />;
+      if (activeSection === 'quickLinks') return <FooterLinksEditor d={sd} setFull={setFull} />;
+      if (activeSection === 'socialLinks') return <FooterSocialsEditor d={sd} setFull={setFull} />;
+      if (activeSection === 'featuredItems') return <FooterFeaturedEditor d={sd} setFull={setFull} />;
+    }
     if (activePage === 'about') {
-      if (activeSection === 'hero') return <PageHeroEditor d={sd} set={set} />;
+      if (activeSection === 'hero') return <AboutHeroEditor d={sd} set={set} />;
       if (activeSection === 'stats') return <StatsEditor d={sd} setFull={setFull} />;
       if (activeSection === 'story') return <StoryEditor d={sd} set={set} />;
       if (activeSection === 'team') return <TeamEditor d={sd} setFull={setFull} />;

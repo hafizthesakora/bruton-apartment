@@ -11,6 +11,16 @@ export async function middleware(request) {
   const { pathname } = request.nextUrl;
 
   if (pathname === '/admin/login') {
+    // Already signed in → send to dashboard
+    const token = request.cookies.get('admin-token')?.value;
+    if (token) {
+      try {
+        await jwtVerify(token, getSecret());
+        return NextResponse.redirect(new URL('/admin', request.url));
+      } catch {
+        // Invalid token — let them see the login page
+      }
+    }
     return NextResponse.next();
   }
 
