@@ -4,6 +4,8 @@ import HomeFeatures from './_Components/HomeFeatures';
 import Services from './_Components/Services';
 import { readJSON } from '@/lib/data';
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   const content = readJSON('content.json') || {};
   const home = content.home || {};
