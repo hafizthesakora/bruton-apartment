@@ -3,13 +3,17 @@ import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import {
   Upload, Trash2, ChevronUp, ChevronDown, Plus, RefreshCw,
-  CheckCircle, GripVertical, Images, PlusCircle, X,
+  CheckCircle, GripVertical, Images, PlusCircle, X, Link2,
 } from 'lucide-react';
 
 const CAROUSEL_LABELS = {
   'home-services': 'Home — Services Carousel',
   'about-slideshow': 'About — Story Slideshow',
 };
+
+function isValidUrl(str) {
+  return str?.startsWith('http://') || str?.startsWith('https://') || str?.startsWith('/');
+}
 
 export default function MediaPage() {
   const [allCarousels, setAllCarousels] = useState({});
@@ -20,6 +24,9 @@ export default function MediaPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
   const [showNewCarousel, setShowNewCarousel] = useState(false);
+  const [showUrlModal, setShowUrlModal] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+  const [urlAlt, setUrlAlt] = useState('');
   const [newCarouselName, setNewCarouselName] = useState('');
   const [newCarouselLabel, setNewCarouselLabel] = useState('');
   const fileRef = useRef(null);
@@ -73,6 +80,36 @@ export default function MediaPage() {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = '';
     }
+  }
+
+  async function handleAddUrl() {
+    const src = urlInput.trim();
+    if (!src) return;
+    const newImage = {
+      id: `url-${Date.now()}`,
+      src,
+      alt: urlAlt.trim() || src.split('/').pop().replace(/\.[^.]+$/, '') || 'Image',
+      caption: '',
+    };
+    const updatedImages = [...images, newImage];
+    setImages(updatedImages);
+    // Save immediately
+    try {
+      const res = await fetch('/api/admin/carousel', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: activeCarousel,
+          carousel: { ...allCarousels[activeCarousel], images: updatedImages },
+        }),
+      });
+      if (!res.ok) setError('Added locally but failed to save — click Save Order.');
+    } catch {
+      setError('Added locally but failed to save — click Save Order.');
+    }
+    setUrlInput('');
+    setUrlAlt('');
+    setShowUrlModal(false);
   }
 
   async function handleDelete(imageId) {
@@ -157,7 +194,8 @@ export default function MediaPage() {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       } else {
-        setError('Failed to save.');
+        const d = await res.json();
+        setError(d.error || 'Failed to save.');
       }
     } catch {
       setError('Connection error.');
@@ -186,12 +224,19 @@ export default function MediaPage() {
             <PlusCircle size={15} /> New Carousel
           </button>
           <button
+            onClick={() => setShowUrlModal(true)}
+            disabled={!activeCarousel}
+            className="flex items-center gap-2 border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium px-4 py-2.5 rounded-lg text-sm"
+          >
+            <Link2 size={15} /> Add by URL
+          </button>
+          <button
             onClick={() => fileRef.current?.click()}
             disabled={uploading || !activeCarousel}
             className="flex items-center gap-2 border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium px-4 py-2.5 rounded-lg text-sm"
           >
-            {uploading ? <RefreshCw size={15} className="animate-spin" /> : <Plus size={15} />}
-            {uploading ? 'Uploading…' : 'Add Image'}
+            {uploading ? <RefreshCw size={15} className="animate-spin" /> : <Upload size={15} />}
+            {uploading ? 'Uploading…' : 'Upload File'}
           </button>
           <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
           <button
@@ -204,6 +249,63 @@ export default function MediaPage() {
           </button>
         </div>
       </div>
+
+      {/* Add by URL modal */}
+      {showUrlModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="font-bold text-gray-900">Add Image by URL or Path</h3>
+                <p className="text-xs text-gray-400 mt-0.5">Paste a Cloudinary, S3, CDN URL, or local path like /assets/photo.jpg</p>
+              </div>
+              <button onClick={() => setShowUrlModal(false)}><X size={18} className="text-gray-400" /></button>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Image URL or Path <span className="text-red-400">*</span></label>
+                <input
+                  type="text"
+                  placeholder="https://res.cloudinary.com/… or /assets/photo.jpg"
+                  value={urlInput}
+                  onChange={e => setUrlInput(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleAddUrl()}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:border-lime-400"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Alt Text <span className="text-gray-400">(optional)</span></label>
+                <input
+                  type="text"
+                  placeholder="Describe the image for accessibility"
+                  value={urlAlt}
+                  onChange={e => setUrlAlt(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleAddUrl()}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-lime-400"
+                />
+              </div>
+              {/* Preview */}
+              {urlInput && isValidUrl(urlInput) && (
+                <div className="rounded-xl overflow-hidden border border-gray-200 h-32 relative bg-gray-50">
+                  <img src={urlInput} alt="preview" className="w-full h-full object-cover" onError={e => { e.target.style.display = 'none'; }} />
+                  <p className="absolute bottom-2 left-2 text-xs bg-black/50 text-white px-2 py-0.5 rounded font-mono max-w-[90%] truncate">{urlInput}</p>
+                </div>
+              )}
+            </div>
+            <div className="flex gap-3 mt-5">
+              <button
+                onClick={handleAddUrl}
+                disabled={!urlInput.trim()}
+                className="flex-1 bg-lime-400 hover:bg-lime-500 disabled:opacity-50 text-slate-900 font-semibold py-2.5 rounded-lg text-sm"
+              >
+                Add to Carousel
+              </button>
+              <button onClick={() => setShowUrlModal(false)} className="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded-lg text-sm">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* New carousel modal */}
       {showNewCarousel && (
@@ -289,7 +391,7 @@ export default function MediaPage() {
         <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
           <Upload size={40} className="mx-auto text-gray-300 mb-3" />
           <p className="text-gray-500 font-medium">No images in this carousel</p>
-          <p className="text-gray-400 text-sm mt-1">Click &quot;Add Image&quot; to upload</p>
+          <p className="text-gray-400 text-sm mt-1">Upload a file or add an image URL / cloud path</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -299,10 +401,28 @@ export default function MediaPage() {
                 <span className="text-xs font-bold text-gray-400 w-6 text-center">{index + 1}</span>
                 <GripVertical size={16} className="text-gray-300" />
               </div>
+              {/* Thumbnail */}
               <div className="relative w-24 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
-                <Image src={img.src} alt={img.alt || 'Image'} fill className="object-cover" />
+                {isValidUrl(img.src) ? (
+                  <img src={img.src} alt={img.alt || 'Image'} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-xs text-gray-400 text-center px-1 break-all">{img.src}</span>
+                  </div>
+                )}
               </div>
-              <div className="flex-1 grid grid-cols-2 gap-3 min-w-0">
+              {/* Fields — 3 columns: src, alt, caption */}
+              <div className="flex-1 grid grid-cols-3 gap-3 min-w-0">
+                <div>
+                  <label className="block text-xs text-gray-400 mb-1">Image URL / Path</label>
+                  <input
+                    type="text"
+                    value={img.src || ''}
+                    onChange={e => updateField(img.id, 'src', e.target.value)}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:border-lime-400"
+                    placeholder="https://… or /assets/…"
+                  />
+                </div>
                 <div>
                   <label className="block text-xs text-gray-400 mb-1">Alt Text</label>
                   <input
@@ -339,7 +459,7 @@ export default function MediaPage() {
           ))}
         </div>
       )}
-      <p className="text-xs text-gray-400 mt-4">Reorder/alt text changes require Save. Deletions and uploads are immediate.</p>
+      <p className="text-xs text-gray-400 mt-4">Reorder, URL edits, and alt text changes require Save Order. Deletions are immediate.</p>
     </div>
   );
 }
