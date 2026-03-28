@@ -10,7 +10,12 @@ const aboutCards = [
   { image: '/assets/BRTN GRDN-25 2.JPEG', icon: Key },
 ];
 
-const About = () => {
+const About = ({ content = {} }) => {
+  const {
+    heading = 'Experience Luxury Living at Bruton Gardens & Apartments',
+    body = 'Discover modern comfort and elegant design in our premium apartments. Each unit is thoughtfully crafted to provide you with the perfect blend of style, functionality, and convenience on the outskirts of the city.',
+  } = content;
+
   return (
     <>
       <div className="container pt-24 md:py-40 mx-auto p-6">
@@ -44,17 +49,11 @@ const About = () => {
           <div className="order-1 md:order-2">
             <FadeIn direction="up" delay={0}>
               <h1 className="text-4xl md:text-7xl font-semibold py-5 capitalize">
-                Experience Luxury Living at{' '}
-                <span className="text-lime-400">Bruton Gardens & Apartments</span>
+                {heading}
               </h1>
             </FadeIn>
             <FadeIn direction="up" delay={0.15}>
-              <p className="pt-5 text-lg text-gray-600">
-                Discover modern comfort and elegant design in our premium
-                apartments. Each unit is thoughtfully crafted to provide you with
-                the perfect blend of style, functionality, and convenience on the
-                outskirts of the city.
-              </p>
+              <p className="pt-5 text-lg text-gray-600">{body}</p>
             </FadeIn>
             <div className="px-10 md:px-0">
               <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-3 gap-10 pt-16">

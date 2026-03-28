@@ -1,0 +1,9 @@
+{
+  "images": [
+    { "id": "1", "src": "/assets/BRTN GRDN-1.JPEG", "alt": "Bruton Gardens Interior", "caption": "" },
+    { "id": "2", "src": "/assets/BRTN GRDN-22.JPG", "alt": "Bruton Gardens Living Area", "caption": "" },
+    { "id": "3", "src": "/assets/BRTN GRDN-26.JPG", "alt": "Bruton Gardens Bedroom", "caption": "" },
+    { "id": "4", "src": "/assets/BRTN GRDN-6.JPEG", "alt": "Bruton Gardens Amenities", "caption": "" },
+    { "id": "5", "src": "/assets/BRTN GRDN-27.JPG", "alt": "Bruton Gardens Pool Area", "caption": "" }
+  ]
+}

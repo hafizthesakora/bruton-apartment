@@ -6,25 +6,35 @@ import { FadeIn, motion, AnimatePresence } from './MotionWrapper';
 import ContactModal from './ContactModal';
 import BookingModal from './BookingModal';
 
-const carouselImages = [
-  '/assets/BRTN GRDN-1.JPEG',
-  '/assets/BRTN GRDN-22.JPG',
-  '/assets/BRTN GRDN-26.JPG',
-  '/assets/BRTN GRDN-6.JPEG',
-  '/assets/BRTN GRDN-27.JPG',
+const defaultCarouselImages = [
+  { id: '1', src: '/assets/BRTN GRDN-1.JPEG', alt: 'Bruton Gardens' },
+  { id: '2', src: '/assets/BRTN GRDN-22.JPG', alt: 'Bruton Gardens' },
+  { id: '3', src: '/assets/BRTN GRDN-26.JPG', alt: 'Bruton Gardens' },
+  { id: '4', src: '/assets/BRTN GRDN-6.JPEG', alt: 'Bruton Gardens' },
+  { id: '5', src: '/assets/BRTN GRDN-27.JPG', alt: 'Bruton Gardens' },
 ];
 
 // ── Image Carousel ──────────────────────────────────────────────────────────
 
 const ImageCarousel = () => {
   const [current, setCurrent] = useState(0);
+  const [images, setImages] = useState(defaultCarouselImages);
+
+  useEffect(() => {
+    fetch('/api/carousel')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.images?.length) setImages(data.images);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % carouselImages.length);
+      setCurrent((prev) => (prev + 1) % images.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [images.length]);
 
   return (
     <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden">
@@ -38,8 +48,8 @@ const ImageCarousel = () => {
           className="absolute inset-0"
         >
           <Image
-            src={carouselImages[current]}
-            alt={`Bruton Gardens ${current + 1}`}
+            src={images[current]?.src || defaultCarouselImages[0].src}
+            alt={images[current]?.alt || 'Bruton Gardens'}
             fill
             className="object-cover"
           />
@@ -47,7 +57,7 @@ const ImageCarousel = () => {
       </AnimatePresence>
       {/* Dots */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-        {carouselImages.map((_, i) => (
+        {images.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}
@@ -61,7 +71,11 @@ const ImageCarousel = () => {
 
 // ── Main Services Component ─────────────────────────────────────────────────
 
-const Services = () => {
+const Services = ({ content = {} }) => {
+  const {
+    heading = 'Take The First Step',
+    body = 'Discover your perfect home at Bruton Gardens Apartment. Schedule a viewing today and experience luxury living at its finest.',
+  } = content;
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
 
@@ -70,14 +84,11 @@ const Services = () => {
       <div className="pb-16 space-y-5">
         <FadeIn direction="up">
           <h1 className="text-4xl md:text-5xl font-semibold capitalize">
-            Take The First <span className="text-lime-400">Step</span>
+            {heading}
           </h1>
         </FadeIn>
         <FadeIn direction="up" delay={0.1}>
-          <p className="text-lg text-gray-500">
-            Discover your perfect home at Bruton Gardens Apartment. Schedule a
-            viewing today and experience luxury living at its finest.
-          </p>
+          <p className="text-lg text-gray-500">{body}</p>
         </FadeIn>
       </div>
 

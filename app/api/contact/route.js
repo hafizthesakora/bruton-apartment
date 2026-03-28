@@ -1,4 +1,24 @@
 import { NextResponse } from 'next/server';
+import { readJSON, writeJSON } from '@/lib/data';
+
+function saveEnquiry({ name, email, phone, country, message }) {
+  try {
+    const enquiries = readJSON('enquiries.json') || [];
+    enquiries.unshift({
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      name,
+      email,
+      phone: phone || '',
+      country: country || '',
+      message,
+      read: false,
+      createdAt: new Date().toISOString(),
+    });
+    writeJSON('enquiries.json', enquiries);
+  } catch (err) {
+    console.error('Failed to save enquiry locally:', err);
+  }
+}
 
 async function getAccessToken() {
   const tenantId = process.env.AZURE_TENANT_ID;
@@ -105,6 +125,8 @@ export async function POST(request) {
       console.error('Graph Mail error:', data);
       throw new Error(data.error?.message || 'Failed to send email');
     }
+
+    saveEnquiry({ name, email, phone, country, message });
 
     return NextResponse.json({
       success: true,

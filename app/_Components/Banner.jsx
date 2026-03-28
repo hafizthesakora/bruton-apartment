@@ -4,7 +4,15 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import BookingModal from './BookingModal';
 import ContactModal from './ContactModal';
 
-const Banner = () => {
+const Banner = ({ content = {} }) => {
+  const {
+    tagline = 'WELCOME TO BRUTON GARDENS & APARTMENTS',
+    title = 'Find Your Perfect Stay at Bruton Gardens & Apartments',
+    subtitle = 'Discover luxury living on the outskirts of the city. Experience comfort, style, and convenience at Bruton Gardens & Apartments.',
+    primaryCta = 'Booking',
+    secondaryCta = 'Schedule Viewing',
+  } = content;
+
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -46,7 +54,7 @@ const Banner = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              WELCOME TO BRUTON GARDENS & APARTMENTS
+              {tagline}
             </motion.p>
             <motion.h1
               className="text-5xl md:text-7xl font-bold text-white leading-tight"
@@ -54,9 +62,7 @@ const Banner = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4 }}
             >
-              Find Your Perfect <span className="text-lime-400">Stay</span>
-              <br />
-              at Bruton Gardens <span className="text-lime-400">& Apartments</span>
+              {title}
             </motion.h1>
             <motion.p
               className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto"
@@ -64,12 +70,7 @@ const Banner = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
             >
-              Discover luxury living on the outskirts of the city. Experience
-              comfort, style, and convenience at{' '}
-              <span className="text-lime-400 font-semibold">
-                Bruton Gardens & Apartments
-              </span>
-              .
+              {subtitle}
             </motion.p>
           </div>
 
@@ -84,13 +85,13 @@ const Banner = () => {
               onClick={() => setBookingOpen(true)}
               className="bg-lime-400 hover:bg-lime-500 text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
             >
-              Booking
+              {primaryCta}
             </button>
             <button
               onClick={() => setContactOpen(true)}
               className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105"
             >
-              Schedule Viewing
+              {secondaryCta}
             </button>
           </motion.div>
 

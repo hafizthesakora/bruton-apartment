@@ -1,0 +1,19 @@
+{
+  "home": {
+    "hero": {
+      "tagline": "WELCOME TO BRUTON GARDENS & APARTMENTS",
+      "title": "Find Your Perfect Stay at Bruton Gardens & Apartments",
+      "subtitle": "Discover luxury living on the outskirts of the city. Experience comfort, style, and convenience at Bruton Gardens & Apartments.",
+      "primaryCta": "Booking",
+      "secondaryCta": "Schedule Viewing"
+    },
+    "about": {
+      "heading": "Experience Luxury Living at Bruton Gardens & Apartments",
+      "body": "Discover modern comfort and elegant design in our premium apartments. Each unit is thoughtfully crafted to provide you with the perfect blend of style, functionality, and convenience on the outskirts of the city."
+    },
+    "services": {
+      "heading": "Take The First Step",
+      "body": "Discover your perfect home at Bruton Gardens Apartment. Schedule a viewing today and experience luxury living at its finest."
+    }
+  }
+}

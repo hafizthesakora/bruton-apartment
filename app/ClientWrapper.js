@@ -14,6 +14,11 @@ const jost = Jost({
 
 export default function ClientWrapper({ children }) {
   const pathname = usePathname();
+  const isAdmin = pathname?.startsWith('/admin');
+
+  if (isAdmin) {
+    return <div className={jost.className}>{children}</div>;
+  }
 
   return (
     <div className={jost.className}>
