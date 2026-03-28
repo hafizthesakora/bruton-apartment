@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { readJSON, writeJSON } from '@/lib/data';
 
-function saveEnquiry({ name, email, phone, country, message }) {
+async function saveEnquiry({ name, email, phone, country, message }) {
   try {
-    const enquiries = readJSON('enquiries.json') || [];
+    const enquiries = await readJSON('enquiries.json') || [];
     enquiries.unshift({
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       name,
@@ -14,9 +14,9 @@ function saveEnquiry({ name, email, phone, country, message }) {
       read: false,
       createdAt: new Date().toISOString(),
     });
-    writeJSON('enquiries.json', enquiries);
+    await writeJSON('enquiries.json', enquiries);
   } catch (err) {
-    console.error('Failed to save enquiry locally:', err);
+    console.error('Failed to save enquiry:', err);
   }
 }
 
@@ -126,7 +126,7 @@ export async function POST(request) {
       throw new Error(data.error?.message || 'Failed to send email');
     }
 
-    saveEnquiry({ name, email, phone, country, message });
+    await saveEnquiry({ name, email, phone, country, message });
 
     return NextResponse.json({
       success: true,

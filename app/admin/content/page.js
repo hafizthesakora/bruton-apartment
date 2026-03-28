@@ -52,6 +52,14 @@ const DEFAULTS = {
     hero: { title: 'Gallery & Blog', subtitle: 'Explore our spaces and stay up to date with the latest from Bruton Gardens' },
     blogCta: { heading: 'Love Our Space? Come Visit Bruton Gardens & Apartments', body: 'Experience the perfect blend of luxury and comfort.', button: 'Book Your Stay' },
   },
+  promoBanner: {
+    enabled: false,
+    text: '🎉 Special offer — Book now and get 10% off your first stay!',
+    link: '',
+    linkLabel: 'Book Now',
+    bgColor: '#a3e635',
+    textColor: '#1e293b',
+  },
 };
 
 const PAGES = [
@@ -61,7 +69,11 @@ const PAGES = [
   { key: 'facilities', label: 'Facilities', path: '/facilities', color: 'amber' },
   { key: 'gallery', label: 'Gallery & Blog', path: '/blog', color: 'pink' },
   { key: 'footer', label: 'Footer', path: '/', color: 'lime' },
+  { key: 'promoBanner', label: 'Promo Banner', path: '/', color: 'amber' },
 ];
+
+// Pages whose data is a single flat object (not { section: {...} })
+const FLAT_PAGES = ['footer', 'promoBanner'];
 
 // ─── Tiny UI helpers ────────────────────────────────────────────────────────
 function F({ label, value = '', onChange, multiline, hint, mono }) {
@@ -358,9 +370,17 @@ function FooterPreview({ d, section }) {
 function renderPreview(page, section, d) {
   if (!d) return <div className="p-8 text-center text-gray-400 text-sm">Select a section to preview</div>;
 
-  if (page === 'footer') {
-    return <FooterPreview d={d} section={section} />;
-  }
+  if (page === 'footer') return <FooterPreview d={d} section={section} />;
+  if (page === 'promoBanner') return (
+    <div
+      className="py-3 px-10 text-sm font-medium text-center relative"
+      style={{ backgroundColor: d?.bgColor || '#a3e635', color: d?.textColor || '#1e293b' }}
+    >
+      {d?.text || 'Banner text preview'}
+      {d?.link && <span className="ml-3 underline font-semibold">{d?.linkLabel || 'Learn more'}</span>}
+      {!d?.enabled && <div className="absolute inset-0 bg-gray-900/40 flex items-center justify-center rounded"><span className="text-white text-xs font-medium bg-gray-900/60 px-2 py-1 rounded">Disabled</span></div>}
+    </div>
+  );
 
   if (page === 'home') {
     if (section === 'hero') return <HeroPreview d={d} />;
@@ -840,6 +860,61 @@ function FooterSocialsEditor({ d, setFull }) {
   );
 }
 
+function PromoBannerEditor({ d, setFull }) {
+  const enabled = !!d?.enabled;
+  return (
+    <div className="space-y-4">
+      {/* Toggle */}
+      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+        <div>
+          <p className="font-semibold text-gray-900 text-sm">Banner Enabled</p>
+          <p className="text-xs text-gray-400 mt-0.5">Show or hide the banner across all pages</p>
+        </div>
+        <button
+          onClick={() => setFull({ ...d, enabled: !enabled })}
+          className={`relative w-12 h-6 rounded-full transition-colors ${enabled ? 'bg-lime-400' : 'bg-gray-300'}`}
+        >
+          <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${enabled ? 'translate-x-6' : ''}`} />
+        </button>
+      </div>
+      <F label="Banner Text" value={d?.text} onChange={v => setFull({ ...d, text: v })} hint="the message shown in the banner" />
+      <div className="grid grid-cols-2 gap-3">
+        <F label="Link URL" value={d?.link} onChange={v => setFull({ ...d, link: v })} hint="leave empty for no link" mono />
+        <F label="Link Button Label" value={d?.linkLabel} onChange={v => setFull({ ...d, linkLabel: v })} hint='e.g. "Book Now"' />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Background Color</label>
+          <div className="flex items-center gap-2">
+            <input type="color" value={d?.bgColor || '#a3e635'} onChange={e => setFull({ ...d, bgColor: e.target.value })} className="w-9 h-9 rounded-lg border border-gray-200 cursor-pointer p-0.5 flex-shrink-0" />
+            <input type="text" value={d?.bgColor || ''} onChange={e => setFull({ ...d, bgColor: e.target.value })} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:border-lime-400" />
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Text Color</label>
+          <div className="flex items-center gap-2">
+            <input type="color" value={d?.textColor || '#1e293b'} onChange={e => setFull({ ...d, textColor: e.target.value })} className="w-9 h-9 rounded-lg border border-gray-200 cursor-pointer p-0.5 flex-shrink-0" />
+            <input type="text" value={d?.textColor || ''} onChange={e => setFull({ ...d, textColor: e.target.value })} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:border-lime-400" />
+          </div>
+        </div>
+      </div>
+      {/* Live Preview */}
+      <div className="mt-2">
+        <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Preview</p>
+        <div
+          className="relative text-center py-2.5 px-10 text-sm font-medium rounded-lg"
+          style={{ backgroundColor: d?.bgColor || '#a3e635', color: d?.textColor || '#1e293b' }}
+        >
+          <span>{d?.text || 'Your banner message here'}</span>
+          {d?.link && <span className="ml-3 underline font-semibold">{d?.linkLabel || 'Learn more'}</span>}
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 opacity-40 text-xs">✕</span>
+        </div>
+        {!enabled && <p className="text-xs text-amber-500 mt-2">⚠ Banner is currently hidden. Toggle &quot;Banner Enabled&quot; to show it.</p>}
+      </div>
+    </div>
+  );
+}
+
 function FooterFeaturedEditor({ d, setFull }) {
   function updateItem(i, key, val) {
     const items = [...(d?.featuredItems || [])];
@@ -904,6 +979,9 @@ const SECTIONS = {
     { id: 'quickLinks', label: 'Quick Links', hint: 'Navigation links shown in the footer' },
     { id: 'socialLinks', label: 'Social Links', hint: 'Social network names and URLs' },
     { id: 'featuredItems', label: 'Featured Items', hint: 'Three image+title+subtitle items on the right' },
+  ],
+  promoBanner: [
+    { id: 'config', label: 'Banner Settings', hint: 'Toggle, message, colors and link' },
   ],
 };
 
@@ -976,14 +1054,15 @@ export default function ContentPage() {
   }
 
   const pd = content[activePage];
-  // Footer sections all share one flat object (no sub-sections)
-  const sd = activePage === 'footer' ? pd : pd?.[activeSection];
+  // Flat pages store their entire data as one object (no sub-sections by key)
+  const isFlat = FLAT_PAGES.includes(activePage);
+  const sd = isFlat ? pd : pd?.[activeSection];
 
   function renderEditor() {
-    if (!pd) return null;
+    if (!pd && !isFlat) return null;
     const set = (k, v) => setField(activePage, activeSection, k, v);
-    const setFull = activePage === 'footer'
-      ? (v) => setContent(prev => ({ ...prev, footer: v }))
+    const setFull = isFlat
+      ? (v) => setContent(prev => ({ ...prev, [activePage]: v }))
       : (v) => setSection(activePage, activeSection, v);
 
     if (activePage === 'home') {
@@ -996,6 +1075,9 @@ export default function ContentPage() {
       if (activeSection === 'quickLinks') return <FooterLinksEditor d={sd} setFull={setFull} />;
       if (activeSection === 'socialLinks') return <FooterSocialsEditor d={sd} setFull={setFull} />;
       if (activeSection === 'featuredItems') return <FooterFeaturedEditor d={sd} setFull={setFull} />;
+    }
+    if (activePage === 'promoBanner') {
+      return <PromoBannerEditor d={sd} setFull={setFull} />;
     }
     if (activePage === 'about') {
       if (activeSection === 'hero') return <AboutHeroEditor d={sd} set={set} />;

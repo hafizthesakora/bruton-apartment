@@ -4,6 +4,7 @@ import { AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Header from "./_Components/Header";
 import Footer from "./_Components/Footer";
+import PromoBanner from "./_Components/PromoBanner";
 import "./globals.css";
 
 const jost = Jost({
@@ -22,6 +23,7 @@ export default function ClientWrapper({ children }) {
 
   return (
     <div className={jost.className}>
+      <PromoBanner />
       <Header />
       <AnimatePresence mode="wait">
         <div key={pathname}>

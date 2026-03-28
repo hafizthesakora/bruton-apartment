@@ -1,4 +1,12 @@
 {
+  "promoBanner": {
+    "enabled": false,
+    "text": "🎉 Special offer — Book now and get 10% off your first stay!",
+    "link": "",
+    "linkLabel": "Book Now",
+    "bgColor": "#a3e635",
+    "textColor": "#1e293b"
+  },
   "home": {
     "hero": {
       "tagline": "WELCOME TO BRUTON GARDENS & APARTMENTS",

@@ -2,12 +2,13 @@ import Banner from './_Components/Banner';
 import About from './_Components/About';
 import HomeFeatures from './_Components/HomeFeatures';
 import Services from './_Components/Services';
+import PromoBanner from './_Components/PromoBanner';
 import { readJSON } from '@/lib/data';
 
 export const dynamic = 'force-dynamic';
 
-export default function Home() {
-  const content = readJSON('content.json') || {};
+export default async function Home() {
+  const content = await readJSON('content.json') || {};
   const home = content.home || {};
 
   return (
