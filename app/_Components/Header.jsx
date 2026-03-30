@@ -56,7 +56,7 @@ export default function Header() {
 
   return (
     <motion.header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`w-full transition-all duration-500 ${
         scrolled
           ? 'bg-white/60 backdrop-blur-xl shadow-lg border-b border-white/20'
           : 'bg-white/90 backdrop-blur-sm'
