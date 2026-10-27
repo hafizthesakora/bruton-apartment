@@ -6,5 +6,10 @@
     "adminSidebarBg": "#0f172a",
     "adminAccentColor": "#a3e635",
     "footerBg": "#f4f5fa"
+  },
+  "social": {
+    "whatsapp": "",
+    "facebook": "",
+    "tiktok": ""
   }
 }

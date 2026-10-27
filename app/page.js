@@ -10,10 +10,11 @@ export const dynamic = 'force-dynamic';
 export default async function Home() {
   const content = await readJSON('content.json') || {};
   const home = content.home || {};
+  const settings = await readJSON('settings.json') || {};
 
   return (
     <div>
-      <Banner content={home.hero} />
+      <Banner content={home.hero} social={settings.social} />
       <About content={home.about} />
       <div className="bg-[#f4f5fac8]">
         <HomeFeatures />
