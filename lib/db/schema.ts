@@ -242,22 +242,35 @@ export const viewings = pgTable('viewings', {
   uniqueIndex('viewings_slot_idx').on(t.scheduledAt).where(sql`${t.status} in ('requested', 'confirmed')`),
 ]);
 
+/** Event centre pipeline: lead → quoted → deposit_paid → confirmed (or lost). Amounts in pesewas. */
 export const eventLeads = pgTable('event_leads', {
   id: serial('id').primaryKey(),
+  reference: varchar('reference', { length: 16 }).notNull().unique(),
   name: text('name').notNull(),
   email: text('email'),
   phone: text('phone').notNull(),
   eventDate: date('event_date').notNull(),
   eventType: text('event_type').notNull(),
   headcount: integer('headcount').notNull(),
+  cateringRequired: boolean('catering_required').notNull().default(false),
+  source: varchar('source', { length: 16 }).notNull().default('website'),
   stage: eventStage('stage').notNull().default('lead'),
   quoteAmount: integer('quote_amount'),
   depositAmount: integer('deposit_amount'),
+  quoteNotes: text('quote_notes').notNull().default(''),
+  quotedAt: timestamp('quoted_at', { withTimezone: true }),
+  depositPaidAmount: integer('deposit_paid_amount').notNull().default(0),
+  depositMethod: paymentMethod('deposit_method'),
+  depositReference: text('deposit_reference'),
   depositPaidAt: timestamp('deposit_paid_at', { withTimezone: true }),
+  confirmedAt: timestamp('confirmed_at', { withTimezone: true }),
+  lostReason: text('lost_reason').notNull().default(''),
   cateringNotes: text('catering_notes').notNull().default(''),
   notes: text('notes').notNull().default(''),
+  staffNotes: text('staff_notes').notNull().default(''),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-});
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [index('event_leads_date_idx').on(t.eventDate), index('event_leads_stage_idx').on(t.stage)]);
 
 /* ── Housekeeping & maintenance ────────────────────────────────────────── */
 
@@ -354,6 +367,7 @@ export const notifications = pgTable('notifications', {
   error: text('error'),
   bookingId: integer('booking_id'),
   viewingId: integer('viewing_id'),
+  eventLeadId: integer('event_lead_id'),
   attempts: integer('attempts').notNull().default(0),
   sentAt: timestamp('sent_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),

@@ -204,6 +204,19 @@ export default function SettingsPage() {
                   placeholder="Parking, gate code, who to ask for at reception…"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Event deposit payment instructions
+                  <span className="ml-2 text-xs font-normal text-gray-400">(included in event quotes)</span>
+                </label>
+                <textarea
+                  rows={3}
+                  value={settings.guestMessages?.eventDepositInstructions || ''}
+                  onChange={(e) => setSettings({ ...settings, guestMessages: { ...settings.guestMessages, eventDepositInstructions: e.target.value } })}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-lime-400 focus:ring-1 focus:ring-lime-400 resize-none"
+                  placeholder="e.g. MoMo 024 000 0000 (Bruton Gardens Ltd), or bank transfer to …"
+                />
+              </div>
             </div>
           </div>
 
