@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Facebook, MessageCircle, Twitter } from 'lucide-react';
 import Link from 'next/link';
 import { FadeIn, StaggerContainer, StaggerItem, motion } from './MotionWrapper';
+import { socialLinks } from '@/lib/social';
 
 const TikTokIcon = ({ size = 24, className = '' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -27,14 +28,12 @@ const DEFAULT_FOOTER = {
     { href: '/blog', label: 'Gallery & Blog' },
     { href: '/services', label: 'Services' },
     { href: '/facilities', label: 'Facilities' },
+    { href: '/book', label: 'Book a Stay' },
+    { href: '/room-service', label: 'Room Service' },
+    { href: '/account', label: 'My Booking' },
   ],
   connectHeading: 'Connect',
-  socialLinks: [
-    { name: 'Facebook', url: '#' },
-    { name: 'Twitter', url: '#' },
-    { name: 'TikTok', url: '#' },
-    { name: 'WhatsApp', url: '#' },
-  ],
+  socialLinks: [],
   featuredItems: [
     { image: '/assets/hall.JPEG', title: 'Event Center', subtitle: 'Elegant & Modern Design' },
     { image: '/assets/main-home1.jpg', title: 'Premium Units', subtitle: 'Fully Furnished Apartments' },
@@ -46,6 +45,7 @@ const DEFAULT_FOOTER = {
 const Footer = () => {
   const [f, setF] = useState(DEFAULT_FOOTER);
   const [footerBg, setFooterBg] = useState('#f4f5fa');
+  const [settingsSocial, setSettingsSocial] = useState([]);
 
   useEffect(() => {
     fetch('/api/content?page=footer')
@@ -54,9 +54,16 @@ const Footer = () => {
       .catch(() => {});
     fetch('/api/settings')
       .then(r => r.json())
-      .then(data => { if (data?.design?.footerBg) setFooterBg(data.design.footerBg); })
+      .then(data => {
+        if (data?.design?.footerBg) setFooterBg(data.design.footerBg);
+        // Social links are managed in Admin → Settings; they replace the CMS placeholders.
+        setSettingsSocial(socialLinks(data?.social));
+      })
       .catch(() => {});
   }, []);
+
+  const links = (settingsSocial.length ? settingsSocial : f.socialLinks || [])
+    .filter((s) => s.url && s.url !== '#');
 
   return (
     <div style={{ backgroundColor: footerBg }}>
@@ -93,11 +100,11 @@ const Footer = () => {
                 <h3 className="text-2xl font-semibold">{f.connectHeading}</h3>
               </FadeIn>
               <StaggerContainer staggerDelay={0.1} className="space-y-3 text-lg font-normal pt-8">
-                {f.socialLinks.map((social) => (
+                {links.map((social) => (
                   <StaggerItem key={social.name} direction="right">
                     <a
-                      href={social.url || '#'}
-                      target={social.url && social.url !== '#' ? '_blank' : undefined}
+                      href={social.url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-lime-400 cursor-pointer transition-colors block"
                     >
@@ -141,13 +148,13 @@ const Footer = () => {
             <div className="md:flex justify-between items-center py-5 space-y-8 md:space-y-0 md:text-start text-center">
               <p className="text-gray-500">{f.copyright}</p>
               <div className="flex gap-5 justify-center">
-                {f.socialLinks.map((social) => {
+                {links.map((social) => {
                   const Icon = SOCIAL_ICON_MAP[social.name] || MessageCircle;
                   return (
                     <motion.a
                       key={social.name}
-                      href={social.url || '#'}
-                      target={social.url && social.url !== '#' ? '_blank' : undefined}
+                      href={social.url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       whileHover={{ scale: 1.25, color: '#a3e635' }}
                       transition={{ duration: 0.2 }}

@@ -4,6 +4,6 @@ import { readJSON } from '@/lib/data';
 // Public settings endpoint (non-sensitive)
 export async function GET() {
   const settings = await readJSON('settings.json') || {};
-  const { design, siteName } = settings;
-  return NextResponse.json({ design, siteName }, { headers: { 'Cache-Control': 'no-store' } });
+  const { design, siteName, social } = settings;
+  return NextResponse.json({ design, siteName, social }, { headers: { 'Cache-Control': 'no-store' } });
 }

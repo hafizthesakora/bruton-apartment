@@ -14,7 +14,9 @@ import { motion, AnimatePresence } from './MotionWrapper';
 
 const BRUTON_EMAIL = 'info@brutongardens.com';
 
-const timeSlots = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+function toApiDate(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
 
 function getDaysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate();
@@ -93,6 +95,9 @@ const BookingModal = ({ isOpen, onClose, defaultViewingType = 'physical' }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [calendarLinks, setCalendarLinks] = useState({ google: '', icsContent: '' });
+  const [slots, setSlots] = useState([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -116,10 +121,25 @@ const BookingModal = ({ isOpen, onClose, defaultViewingType = 'physical' }) => {
     else setCurrentMonth(currentMonth + 1);
   };
 
+  const loadSlots = async (date) => {
+    setSlotsLoading(true);
+    try {
+      const res = await fetch(`/api/viewings/slots?date=${toApiDate(date)}`);
+      const data = await res.json();
+      setSlots(res.ok ? data.slots : []);
+    } catch {
+      setSlots([]);
+    } finally {
+      setSlotsLoading(false);
+    }
+  };
+
   const handleDateSelect = (day) => {
     if (isPastDate(day)) return;
-    setSelectedDate(new Date(currentYear, currentMonth, day));
+    const date = new Date(currentYear, currentMonth, day);
+    setSelectedDate(date);
     setSelectedTime(null);
+    loadSlots(date);
   };
 
   const handleChange = (e) => {
@@ -129,82 +149,43 @@ const BookingModal = ({ isOpen, onClose, defaultViewingType = 'physical' }) => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
+    setErrorMessage('');
     try {
-      const viewingLabel = viewingType === 'virtual' ? 'Virtual Demo' : 'Physical Viewing';
-      const dateStr = selectedDate.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const apiDate = toApiDate(selectedDate);
+      const res = await fetch('/api/viewings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...bookingData, date: apiDate, time: selectedTime, type: viewingType }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 409) {
+        // Someone took the slot in the meantime — back to the calendar with fresh availability.
+        setErrorMessage(data.error);
+        setSelectedTime(null);
+        setStep(1);
+        loadSlots(selectedDate);
+        return;
+      }
+      if (!res.ok) throw new Error(data.error || 'Failed to book. Please try again.');
 
+      const viewingLabel = viewingType === 'virtual' ? 'Virtual Demo' : 'Physical Viewing';
       const startDate = new Date(selectedDate);
       const [hours, minutes] = selectedTime.split(':');
       startDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
       const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
-
       const location = viewingType === 'physical' ? 'Bruton Gardens Apartment' : 'Virtual (link will be shared)';
       const title = `Bruton Gardens - ${viewingLabel}`;
-      const description = `Viewing Type: ${viewingLabel}\nGuest: ${bookingData.name}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone}\nDate: ${dateStr}\nTime: ${selectedTime}\nNotes: ${bookingData.notes || 'None'}`;
+      const description = `${viewingLabel} at Bruton Gardens & Apartments\nName: ${bookingData.name}\nPhone: ${bookingData.phone}`;
+      const event = { title, startDate, endDate, description, location };
 
-      const apiDate = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
-
-      let apiSuccess = false;
-      try {
-        const res = await fetch('/api/booking', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: bookingData.name,
-            email: bookingData.email,
-            phone: bookingData.phone,
-            notes: bookingData.notes,
-            date: apiDate,
-            time: selectedTime,
-            viewingType,
-          }),
-        });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          apiSuccess = true;
-        }
-      } catch {
-        // API not available, fall through to .ics fallback
-      }
-
-      const icsContent = generateICS({
-        title,
-        startDate,
-        endDate,
-        description,
-        location,
-        organizerEmail: BRUTON_EMAIL,
-        attendeeEmail: bookingData.email,
-        attendeeName: bookingData.name,
+      setCalendarLinks({
+        google: buildGoogleCalendarUrl(event),
+        icsContent: generateICS({ ...event, organizerEmail: BRUTON_EMAIL, attendeeEmail: bookingData.email, attendeeName: bookingData.name }),
       });
-
-      const googleUrl = buildGoogleCalendarUrl({ title, startDate, endDate, description, location });
-
-      if (!apiSuccess) {
-        downloadICS(icsContent, `bruton-gardens-viewing-${apiDate}.ics`);
-
-        // Notify Bruton via email
-        try {
-          await fetch('/api/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: bookingData.name,
-              email: bookingData.email,
-              phone: bookingData.phone,
-              country: '',
-              message: `NEW BOOKING REQUEST\n\nType: ${viewingLabel}\nDate: ${dateStr}\nTime: ${selectedTime}\nNotes: ${bookingData.notes || 'None'}`,
-            }),
-          });
-        } catch {
-          // Email notification failed silently — booking .ics was still downloaded
-        }
-      }
-
-      setCalendarLinks({ google: googleUrl, icsContent, apiSuccess });
       setSubmitStatus('success');
       setStep(3);
-    } catch {
+    } catch (err) {
+      setErrorMessage(err.message);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -218,6 +199,8 @@ const BookingModal = ({ isOpen, onClose, defaultViewingType = 'physical' }) => {
     setSelectedTime(null);
     setSubmitStatus(null);
     setCalendarLinks({ google: '', icsContent: '' });
+    setSlots([]);
+    setErrorMessage('');
     setBookingData({ name: '', email: '', phone: '', notes: '' });
     setViewingType(defaultViewingType);
   };
@@ -323,26 +306,37 @@ const BookingModal = ({ isOpen, onClose, defaultViewingType = 'physical' }) => {
                           {selectedDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
                         </span>
                       </div>
-                      <div className="grid grid-cols-3 gap-2">
-                        {timeSlots.map((time) => (
-                          <button
-                            key={time}
-                            onClick={() => setSelectedTime(time)}
-                            className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
-                              selectedTime === time
-                                ? 'bg-lime-400 text-gray-900 shadow-md'
-                                : 'bg-gray-100 text-gray-700 hover:bg-lime-50'
-                            }`}
-                          >
-                            {time}
-                          </button>
-                        ))}
-                      </div>
+                      {slotsLoading ? (
+                        <p className="text-sm text-gray-400 py-3">Checking available times…</p>
+                      ) : slots.some((s) => s.available) ? (
+                        <div className="grid grid-cols-3 gap-2">
+                          {slots.map(({ time, available }) => (
+                            <button
+                              key={time}
+                              onClick={() => setSelectedTime(time)}
+                              disabled={!available}
+                              className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
+                                selectedTime === time
+                                  ? 'bg-lime-400 text-gray-900 shadow-md'
+                                  : available
+                                    ? 'bg-gray-100 text-gray-700 hover:bg-lime-50'
+                                    : 'bg-gray-50 text-gray-300 line-through cursor-not-allowed'
+                              }`}
+                            >
+                              {time}
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500 py-3">No times left on this day — please pick another date.</p>
+                      )}
                     </motion.div>
                   )}
 
+                  {errorMessage && <div className="bg-amber-50 text-amber-800 px-4 py-3 rounded-lg mb-3 text-sm">{errorMessage}</div>}
+
                   <button
-                    onClick={() => setStep(2)}
+                    onClick={() => { setErrorMessage(''); setStep(2); }}
                     disabled={!selectedDate || !selectedTime}
                     className="w-full bg-lime-400 hover:bg-lime-500 text-black font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
                   >
@@ -383,7 +377,7 @@ const BookingModal = ({ isOpen, onClose, defaultViewingType = 'physical' }) => {
                     </div>
                   </div>
 
-                  {submitStatus === 'error' && <div className="bg-red-100 text-red-700 px-4 py-3 rounded-lg mt-3 text-sm">Failed to book. Please try again.</div>}
+                  {submitStatus === 'error' && <div className="bg-red-100 text-red-700 px-4 py-3 rounded-lg mt-3 text-sm">{errorMessage || 'Failed to book. Please try again.'}</div>}
 
                   <div className="flex gap-3 mt-4">
                     <button onClick={() => setStep(1)} className="flex-1 border-2 border-gray-300 text-gray-700 font-semibold py-3 rounded-lg transition-colors hover:bg-gray-50">
@@ -408,9 +402,7 @@ const BookingModal = ({ isOpen, onClose, defaultViewingType = 'physical' }) => {
                     </div>
                     <h3 className="text-xl font-semibold mb-2">Booking Confirmed!</h3>
                     <p className="text-gray-500 text-sm mb-6">
-                      {calendarLinks.apiSuccess
-                        ? 'Your viewing has been added to the Bruton Gardens calendar. A calendar invite has been sent to your email.'
-                        : 'Your viewing has been scheduled. A calendar file has been downloaded to your device — open it to add the event to your calendar.'}
+                      We&apos;ve booked your slot and sent the details to your email and phone. See you then!
                     </p>
 
                     <div className="bg-gray-50 rounded-xl p-4 mb-6 text-left">
