@@ -44,3 +44,17 @@ describe('expenses', () => {
     expect(log.find((l) => l.action === 'delete')?.diff).toMatchObject({ amount: 1_234, category: 'Other' });
   });
 });
+
+describe('audit log reader', () => {
+  it('filters by entity and record, and pages with `before`', async () => {
+    const { readAuditLog } = await import('@/lib/audit');
+    const all = await readAuditLog(db, { entity: 'expense', limit: 2 });
+    expect(all.entries).toHaveLength(2);
+    expect(all.more).toBe(true);
+    expect(all.entries[0].id).toBeGreaterThan(all.entries[1].id);
+    const next = await readAuditLog(db, { entity: 'expense', limit: 2, before: all.entries[1].id });
+    expect(next.entries.every((e) => e.id < all.entries[1].id)).toBe(true);
+    const one = await readAuditLog(db, { entity: 'expense', entityId: all.entries[0].entityId! });
+    expect(one.entries.every((e) => e.entityId === all.entries[0].entityId)).toBe(true);
+  });
+});
