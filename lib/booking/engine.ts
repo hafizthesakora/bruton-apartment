@@ -263,7 +263,7 @@ type Actor = { id: number | null; name: string };
  * exactly once, on the transition.
  * Throws an overlap error if a lapsed hold's dates have since been taken.
  */
-export async function confirmBooking(tx: Tx, bookingId: number, actor: Actor, now = new Date()) {
+export async function confirmBooking(tx: Tx, bookingId: number, actor: Actor, now = new Date(), opts: { notify?: boolean } = {}) {
   const [booking] = await tx.update(bookings)
     .set({ status: 'confirmed', holdExpiresAt: null, updatedAt: now })
     .where(and(eq(bookings.id, bookingId), inArray(bookings.status, ['held', 'pending_payment', 'expired'])))
@@ -284,7 +284,7 @@ export async function confirmBooking(tx: Tx, bookingId: number, actor: Actor, no
     createdBy: actor.id,
   });
   await audit(actor, 'booking', booking.id, 'confirm', { reference: booking.reference }, tx);
-  await queueBookingConfirmed(tx, booking.id);
+  if (opts.notify !== false) await queueBookingConfirmed(tx, booking.id);
   return booking;
 }
 
