@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { getDb } from '@/lib/db';
 import { applySuccessfulCharge } from '@/lib/booking/engine';
 import { verifySignature, type PaystackEvent } from '@/lib/payments/paystack';
+import { deliverQueued } from '@/lib/notify';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +23,9 @@ export async function POST(request: Request) {
   }
 
   const { reference, amount, currency, channel } = event.data;
-  const outcome = await applySuccessfulCharge(await getDb(), { reference, amount, currency, channel, raw: event.data });
+  const db = await getDb();
+  const outcome = await applySuccessfulCharge(db, { reference, amount, currency, channel, raw: event.data });
+  after(() => deliverQueued(db));
   if (outcome !== 'confirmed' && outcome !== 'duplicate') console.warn('[paystack] charge', reference, outcome);
   return NextResponse.json({ ok: true, outcome });
 }

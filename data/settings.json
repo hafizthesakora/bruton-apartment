@@ -11,5 +11,11 @@
     "whatsapp": "",
     "facebook": "",
     "tiktok": ""
+  },
+  "guestMessages": {
+    "phone": "",
+    "directionsUrl": "https://maps.app.goo.gl/uAjiMzC2AW4HJxGJ9",
+    "arrivalNote": "",
+    "reviewUrl": ""
   }
 }

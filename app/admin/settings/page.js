@@ -167,6 +167,46 @@ export default function SettingsPage() {
             </div>
           </div>
 
+          {/* Guest messages */}
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <h3 className="font-semibold text-gray-900 mb-1">Guest Messages</h3>
+            <p className="text-xs text-gray-400 mb-5 pb-3 border-b border-gray-100">Used in booking confirmation, pre-arrival and review emails and texts. New-booking alerts go to the Enquiry Recipient Email above.</p>
+            <div className="space-y-4">
+              {[
+                { key: 'phone', label: 'Front desk phone', placeholder: '+233 24 000 0000', hint: 'shown to guests for help' },
+                { key: 'directionsUrl', label: 'Directions link', placeholder: 'https://maps.app.goo.gl/…', hint: 'Google Maps link' },
+                { key: 'reviewUrl', label: 'Review link', placeholder: 'https://g.page/r/…/review', hint: 'sent after check-out; blank = no review email' },
+              ].map(({ key, label, placeholder, hint }) => (
+                <div key={key}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    {label}
+                    {hint && <span className="ml-2 text-xs font-normal text-gray-400">({hint})</span>}
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.guestMessages?.[key] || ''}
+                    onChange={(e) => setSettings({ ...settings, guestMessages: { ...settings.guestMessages, [key]: e.target.value } })}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-lime-400 focus:ring-1 focus:ring-lime-400"
+                    placeholder={placeholder}
+                  />
+                </div>
+              ))}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Arrival instructions
+                  <span className="ml-2 text-xs font-normal text-gray-400">(included in the day-before email)</span>
+                </label>
+                <textarea
+                  rows={3}
+                  value={settings.guestMessages?.arrivalNote || ''}
+                  onChange={(e) => setSettings({ ...settings, guestMessages: { ...settings.guestMessages, arrivalNote: e.target.value } })}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-lime-400 focus:ring-1 focus:ring-lime-400 resize-none"
+                  placeholder="Parking, gate code, who to ask for at reception…"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Staff logins note */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 flex gap-3">
             <Info size={18} className="text-amber-600 flex-shrink-0 mt-0.5" />
