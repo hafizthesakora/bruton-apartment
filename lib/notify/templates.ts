@@ -5,6 +5,15 @@
  */
 import { formatGHS } from '@/lib/money';
 
+export type SiteInfo = {
+  name: string;
+  url: string;
+  phone: string;
+  directionsUrl: string;
+  arrivalNote: string;
+  reviewUrl: string;
+};
+
 export type BookingMessageData = {
   reference: string;
   guestName: string;
@@ -23,14 +32,19 @@ export type BookingMessageData = {
   checkInTime: string;
   checkOutTime: string;
   cancellationText: string;
-  site: {
-    name: string;
-    url: string;
-    phone: string;
-    directionsUrl: string;
-    arrivalNote: string;
-    reviewUrl: string;
-  };
+  site: SiteInfo;
+};
+
+export type ViewingChange = 'booked' | 'rescheduled' | 'cancelled';
+
+export type ViewingMessageData = {
+  name: string;
+  guestEmail: string | null;
+  guestPhone: string | null;
+  type: 'physical' | 'virtual';
+  scheduledAt: Date;
+  notes: string;
+  site: SiteInfo;
 };
 
 export type EmailMessage = { subject: string; html: string };
@@ -48,7 +62,7 @@ const bookingUrl = (d: BookingMessageData) => `${d.site.url}/book/${d.reference}
 
 /* ── Email shell ───────────────────────────────────────────────────────── */
 
-function layout(d: BookingMessageData, title: string, body: string) {
+function layout(d: { site: SiteInfo }, title: string, body: string) {
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#f4f5fa;font-family:Helvetica,Arial,sans-serif;color:#111827">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5fa;padding:24px 12px"><tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden">
@@ -181,6 +195,73 @@ export function staffNewBookingEmail(d: BookingMessageData): EmailMessage {
         ['Balance', formatGHS(balance), balance > 0],
       ]),
       d.notes ? p(`<strong>Guest notes:</strong> ${esc(d.notes)}`) : '',
+    ].join('')),
+  };
+}
+
+/* ── Viewings ──────────────────────────────────────────────────────────── */
+
+// Ghana is UTC+0 all year, so UTC formatting is local time at the property.
+const viewingWhen = (at: Date) =>
+  at.toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+const viewingWhenShort = (at: Date) =>
+  at.toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+const viewingLabel = (d: ViewingMessageData) => (d.type === 'virtual' ? 'virtual viewing' : 'viewing');
+
+export function viewingEmail(d: ViewingMessageData, change: ViewingChange): EmailMessage {
+  const when = viewingWhen(d.scheduledAt);
+  const label = viewingLabel(d);
+  if (change === 'cancelled') {
+    return {
+      subject: `Your ${label} has been cancelled · ${d.site.name}`,
+      html: layout(d, `Your ${label} has been cancelled`, [
+        p(`Hi ${esc(firstName(d.name))}, your ${label} on <strong>${esc(when)}</strong> has been cancelled.`),
+        button(d.site.url, 'Book another time'),
+        d.site.phone ? p(`Questions? Call or WhatsApp ${esc(d.site.phone)}.`) : '',
+      ].join('')),
+    };
+  }
+  const title = change === 'rescheduled' ? `Your ${label} has moved` : `Your ${label} is booked`;
+  return {
+    subject: `${title} · ${viewingWhenShort(d.scheduledAt)} · ${d.site.name}`,
+    html: layout(d, title, [
+      p(`Hi ${esc(firstName(d.name))}, ${change === 'rescheduled' ? 'your new time is' : 'we look forward to showing you around on'} <strong>${esc(when)}</strong>.`),
+      d.type === 'virtual'
+        ? p('We’ll send the video link to this email address before the call.')
+        : p('The viewing takes about an hour. Please ask for the front desk when you arrive.'),
+      d.type === 'physical' && d.site.directionsUrl ? button(d.site.directionsUrl, 'Get directions') : '',
+      d.site.phone ? p(`Need to change the time? Call or WhatsApp ${esc(d.site.phone)}.`) : '',
+    ].join('')),
+  };
+}
+
+export function viewingSms(d: ViewingMessageData, change: ViewingChange) {
+  const when = viewingWhenShort(d.scheduledAt);
+  const label = viewingLabel(d);
+  if (change === 'cancelled') {
+    return `Bruton Gardens: your ${label} on ${when} has been cancelled.${d.site.phone ? ` Questions? ${d.site.phone}` : ''}`;
+  }
+  return [
+    `Bruton Gardens: your ${label} is ${change === 'rescheduled' ? 'moved to' : 'booked for'} ${when}.`,
+    d.type === 'physical' && d.site.directionsUrl ? `Directions: ${d.site.directionsUrl}` : '',
+    d.type === 'virtual' ? 'We will send the video link by email.' : '',
+    d.site.phone ? `To change: ${d.site.phone}` : '',
+  ].filter(Boolean).join(' ');
+}
+
+export function staffNewViewingEmail(d: ViewingMessageData): EmailMessage {
+  return {
+    subject: `New ${viewingLabel(d)}: ${d.name}, ${viewingWhenShort(d.scheduledAt)}`,
+    html: layout(d, `New ${viewingLabel(d)} request`, [
+      rows([
+        ['When', viewingWhen(d.scheduledAt), true],
+        ['Type', d.type === 'virtual' ? 'Virtual viewing' : 'Physical viewing'],
+        ['Name', d.name],
+        ['Phone', d.guestPhone || '—'],
+        ['Email', d.guestEmail || '—'],
+      ]),
+      d.notes ? p(`<strong>Notes:</strong> ${esc(d.notes)}`) : '',
+      button(`${d.site.url}/admin/viewings`, 'Open viewings'),
     ].join('')),
   };
 }

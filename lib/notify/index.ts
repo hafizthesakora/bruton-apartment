@@ -6,12 +6,12 @@
  */
 import { and, asc, eq, inArray, lt } from 'drizzle-orm';
 import type { DB, Tx } from '@/lib/db';
-import { apartments, bookings, guests, notifications, policies, siteContent } from '@/lib/db/schema';
+import { apartments, bookings, guests, notifications, policies, siteContent, viewings } from '@/lib/db/schema';
 import { folioPaid } from '@/lib/booking/folio';
 import { nightsBetween } from '@/lib/booking/pricing';
 import { normalizeGhanaPhone, sendEmail, sendSms, type SendResult } from './providers';
 import * as t from './templates';
-import type { BookingMessageData } from './templates';
+import type { BookingMessageData, SiteInfo, ViewingChange, ViewingMessageData } from './templates';
 
 const MAX_ATTEMPTS = 5;
 const RETRYABLE = ['queued', 'failed'];
@@ -19,7 +19,9 @@ const RETRYABLE = ['queued', 'failed'];
 /** Fallbacks until the owner fills in Settings → Guest messages. */
 const DEFAULT_DIRECTIONS = 'https://maps.app.goo.gl/uAjiMzC2AW4HJxGJ9';
 
-type Template = 'booking_confirmed' | 'payment_receipt' | 'pre_arrival' | 'review_request' | 'staff_new_booking';
+type Template =
+  | 'booking_confirmed' | 'payment_receipt' | 'pre_arrival' | 'review_request' | 'staff_new_booking'
+  | 'viewing_booked' | 'viewing_rescheduled' | 'viewing_cancelled' | 'staff_new_viewing';
 
 type Settings = {
   siteName?: string;
@@ -37,6 +39,22 @@ function reviewUrlFallback() {
   return placeId ? `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}` : '';
 }
 
+async function loadSite(db: DB | Tx): Promise<{ site: SiteInfo; staffEmail: string }> {
+  const settings = await readSettings(db);
+  const gm = settings.guestMessages ?? {};
+  return {
+    staffEmail: settings.recipientEmail ?? '',
+    site: {
+      name: settings.siteName || 'Bruton Gardens & Apartments',
+      url: (process.env.SITE_URL || 'https://brutongardens.com').replace(/\/$/, ''),
+      phone: gm.phone ?? '',
+      directionsUrl: gm.directionsUrl || DEFAULT_DIRECTIONS,
+      arrivalNote: gm.arrivalNote ?? '',
+      reviewUrl: gm.reviewUrl || reviewUrlFallback(),
+    },
+  };
+}
+
 export async function loadBookingMessageData(db: DB | Tx, bookingId: number): Promise<BookingMessageData & { staffEmail: string }> {
   const [row] = await db.select({ b: bookings, aptName: apartments.name, g: guests })
     .from(bookings)
@@ -44,12 +62,11 @@ export async function loadBookingMessageData(db: DB | Tx, bookingId: number): Pr
     .innerJoin(guests, eq(guests.id, bookings.guestId))
     .where(eq(bookings.id, bookingId));
   if (!row) throw new Error(`Booking ${bookingId} not found`);
-  const [[policy], paid, settings] = await Promise.all([
+  const [[policy], paid, { site, staffEmail }] = await Promise.all([
     db.select().from(policies).where(eq(policies.id, 1)),
     folioPaid(db, bookingId),
-    readSettings(db),
+    loadSite(db),
   ]);
-  const gm = settings.guestMessages ?? {};
   const { b, g } = row;
   return {
     reference: b.reference,
@@ -69,15 +86,8 @@ export async function loadBookingMessageData(db: DB | Tx, bookingId: number): Pr
     checkInTime: policy?.checkInTime ?? '14:00',
     checkOutTime: policy?.checkOutTime ?? '11:00',
     cancellationText: policy?.cancellationText ?? '',
-    staffEmail: settings.recipientEmail ?? '',
-    site: {
-      name: settings.siteName || 'Bruton Gardens & Apartments',
-      url: (process.env.SITE_URL || 'https://brutongardens.com').replace(/\/$/, ''),
-      phone: gm.phone ?? '',
-      directionsUrl: gm.directionsUrl || DEFAULT_DIRECTIONS,
-      arrivalNote: gm.arrivalNote ?? '',
-      reviewUrl: gm.reviewUrl || reviewUrlFallback(),
-    },
+    staffEmail,
+    site,
   };
 }
 
@@ -85,10 +95,13 @@ type Outgoing =
   | { channel: 'email'; to: string; template: Template; email: t.EmailMessage }
   | { channel: 'sms'; to: string; template: Template; text: string };
 
-async function enqueue(tx: Tx, bookingId: number, msgs: Outgoing[]) {
+type Subject = { bookingId?: number; viewingId?: number };
+
+async function enqueue(tx: Tx, subject: number | Subject, msgs: Outgoing[]) {
   if (msgs.length === 0) return;
+  const link = typeof subject === 'number' ? { bookingId: subject } : subject;
   await tx.insert(notifications).values(msgs.map((m) => ({
-    bookingId,
+    ...link,
     channel: m.channel,
     to: m.to,
     template: m.template,
@@ -99,7 +112,7 @@ async function enqueue(tx: Tx, bookingId: number, msgs: Outgoing[]) {
   })));
 }
 
-function toGuest(d: BookingMessageData, template: Template, email?: t.EmailMessage, sms?: string): Outgoing[] {
+function toGuest(d: { guestEmail: string | null; guestPhone: string | null }, template: Template, email?: t.EmailMessage, sms?: string): Outgoing[] {
   const out: Outgoing[] = [];
   if (email && d.guestEmail) out.push({ channel: 'email', to: d.guestEmail, template, email });
   const phone = normalizeGhanaPhone(d.guestPhone);
@@ -132,6 +145,20 @@ export async function queueReviewRequest(tx: Tx, bookingId: number) {
   return true;
 }
 
+export async function queueViewingMessages(tx: Tx, viewingId: number, change: ViewingChange) {
+  const [v] = await tx.select().from(viewings).where(eq(viewings.id, viewingId));
+  if (!v) throw new Error(`Viewing ${viewingId} not found`);
+  const { site, staffEmail } = await loadSite(tx);
+  const d: ViewingMessageData = {
+    name: v.name, guestEmail: v.email, guestPhone: v.phone, type: v.type === 'virtual' ? 'virtual' : 'physical',
+    scheduledAt: v.scheduledAt, notes: v.notes, site,
+  };
+  const template = `viewing_${change}` as Template;
+  const msgs = toGuest(d, template, t.viewingEmail(d, change), t.viewingSms(d, change));
+  if (change === 'booked' && staffEmail) msgs.push({ channel: 'email', to: staffEmail, template: 'staff_new_viewing', email: t.staffNewViewingEmail(d) });
+  await enqueue(tx, { viewingId }, msgs);
+}
+
 /* ── Delivery ──────────────────────────────────────────────────────────── */
 
 export type Senders = {
@@ -144,13 +171,14 @@ const defaultSenders: Senders = { email: sendEmail, sms: sendSms };
  * Send whatever is queued (and retry failures). Each row is claimed with a conditional
  * update first, so two overlapping runs can't send the same message twice.
  */
-export async function deliverQueued(db: DB, opts: { limit?: number; senders?: Senders; bookingId?: number } = {}) {
+export async function deliverQueued(db: DB, opts: { limit?: number; senders?: Senders; bookingId?: number; viewingId?: number } = {}) {
   const senders = opts.senders ?? defaultSenders;
   const pending = await db.select({ id: notifications.id }).from(notifications)
     .where(and(
       inArray(notifications.status, RETRYABLE),
       lt(notifications.attempts, MAX_ATTEMPTS),
       ...(opts.bookingId ? [eq(notifications.bookingId, opts.bookingId)] : []),
+      ...(opts.viewingId ? [eq(notifications.viewingId, opts.viewingId)] : []),
     ))
     .orderBy(asc(notifications.id))
     .limit(opts.limit ?? 50);
