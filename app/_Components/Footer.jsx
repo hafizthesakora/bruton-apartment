@@ -28,6 +28,8 @@ const DEFAULT_FOOTER = {
     { href: '/blog', label: 'Gallery & Blog' },
     { href: '/services', label: 'Services' },
     { href: '/facilities', label: 'Facilities' },
+    { href: '/book', label: 'Book a Stay' },
+    { href: '/room-service', label: 'Room Service' },
   ],
   connectHeading: 'Connect',
   socialLinks: [],
