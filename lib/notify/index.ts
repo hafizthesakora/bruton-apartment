@@ -23,7 +23,7 @@ type Template =
   | 'booking_confirmed' | 'payment_receipt' | 'pre_arrival' | 'review_request' | 'staff_new_booking'
   | 'viewing_booked' | 'viewing_rescheduled' | 'viewing_cancelled' | 'staff_new_viewing'
   | 'event_received' | 'event_quoted' | 'event_deposit' | 'event_confirmed' | 'staff_new_event'
-  | 'booking_changed' | 'booking_cancelled';
+  | 'booking_changed' | 'booking_cancelled' | 'staff_change_request' | 'change_request_reply';
 
 type Settings = {
   siteName?: string;
@@ -128,6 +128,16 @@ export async function queueBookingConfirmed(tx: Tx, bookingId: number) {
   const msgs = toGuest(d, 'booking_confirmed', t.bookingConfirmedEmail(d), t.bookingConfirmedSms(d));
   if (d.staffEmail) msgs.push({ channel: 'email', to: d.staffEmail, template: 'staff_new_booking', email: t.staffNewBookingEmail(d) });
   await enqueue(tx, bookingId, msgs);
+}
+
+export async function queueChangeRequest(tx: Tx, bookingId: number, message: string) {
+  const d = await loadBookingMessageData(tx, bookingId);
+  if (d.staffEmail) await enqueue(tx, bookingId, [{ channel: 'email', to: d.staffEmail, template: 'staff_change_request', email: t.staffChangeRequestEmail(d, message) }]);
+}
+
+export async function queueChangeRequestReply(tx: Tx, bookingId: number, response: string) {
+  const d = await loadBookingMessageData(tx, bookingId);
+  await enqueue(tx, bookingId, toGuest(d, 'change_request_reply', t.changeRequestReplyEmail(d, response), t.changeRequestReplySms(d)));
 }
 
 export async function queueBookingChanged(tx: Tx, bookingId: number, change: 'changed' | 'cancelled') {

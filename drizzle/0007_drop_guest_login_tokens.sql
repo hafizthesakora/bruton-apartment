@@ -1,0 +1,1 @@
+DROP TABLE "guest_login_tokens" CASCADE;
