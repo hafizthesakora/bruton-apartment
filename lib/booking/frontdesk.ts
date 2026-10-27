@@ -7,32 +7,12 @@ import { and, asc, eq, inArray, lt, sql } from 'drizzle-orm';
 import type { DB, Tx } from '@/lib/db';
 import { alerts, apartments, bookings, folioEntries, guests, housekeepingStatus, housekeepingTasks } from '@/lib/db/schema';
 import { audit } from '@/lib/audit';
-import { queuePaymentReceipt } from '@/lib/notify';
+import { bookingBalance, recordPayment, type PaymentInput } from './folios';
 import { BookingError } from './engine';
 import { addDays, isISODate, todayAtProperty } from './pricing';
 
 type Actor = { id: number; name: string };
-export type PaymentInput = { amount: number; method: 'cash' | 'momo' | 'transfer' | 'card'; reference?: string };
-
-const METHOD_LABEL: Record<PaymentInput['method'], string> = { cash: 'Cash', momo: 'Mobile Money', transfer: 'Bank transfer', card: 'Card' };
-
-/** Balance owed on a booking (pesewas): charges − payments + refunds. */
-export async function bookingBalance(db: DB | Tx, bookingId: number) {
-  const [{ balance }] = await db.select({
-    balance: sql<number>`coalesce(sum(case when ${folioEntries.type} = 'payment' then -${folioEntries.amount} else ${folioEntries.amount} end), 0)::int`,
-  }).from(folioEntries).where(eq(folioEntries.bookingId, bookingId));
-  return Number(balance);
-}
-
-async function takePayment(tx: Tx, booking: { id: number; source: string }, pay: PaymentInput, actor: Actor, when: string) {
-  if (pay.amount <= 0) return;
-  await tx.insert(folioEntries).values({
-    bookingId: booking.id, type: 'payment', amount: pay.amount, method: pay.method,
-    reference: pay.reference?.trim() || null, description: `${METHOD_LABEL[pay.method]} payment at ${when}`, createdBy: actor.id,
-  });
-  await audit(actor, 'booking', booking.id, 'payment', { amount: pay.amount, method: pay.method, at: when }, tx);
-  await queuePaymentReceipt(tx, booking.id, { amount: pay.amount, method: METHOD_LABEL[pay.method], reference: pay.reference?.trim() || `${when} desk` });
-}
+export type { PaymentInput };
 
 /* ── Check-in ──────────────────────────────────────────────────────────── */
 
@@ -68,7 +48,7 @@ export async function checkIn(db: DB, id: number, input: CheckInInput, actor: Ac
       securityDeposit: input.securityDeposit ?? 0, updatedAt: now,
     }).where(eq(bookings.id, id)).returning();
 
-    if (input.payment) await takePayment(tx, b, input.payment, actor, 'check-in');
+    if (input.payment) await recordPayment(tx, b.id, input.payment, actor, 'at check-in');
     // ID number deliberately left out of the audit trail (Data Protection Act: keep personal data minimal).
     await audit(actor, 'booking', id, 'check_in', { keyIssued: input.keyIssued, securityDeposit: input.securityDeposit ?? 0, idType: input.idType }, tx);
     return { booking: updated, warning: hk && hk.status !== 'clean' ? `Housekeeping shows this apartment as ${hk.status.replace('_', ' ')}` : null };
@@ -92,7 +72,7 @@ export async function checkOut(db: DB, id: number, input: CheckOutInput, actor: 
     if (!b) throw new BookingError(404, 'Booking not found');
     if (b.status !== 'checked_in') throw new BookingError(400, 'Only checked-in guests can be checked out');
 
-    if (input.payment) await takePayment(tx, b, input.payment, actor, 'check-out');
+    if (input.payment) await recordPayment(tx, b.id, input.payment, actor, 'at check-out');
     const balance = await bookingBalance(tx, id);
     if (balance > 0 && !input.allowBalance) {
       throw new BookingError(409, `The guest still owes GH₵ ${(balance / 100).toFixed(2)}. Take payment, or tick “check out with balance owing”.`);

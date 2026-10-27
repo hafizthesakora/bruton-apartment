@@ -3,7 +3,8 @@ import { eq } from 'drizzle-orm';
 import { testDb } from './helpers';
 import { alerts, apartments, bookings, guests, housekeepingStatus, housekeepingTasks, notifications } from '@/lib/db/schema';
 import { createStaffBooking, type StaffBookingInput } from '@/lib/booking/staff';
-import { bookingBalance, checkIn, checkOut, frontDeskCounts, frontDeskDay } from '@/lib/booking/frontdesk';
+import { checkIn, checkOut, frontDeskCounts, frontDeskDay } from '@/lib/booking/frontdesk';
+import { bookingBalance } from '@/lib/booking/folios';
 import type { DB } from '@/lib/db';
 
 let db: DB;

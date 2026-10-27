@@ -41,7 +41,7 @@ function reviewUrlFallback() {
   return placeId ? `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}` : '';
 }
 
-async function loadSite(db: DB | Tx): Promise<{ site: SiteInfo; staffEmail: string }> {
+export async function loadSite(db: DB | Tx): Promise<{ site: SiteInfo; staffEmail: string }> {
   const settings = await readSettings(db);
   const gm = settings.guestMessages ?? {};
   return {
