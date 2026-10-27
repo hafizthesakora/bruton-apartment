@@ -2,10 +2,11 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import {
-  LogIn, LogOut, BedDouble, Sparkles, Wrench, UtensilsCrossed, Receipt, Eye, PartyPopper, Mail, AlertTriangle, Check,
+  LogIn, LogOut, BedDouble, Sparkles, Wrench, UtensilsCrossed, Receipt, Eye, PartyPopper, Mail, AlertTriangle, Check, MessageSquare, Phone,
   FileText, Images, Settings,
 } from 'lucide-react';
-import { Card, Empty, Badge, api, useApi, cx, formatGHS, formatDate } from './_components/ui';
+import { Card, Empty, Badge, Button, Textarea, ErrorText, api, useApi, cx, formatGHS, formatDate } from './_components/ui';
+import { useState } from 'react';
 import { useCan, useStaff } from './_components/StaffContext';
 
 type Dash = {
@@ -19,6 +20,11 @@ type Dash = {
   events?: { upcoming: { id: number; name: string; eventType: string; eventDate: string; stage: string }[]; newLeads: number };
   enquiries?: { unread: number };
   alerts?: { id: number; type: string; message: string; bookingId: number | null; createdAt: string }[];
+  changeRequests?: ChangeRequest[];
+};
+type ChangeRequest = {
+  id: number; bookingId: number; message: string; createdAt: string; reference: string; guestName: string;
+  guestPhone: string | null; checkIn: string; checkOut: string; apartmentName: string;
 };
 
 function greeting() {
@@ -72,6 +78,12 @@ export default function Dashboard() {
                   {canResolve && <button onClick={() => resolve(a.id)} className="flex items-center gap-1 text-xs text-lime-700 hover:text-lime-900"><Check size={13} /> Dealt with</button>}
                 </div>
               ))}
+            </Card>
+          )}
+
+          {d.changeRequests && d.changeRequests.length > 0 && (
+            <Card title={<span className="flex items-center gap-2"><MessageSquare size={16} /> Guest requests · {d.changeRequests.length}</span>} padded={false}>
+              {d.changeRequests.map((r) => <RequestRow key={r.id} r={r} onDone={reload} />)}
             </Card>
           )}
 
@@ -150,6 +162,47 @@ export default function Dashboard() {
             </section>
           )}
         </>
+      )}
+    </div>
+  );
+}
+
+function RequestRow({ r, onDone }: { r: ChangeRequest; onDone: () => void }) {
+  const canAnswer = useCan('bookings', 'full');
+  const [reply, setReply] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+
+  async function send(response: string) {
+    setBusy(true);
+    setErr('');
+    try {
+      await api('/api/admin/change-requests', { method: 'POST', json: { id: r.id, response } });
+      onDone();
+    } catch (e) {
+      setErr((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="px-6 py-4 border-b border-gray-100 last:border-0 text-sm space-y-2">
+      <div className="flex flex-wrap justify-between gap-2">
+        <p><b className="font-medium">{r.guestName}</b> · <Link href={`/admin/folios/${r.bookingId}`} className="underline">{r.reference}</Link> · {r.apartmentName}, {formatDate(r.checkIn)} → {formatDate(r.checkOut)}</p>
+        <span className="text-xs text-gray-500">{formatDate(r.createdAt, true)}</span>
+      </div>
+      <p className="bg-lime-50 border-l-4 border-lime-400 px-3 py-2 whitespace-pre-line">{r.message}</p>
+      {r.guestPhone && <a href={`tel:${r.guestPhone}`} className="inline-flex items-center gap-1 text-xs text-gray-600"><Phone size={12} /> {r.guestPhone}</a>}
+      {canAnswer && (
+        <div className="space-y-2">
+          <Textarea rows={2} placeholder="Reply to the guest (sent by email/SMS). Make any change on the calendar first." value={reply} onChange={(e) => setReply(e.target.value)} />
+          <ErrorText>{err}</ErrorText>
+          <div className="flex gap-2">
+            <Button className="text-xs" loading={busy} disabled={!reply.trim()} onClick={() => send(reply)}>Send reply & close</Button>
+            <Button variant="ghost" className="text-xs" disabled={busy} onClick={() => send('')}>Close without reply</Button>
+          </div>
+        </div>
       )}
     </div>
   );

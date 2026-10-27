@@ -30,6 +30,7 @@ const DEFAULT_FOOTER = {
     { href: '/facilities', label: 'Facilities' },
     { href: '/book', label: 'Book a Stay' },
     { href: '/room-service', label: 'Room Service' },
+    { href: '/account', label: 'My Booking' },
   ],
   connectHeading: 'Connect',
   socialLinks: [],
