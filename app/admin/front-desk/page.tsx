@@ -170,7 +170,7 @@ function GuestRow({ row: r, note, action }: { row: Row; note?: string; action?: 
       </div>
       <div className="min-w-[110px]">
         <p className="text-xs text-gray-500">Balance</p>
-        <p className={cx('font-semibold', r.balance > 0 ? 'text-amber-700' : 'text-lime-700')}>{r.balance > 0 ? formatGHS(r.balance) : 'Paid'}</p>
+        <Link href={`/admin/folios/${r.id}`} className={cx('font-semibold hover:underline', r.balance > 0 ? 'text-amber-700' : 'text-lime-700')}>{r.balance > 0 ? formatGHS(r.balance) : 'Paid'}</Link>
       </div>
       {note && <p className="text-xs text-red-600">{note}</p>}
       <div className="ml-auto">{action}</div>
