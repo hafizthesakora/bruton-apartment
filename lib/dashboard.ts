@@ -10,6 +10,7 @@ import { can, type Role } from '@/lib/auth/rbac';
 import { BookingError } from '@/lib/booking/engine';
 import { addDays, todayAtProperty } from '@/lib/booking/pricing';
 import { readJSON } from '@/lib/data';
+import { openChangeRequests } from '@/lib/account';
 
 type Actor = { id: number; name: string };
 
@@ -66,6 +67,7 @@ export async function dashboard(db: DB, role: Role, now = new Date()) {
       .where(and(inArray(viewings.status, ['requested', 'confirmed']), gte(viewings.scheduledAt, new Date(today + 'T00:00:00Z')), sql`${viewings.scheduledAt} < ${new Date(addDays(today, 1) + 'T00:00:00Z')}`));
     const [h] = await db.select({ n: sql<number>`count(*)::int` }).from(viewings).where(eq(viewings.status, 'requested'));
     out.viewings = { today: Number(v.n), toConfirm: Number(h.n) };
+    out.changeRequests = await openChangeRequests(db);
   }
 
   if (can(role, 'events')) {

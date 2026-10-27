@@ -65,6 +65,7 @@ const ROUTE_PERMISSIONS: [string, Permission][] = [
   ['/admin/folios', 'payments'],
   ['/admin/guests', 'guests'],
   ['/admin/viewings', 'bookings'],
+  ['/admin/change-requests', 'bookings'],
   ['/admin/apartments', 'rates'],
   ['/admin/rates', 'rates'],
   ['/admin/housekeeping', 'housekeeping'],
