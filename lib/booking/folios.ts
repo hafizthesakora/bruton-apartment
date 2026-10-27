@@ -22,6 +22,7 @@ export const METHOD_LABEL: Record<Method, string> = {
   cash: 'Cash', momo: 'Mobile Money', transfer: 'Bank transfer', card: 'Card', paystack: 'Paystack', ota: 'Paid on channel',
 };
 
+const like = (q: string) => `%${q.replace(/[%_\\]/g, '')}%`;
 const ghs = (p: number) => `GH₵ ${(p / 100).toFixed(2)}`;
 
 const BALANCE_SQL = sql<number>`coalesce(sum(case when ${folioEntries.type} = 'payment' then -${folioEntries.amount} else ${folioEntries.amount} end), 0)::int`;
@@ -131,7 +132,7 @@ export async function folioList(db: DB, opts: { q?: string; owing?: boolean; lim
     .innerJoin(apartments, eq(apartments.id, bookings.apartmentId))
     .where(and(
       inArray(bookings.status, ['confirmed', 'checked_in', 'checked_out', 'cancelled']),
-      q ? or(ilike(bookings.reference, `%${q}%`), ilike(guests.fullName, `%${q}%`), ilike(guests.phone, `%${q}%`)) : undefined,
+      q ? or(ilike(bookings.reference, like(q)), ilike(guests.fullName, like(q)), ilike(guests.phone, like(q))) : undefined,
       opts.owing ? sql`${balanceExpr} > 0` : undefined,
     ))
     .orderBy(desc(bookings.checkIn), desc(bookings.id))
