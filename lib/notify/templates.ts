@@ -395,3 +395,37 @@ export function staffNewEventEmail(d: EventMessageData): EmailMessage {
     ].join('')),
   };
 }
+
+/* ── Booking changes (staff) ───────────────────────────────────────────── */
+
+export function bookingChangedEmail(d: BookingMessageData): EmailMessage {
+  return {
+    subject: `Your booking has been updated · ${d.reference} · ${d.site.name}`,
+    html: layout(d, 'Your booking has been updated', [
+      p(`Hi ${esc(firstName(d.guestName))}, here are your updated booking details.`),
+      stayRows(d),
+      button(bookingUrl(d), 'View your booking'),
+      d.site.phone ? p(`Questions? Call or WhatsApp ${esc(d.site.phone)}.`) : '',
+    ].join('')),
+  };
+}
+
+export function bookingChangedSms(d: BookingMessageData) {
+  return `Bruton Gardens: booking ${d.reference} updated. ${d.apartmentName}, ${shortDate(d.checkIn)} - ${shortDate(d.checkOut)} (${d.nights} night${d.nights === 1 ? '' : 's'}). Total ${smsMoney(d.total)}.`;
+}
+
+export function bookingCancelledEmail(d: BookingMessageData): EmailMessage {
+  return {
+    subject: `Booking cancelled · ${d.reference} · ${d.site.name}`,
+    html: layout(d, 'Your booking has been cancelled', [
+      p(`Hi ${esc(firstName(d.guestName))}, your booking ${esc(d.reference)} for ${esc(longDate(d.checkIn))} – ${esc(longDate(d.checkOut))} has been cancelled.`),
+      d.paid > 0 ? p('Our front desk will contact you about the payment you made.') : '',
+      button(`${d.site.url}/book`, 'Book again'),
+      d.site.phone ? p(`Questions? Call or WhatsApp ${esc(d.site.phone)}.`) : '',
+    ].join('')),
+  };
+}
+
+export function bookingCancelledSms(d: BookingMessageData) {
+  return `Bruton Gardens: booking ${d.reference} (${shortDate(d.checkIn)} - ${shortDate(d.checkOut)}) has been cancelled.${d.site.phone ? ` Questions? ${d.site.phone}` : ''}`;
+}

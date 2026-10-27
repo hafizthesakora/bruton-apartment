@@ -22,7 +22,8 @@ const DEFAULT_DIRECTIONS = 'https://maps.app.goo.gl/uAjiMzC2AW4HJxGJ9';
 type Template =
   | 'booking_confirmed' | 'payment_receipt' | 'pre_arrival' | 'review_request' | 'staff_new_booking'
   | 'viewing_booked' | 'viewing_rescheduled' | 'viewing_cancelled' | 'staff_new_viewing'
-  | 'event_received' | 'event_quoted' | 'event_deposit' | 'event_confirmed' | 'staff_new_event';
+  | 'event_received' | 'event_quoted' | 'event_deposit' | 'event_confirmed' | 'staff_new_event'
+  | 'booking_changed' | 'booking_cancelled';
 
 type Settings = {
   siteName?: string;
@@ -126,6 +127,14 @@ export async function queueBookingConfirmed(tx: Tx, bookingId: number) {
   const d = await loadBookingMessageData(tx, bookingId);
   const msgs = toGuest(d, 'booking_confirmed', t.bookingConfirmedEmail(d), t.bookingConfirmedSms(d));
   if (d.staffEmail) msgs.push({ channel: 'email', to: d.staffEmail, template: 'staff_new_booking', email: t.staffNewBookingEmail(d) });
+  await enqueue(tx, bookingId, msgs);
+}
+
+export async function queueBookingChanged(tx: Tx, bookingId: number, change: 'changed' | 'cancelled') {
+  const d = await loadBookingMessageData(tx, bookingId);
+  const msgs = change === 'changed'
+    ? toGuest(d, 'booking_changed', t.bookingChangedEmail(d), t.bookingChangedSms(d))
+    : toGuest(d, 'booking_cancelled', t.bookingCancelledEmail(d), t.bookingCancelledSms(d));
   await enqueue(tx, bookingId, msgs);
 }
 

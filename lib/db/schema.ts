@@ -177,7 +177,11 @@ export const bookings = pgTable('bookings', {
   uniqueIndex('bookings_channel_ref_idx').on(t.source, t.channelRef),
 ]);
 
-/** Guest folio ledger. amount is always positive; type decides the sign. */
+/**
+ * Guest folio ledger, append-only. Payments and refunds are positive amounts; charges are
+ * positive except adjustments (stay made cheaper, booking cancelled), which are negative charges.
+ * Balance = sum(charges) − sum(payments) + sum(refunds).
+ */
 export const folioEntries = pgTable('folio_entries', {
   id: serial('id').primaryKey(),
   bookingId: integer('booking_id').notNull().references(() => bookings.id, { onDelete: 'cascade' }),
