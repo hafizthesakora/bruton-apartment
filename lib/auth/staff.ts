@@ -63,6 +63,8 @@ export function errorResponse(err: unknown) {
       { status: 400 },
     );
   }
+  // request.json() on a malformed body
+  if (err instanceof SyntaxError) return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   console.error('[api]', err);
   return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
 }
