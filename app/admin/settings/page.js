@@ -140,16 +140,40 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Admin credentials note */}
+          {/* Social links */}
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <h3 className="font-semibold text-gray-900 mb-1">Social & Contact Links</h3>
+            <p className="text-xs text-gray-400 mb-5 pb-3 border-b border-gray-100">Shown on the homepage banner and footer. Leave a field empty to hide that icon.</p>
+            <div className="space-y-4">
+              {[
+                { key: 'whatsapp', label: 'WhatsApp number', placeholder: '233XXXXXXXXX', hint: 'international format, digits only' },
+                { key: 'facebook', label: 'Facebook page URL', placeholder: 'https://facebook.com/brutongardens' },
+                { key: 'tiktok', label: 'TikTok profile URL', placeholder: 'https://tiktok.com/@brutongardens' },
+              ].map(({ key, label, placeholder, hint }) => (
+                <div key={key}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    {label}
+                    {hint && <span className="ml-2 text-xs font-normal text-gray-400">({hint})</span>}
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.social?.[key] || ''}
+                    onChange={(e) => setSettings({ ...settings, social: { ...settings.social, [key]: e.target.value } })}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-lime-400 focus:ring-1 focus:ring-lime-400"
+                    placeholder={placeholder}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Staff logins note */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 flex gap-3">
             <Info size={18} className="text-amber-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-amber-800">Admin Credentials</p>
+              <p className="text-sm font-medium text-amber-800">Staff Logins</p>
               <p className="text-sm text-amber-700 mt-1">
-                Admin username and password are managed via environment variables{' '}
-                <code className="bg-amber-100 px-1 rounded text-xs">ADMIN_USERNAME</code> and{' '}
-                <code className="bg-amber-100 px-1 rounded text-xs">ADMIN_PASSWORD</code> in your{' '}
-                <code className="bg-amber-100 px-1 rounded text-xs">.env.local</code> file. Restart the server after changing them.
+                Staff accounts and roles are managed under <a href="/admin/staff" className="underline">Staff &amp; Roles</a>.
               </p>
             </div>
           </div>
