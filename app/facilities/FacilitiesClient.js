@@ -12,7 +12,7 @@ import {
   Utensils,
 } from 'lucide-react';
 import { FadeIn, StaggerContainer, StaggerItem, ScaleIn } from '../_Components/MotionWrapper';
-import BookingModal from '../_Components/BookingModal';
+import Link from 'next/link';
 import ContactModal from '../_Components/ContactModal';
 
 const FACILITY_ICONS = [Wifi, ParkingCircle, Lock, Coffee, AirVent, Utensils];
@@ -30,7 +30,6 @@ const DEFAULT_FACILITIES = {
 };
 
 export default function FacilitiesClient({ initialData }) {
-  const [bookingOpen, setBookingOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [c] = useState(initialData && Object.keys(initialData).length ? { ...DEFAULT_FACILITIES, ...initialData } : DEFAULT_FACILITIES);
   const router = useRouter();
@@ -133,9 +132,9 @@ export default function FacilitiesClient({ initialData }) {
                   <button onClick={() => router.push('/blog')} className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors">
                     {c.explore?.primaryCta || DEFAULT_FACILITIES.explore.primaryCta}
                   </button>
-                  <button onClick={() => setBookingOpen(true)} className="border-2 border-lime-600 text-lime-600 px-8 py-3 rounded-full hover:bg-lime-50 transition-colors">
+                  <Link href="/book" className="border-2 border-lime-600 text-lime-600 px-8 py-3 rounded-full hover:bg-lime-50 transition-colors">
                     {c.explore?.secondaryCta || DEFAULT_FACILITIES.explore.secondaryCta}
-                  </button>
+                  </Link>
                 </div>
               </FadeIn>
             </div>
@@ -191,9 +190,9 @@ export default function FacilitiesClient({ initialData }) {
           </FadeIn>
           <FadeIn direction="up" delay={0.2}>
             <div className="flex gap-4 justify-center">
-              <button onClick={() => setBookingOpen(true)} className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors">
+              <Link href="/book" className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors">
                 {c.cta?.primaryCta || DEFAULT_FACILITIES.cta.primaryCta}
-              </button>
+              </Link>
               <button onClick={() => setContactOpen(true)} className="border-2 border-white text-white px-8 py-3 rounded-full hover:bg-white/10 transition-colors">
                 {c.cta?.secondaryCta || DEFAULT_FACILITIES.cta.secondaryCta}
               </button>
@@ -202,7 +201,6 @@ export default function FacilitiesClient({ initialData }) {
         </div>
       </div>
 
-      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
       <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
     </div>
   );
