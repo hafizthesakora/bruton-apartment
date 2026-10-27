@@ -16,7 +16,7 @@ type Actor = { id: number; name: string };
 export type HkStatus = (typeof housekeepingStatus.$inferSelect)['status'];
 export const HK_STATUSES: HkStatus[] = ['clean', 'dirty', 'in_progress', 'out_of_order'];
 
-async function writeStatus(tx: Tx, apartmentId: number, status: HkStatus, note: string, actor: Actor, now: Date) {
+export async function writeStatus(tx: Tx, apartmentId: number, status: HkStatus, note: string, actor: Actor, now: Date) {
   const values = { status, note, updatedBy: actor.id, updatedAt: now };
   await tx.insert(housekeepingStatus).values({ apartmentId, ...values })
     .onConflictDoUpdate({ target: housekeepingStatus.apartmentId, set: values });
