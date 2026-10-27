@@ -29,7 +29,7 @@ export async function audit(
 export const AUDIT_ENTITY_LABELS: Record<string, string> = {
   booking: 'Bookings & payments', guest: 'Guests', apartment: 'Apartments & housekeeping', rate_plan: 'Rates', policies: 'Policies',
   hk_task: 'Housekeeping tasks', maintenance: 'Maintenance', expense: 'Expenses', order: 'Room service', menu_item: 'Menu',
-  event: 'Events', viewing: 'Viewings', staff: 'Staff accounts',
+  event: 'Events', viewing: 'Viewings', staff: 'Staff accounts', alert: 'Alerts',
 };
 
 export async function readAuditLog(db: DB, opts: { entity?: string; entityId?: string; actorId?: number; from?: string; to?: string; before?: number; limit?: number } = {}) {
