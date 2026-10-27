@@ -12,6 +12,7 @@ export type SiteInfo = {
   directionsUrl: string;
   arrivalNote: string;
   reviewUrl: string;
+  eventDepositInstructions: string;
 };
 
 export type BookingMessageData = {
@@ -262,6 +263,135 @@ export function staffNewViewingEmail(d: ViewingMessageData): EmailMessage {
       ]),
       d.notes ? p(`<strong>Notes:</strong> ${esc(d.notes)}`) : '',
       button(`${d.site.url}/admin/viewings`, 'Open viewings'),
+    ].join('')),
+  };
+}
+
+/* ── Event centre ──────────────────────────────────────────────────────── */
+
+export type EventChange = 'received' | 'quoted' | 'deposit' | 'confirmed';
+
+export type EventMessageData = {
+  reference: string;
+  name: string;
+  guestEmail: string | null;
+  guestPhone: string | null;
+  eventType: string;
+  eventDate: string;
+  headcount: number;
+  cateringRequired: boolean;
+  quoteAmount: number | null;
+  depositAmount: number | null;
+  depositPaidAmount: number;
+  quoteNotes: string;
+  notes: string;
+  site: SiteInfo;
+};
+
+function eventRows(d: EventMessageData, withMoney: boolean) {
+  const balance = (d.quoteAmount ?? 0) - d.depositPaidAmount;
+  return rows([
+    ['Reference', d.reference, true],
+    ['Event', d.eventType],
+    ['Date', longDate(d.eventDate)],
+    ['Guests', String(d.headcount)],
+    ...(withMoney && d.quoteAmount != null ? [
+      ['Quote', formatGHS(d.quoteAmount)] as [string, string],
+      ...(d.depositAmount ? [['Deposit to secure the date', formatGHS(d.depositAmount)] as [string, string]] : []),
+      ...(d.depositPaidAmount > 0 ? [['Deposit paid', formatGHS(d.depositPaidAmount)] as [string, string]] : []),
+      ...(d.depositPaidAmount > 0 && balance > 0 ? [['Balance', formatGHS(balance), true] as [string, string, boolean]] : []),
+    ] : []),
+  ]);
+}
+
+const helpLine = (d: EventMessageData) =>
+  d.site.phone ? p(`Questions? Call or WhatsApp us on ${esc(d.site.phone)}.`) : '';
+
+export function eventEmail(d: EventMessageData, change: EventChange): EmailMessage {
+  const first = esc(firstName(d.name));
+  switch (change) {
+    case 'received':
+      return {
+        subject: `We’ve received your event enquiry · ${d.reference} · ${d.site.name}`,
+        html: layout(d, 'Thanks for your enquiry', [
+          p(`Hi ${first}, thank you for considering ${esc(d.site.name)} for your ${esc(d.eventType.toLowerCase())}. Our events team will be in touch shortly with a quote.`),
+          eventRows(d, false),
+          helpLine(d),
+        ].join('')),
+      };
+    case 'quoted':
+      return {
+        subject: `Your event quote · ${d.reference} · ${d.site.name}`,
+        html: layout(d, 'Your event quote', [
+          p(`Hi ${first}, here is our quote for your ${esc(d.eventType.toLowerCase())}.`),
+          eventRows(d, true),
+          d.quoteNotes ? p(`<strong>What’s included</strong><br>${esc(d.quoteNotes).replace(/\n/g, '<br>')}`) : '',
+          d.depositAmount
+            ? p(`To secure ${esc(longDate(d.eventDate))}, please pay the deposit of <strong>${esc(formatGHS(d.depositAmount))}</strong>. The date is only held once the deposit is received.`)
+            : '',
+          d.site.eventDepositInstructions ? p(esc(d.site.eventDepositInstructions).replace(/\n/g, '<br>')) : '',
+          p(`Please quote <strong>${esc(d.reference)}</strong> with your payment.`),
+          helpLine(d),
+        ].join('')),
+      };
+    case 'deposit':
+      return {
+        subject: `Deposit received · ${d.reference} · ${d.site.name}`,
+        html: layout(d, 'Deposit received — your date is held', [
+          p(`Hi ${first}, we’ve received your deposit. Thank you!`),
+          eventRows(d, true),
+          p('We’ll be in touch to confirm the final arrangements.'),
+          helpLine(d),
+        ].join('')),
+      };
+    case 'confirmed':
+      return {
+        subject: `Your event is confirmed · ${d.reference} · ${d.site.name}`,
+        html: layout(d, 'Your event is confirmed', [
+          p(`Hi ${first}, everything is set for your ${esc(d.eventType.toLowerCase())}. We look forward to hosting you.`),
+          eventRows(d, true),
+          d.site.directionsUrl ? button(d.site.directionsUrl, 'Get directions') : '',
+          helpLine(d),
+        ].join('')),
+      };
+  }
+}
+
+export function eventSms(d: EventMessageData, change: EventChange) {
+  const date = shortDate(d.eventDate);
+  const help = d.site.phone ? ` Questions? ${d.site.phone}` : '';
+  switch (change) {
+    case 'received':
+      return `Bruton Gardens: thanks for your event enquiry (${d.reference}) for ${date}. We will send you a quote shortly.${help}`;
+    case 'quoted':
+      return [
+        `Bruton Gardens: your event quote (${d.reference}) is ${smsMoney(d.quoteAmount ?? 0)}.`,
+        d.depositAmount ? `Pay a ${smsMoney(d.depositAmount)} deposit to secure ${date}.` : '',
+        d.guestEmail ? 'Details sent to your email.' : '',
+      ].filter(Boolean).join(' ') + help;
+    case 'deposit':
+      return `Bruton Gardens: deposit of ${smsMoney(d.depositPaidAmount)} received for ${d.reference}. Your date (${date}) is held. Thank you!`;
+    case 'confirmed':
+      return `Bruton Gardens: your event on ${date} (${d.reference}) is confirmed. We look forward to hosting you!${help}`;
+  }
+}
+
+export function staffNewEventEmail(d: EventMessageData): EmailMessage {
+  return {
+    subject: `New event enquiry: ${d.eventType}, ${shortDate(d.eventDate)}, ${d.headcount} guests`,
+    html: layout(d, 'New event enquiry', [
+      rows([
+        ['Reference', d.reference, true],
+        ['Event', d.eventType],
+        ['Date', longDate(d.eventDate)],
+        ['Guests', String(d.headcount)],
+        ['Catering', d.cateringRequired ? 'Wanted' : 'Not requested'],
+        ['Name', d.name],
+        ['Phone', d.guestPhone || '—'],
+        ['Email', d.guestEmail || '—'],
+      ]),
+      d.notes ? p(`<strong>Notes:</strong> ${esc(d.notes)}`) : '',
+      button(`${d.site.url}/admin/events`, 'Open events'),
     ].join('')),
   };
 }

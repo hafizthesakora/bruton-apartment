@@ -6,12 +6,12 @@
  */
 import { and, asc, eq, inArray, lt } from 'drizzle-orm';
 import type { DB, Tx } from '@/lib/db';
-import { apartments, bookings, guests, notifications, policies, siteContent, viewings } from '@/lib/db/schema';
+import { apartments, bookings, eventLeads, guests, notifications, policies, siteContent, viewings } from '@/lib/db/schema';
 import { folioPaid } from '@/lib/booking/folio';
 import { nightsBetween } from '@/lib/booking/pricing';
 import { normalizeGhanaPhone, sendEmail, sendSms, type SendResult } from './providers';
 import * as t from './templates';
-import type { BookingMessageData, SiteInfo, ViewingChange, ViewingMessageData } from './templates';
+import type { BookingMessageData, EventChange, EventMessageData, SiteInfo, ViewingChange, ViewingMessageData } from './templates';
 
 const MAX_ATTEMPTS = 5;
 const RETRYABLE = ['queued', 'failed'];
@@ -21,12 +21,13 @@ const DEFAULT_DIRECTIONS = 'https://maps.app.goo.gl/uAjiMzC2AW4HJxGJ9';
 
 type Template =
   | 'booking_confirmed' | 'payment_receipt' | 'pre_arrival' | 'review_request' | 'staff_new_booking'
-  | 'viewing_booked' | 'viewing_rescheduled' | 'viewing_cancelled' | 'staff_new_viewing';
+  | 'viewing_booked' | 'viewing_rescheduled' | 'viewing_cancelled' | 'staff_new_viewing'
+  | 'event_received' | 'event_quoted' | 'event_deposit' | 'event_confirmed' | 'staff_new_event';
 
 type Settings = {
   siteName?: string;
   recipientEmail?: string;
-  guestMessages?: { phone?: string; directionsUrl?: string; arrivalNote?: string; reviewUrl?: string };
+  guestMessages?: { phone?: string; directionsUrl?: string; arrivalNote?: string; reviewUrl?: string; eventDepositInstructions?: string };
 };
 
 async function readSettings(db: DB | Tx): Promise<Settings> {
@@ -51,6 +52,7 @@ async function loadSite(db: DB | Tx): Promise<{ site: SiteInfo; staffEmail: stri
       directionsUrl: gm.directionsUrl || DEFAULT_DIRECTIONS,
       arrivalNote: gm.arrivalNote ?? '',
       reviewUrl: gm.reviewUrl || reviewUrlFallback(),
+      eventDepositInstructions: gm.eventDepositInstructions ?? '',
     },
   };
 }
@@ -95,7 +97,7 @@ type Outgoing =
   | { channel: 'email'; to: string; template: Template; email: t.EmailMessage }
   | { channel: 'sms'; to: string; template: Template; text: string };
 
-type Subject = { bookingId?: number; viewingId?: number };
+type Subject = { bookingId?: number; viewingId?: number; eventLeadId?: number };
 
 async function enqueue(tx: Tx, subject: number | Subject, msgs: Outgoing[]) {
   if (msgs.length === 0) return;
@@ -159,6 +161,20 @@ export async function queueViewingMessages(tx: Tx, viewingId: number, change: Vi
   await enqueue(tx, { viewingId }, msgs);
 }
 
+export async function queueEventMessages(tx: Tx, eventLeadId: number, change: EventChange) {
+  const [e] = await tx.select().from(eventLeads).where(eq(eventLeads.id, eventLeadId));
+  if (!e) throw new Error(`Event lead ${eventLeadId} not found`);
+  const { site, staffEmail } = await loadSite(tx);
+  const d: EventMessageData = {
+    reference: e.reference, name: e.name, guestEmail: e.email, guestPhone: e.phone, eventType: e.eventType,
+    eventDate: e.eventDate, headcount: e.headcount, cateringRequired: e.cateringRequired, quoteAmount: e.quoteAmount,
+    depositAmount: e.depositAmount, depositPaidAmount: e.depositPaidAmount, quoteNotes: e.quoteNotes, notes: e.notes, site,
+  };
+  const msgs = toGuest(d, `event_${change}` as Template, t.eventEmail(d, change), t.eventSms(d, change));
+  if (change === 'received' && staffEmail) msgs.push({ channel: 'email', to: staffEmail, template: 'staff_new_event', email: t.staffNewEventEmail(d) });
+  await enqueue(tx, { eventLeadId }, msgs);
+}
+
 /* ── Delivery ──────────────────────────────────────────────────────────── */
 
 export type Senders = {
@@ -171,7 +187,7 @@ const defaultSenders: Senders = { email: sendEmail, sms: sendSms };
  * Send whatever is queued (and retry failures). Each row is claimed with a conditional
  * update first, so two overlapping runs can't send the same message twice.
  */
-export async function deliverQueued(db: DB, opts: { limit?: number; senders?: Senders; bookingId?: number; viewingId?: number } = {}) {
+export async function deliverQueued(db: DB, opts: { limit?: number; senders?: Senders; bookingId?: number; viewingId?: number; eventLeadId?: number } = {}) {
   const senders = opts.senders ?? defaultSenders;
   const pending = await db.select({ id: notifications.id }).from(notifications)
     .where(and(
@@ -179,6 +195,7 @@ export async function deliverQueued(db: DB, opts: { limit?: number; senders?: Se
       lt(notifications.attempts, MAX_ATTEMPTS),
       ...(opts.bookingId ? [eq(notifications.bookingId, opts.bookingId)] : []),
       ...(opts.viewingId ? [eq(notifications.viewingId, opts.viewingId)] : []),
+      ...(opts.eventLeadId ? [eq(notifications.eventLeadId, opts.eventLeadId)] : []),
     ))
     .orderBy(asc(notifications.id))
     .limit(opts.limit ?? 50);

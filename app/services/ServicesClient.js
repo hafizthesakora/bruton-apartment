@@ -9,7 +9,9 @@ import {
   Building2,
   Star,
 } from 'lucide-react';
+import Link from 'next/link';
 import { FadeIn, StaggerContainer, StaggerItem, motion, AnimatePresence } from '../_Components/MotionWrapper';
+import EventEnquiryModal from '../_Components/EventEnquiryModal';
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -49,6 +51,7 @@ export default function ServicesClient({ initialData }) {
   const [totalReviews, setTotalReviews] = useState(null);
   const [c] = useState(initialData && Object.keys(initialData).length ? { ...DEFAULT_SERVICES, ...initialData } : DEFAULT_SERVICES);
   const [currentReview, setCurrentReview] = useState(0);
+  const [eventModalOpen, setEventModalOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/reviews')
@@ -118,7 +121,7 @@ export default function ServicesClient({ initialData }) {
         <StaggerContainer staggerDelay={0.1} className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service, index) => (
             <StaggerItem key={index}>
-              <Card className="p-6 bg-white hover:shadow-xl transition-shadow duration-300">
+              <Card className="p-6 bg-white hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
                 <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center mb-4">
                   <service.icon className="w-6 h-6 text-lime-600" />
                 </div>
@@ -136,6 +139,13 @@ export default function ServicesClient({ initialData }) {
                     </li>
                   ))}
                 </ul>
+                {/* Card titles are editable in admin, so match on the wording rather than position. */}
+                {/apartment|booking/i.test(service.title) && (
+                  <Link href="/book" className="mt-auto pt-6 text-sm font-semibold text-lime-700 hover:text-lime-800">Check availability →</Link>
+                )}
+                {/event/i.test(service.title) && (
+                  <button onClick={() => setEventModalOpen(true)} className="mt-auto pt-6 text-left text-sm font-semibold text-lime-700 hover:text-lime-800">Enquire about an event →</button>
+                )}
               </Card>
             </StaggerItem>
           ))}
@@ -271,6 +281,8 @@ export default function ServicesClient({ initialData }) {
           </FadeIn>
         )}
       </div>
+
+      <EventEnquiryModal isOpen={eventModalOpen} onClose={() => setEventModalOpen(false)} />
     </div>
   );
 }
