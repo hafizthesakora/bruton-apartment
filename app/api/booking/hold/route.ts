@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { z } from 'zod';
 import { getDb } from '@/lib/db';
 import { createHold, releaseHold, startPayment } from '@/lib/booking/engine';
 import { publicRoute } from '@/lib/booking/http';
+import { deliverQueued } from '@/lib/notify';
 import { initializeTransaction, paystackEnabled } from '@/lib/payments/paystack';
 
 export const dynamic = 'force-dynamic';
@@ -33,6 +34,7 @@ export const POST = publicRoute(async (request) => {
   const { booking } = await createHold(db, input, { paystackEnabled: online });
 
   if (booking.status === 'confirmed' || booking.amountDueNow === 0) {
+    after(() => deliverQueued(db, { bookingId: booking.id }));
     return NextResponse.json({ reference: booking.reference, status: booking.status });
   }
 

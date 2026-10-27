@@ -7,13 +7,15 @@
  * checks here exist to give guests a friendly answer before they hit it.
  */
 import crypto from 'crypto';
-import { and, asc, eq, gt, inArray, isNull, lt, ne, sql } from 'drizzle-orm';
+import { and, asc, eq, gt, inArray, isNull, lt, ne } from 'drizzle-orm';
 import type { DB, Tx } from '@/lib/db';
 import {
   alerts, apartmentPhotos, apartments, bookings, folioEntries, guests, housekeepingStatus,
   paymentIntents, policies, ratePlans,
 } from '@/lib/db/schema';
 import { audit } from '@/lib/audit';
+import { queueBookingConfirmed, queuePaymentReceipt } from '@/lib/notify';
+import { folioPaid } from './folio';
 import {
   amountDueNow, isISODate, nightsBetween, paymentOptions, quoteStay, todayAtProperty,
   QuoteError, type PaymentModeOption, type Quote,
@@ -257,7 +259,8 @@ type Actor = { id: number | null; name: string };
 
 /**
  * held / pending_payment (or a lapsed hold whose payment arrived late) → confirmed.
- * Posts the accommodation charge to the folio exactly once, on the transition.
+ * Posts the accommodation charge to the folio and queues the confirmation messages
+ * exactly once, on the transition.
  * Throws an overlap error if a lapsed hold's dates have since been taken.
  */
 export async function confirmBooking(tx: Tx, bookingId: number, actor: Actor, now = new Date()) {
@@ -281,6 +284,7 @@ export async function confirmBooking(tx: Tx, bookingId: number, actor: Actor, no
     createdBy: actor.id,
   });
   await audit(actor, 'booking', booking.id, 'confirm', { reference: booking.reference }, tx);
+  await queueBookingConfirmed(tx, booking.id);
   return booking;
 }
 
@@ -329,6 +333,12 @@ export async function applySuccessfulCharge(
       method: 'paystack',
       reference: charge.reference,
     });
+
+    // Already-confirmed booking (e.g. a balance payment): just send a receipt.
+    if (booking.status === 'confirmed' || booking.status === 'checked_in' || booking.status === 'checked_out') {
+      await queuePaymentReceipt(tx, booking.id, { amount: charge.amount, method: 'Paystack', reference: charge.reference });
+      return 'recorded';
+    }
 
     if (booking.status === 'cancelled') {
       await tx.insert(alerts).values({
@@ -379,17 +389,14 @@ export async function getBookingForGuest(db: DB, reference: string) {
     .where(eq(bookings.reference, reference.toUpperCase()));
   if (!row) return null;
 
-  const [{ paid }] = await db.select({
-    paid: sql<number>`coalesce(sum(case when ${folioEntries.type} = 'payment' then ${folioEntries.amount} when ${folioEntries.type} = 'refund' then -${folioEntries.amount} else 0 end), 0)::int`,
-  }).from(folioEntries).where(eq(folioEntries.bookingId, row.bookingId));
-  const policy = await getPolicy(db);
+  const [paid, policy] = await Promise.all([folioPaid(db, row.bookingId), getPolicy(db)]);
 
   const { bookingId: _id, guestName, ...rest } = row;
   return {
     ...rest,
     guestFirstName: guestName.split(' ')[0],
     nights: nightsBetween(row.checkIn, row.checkOut),
-    paid: Number(paid),
+    paid,
     checkInTime: policy.checkInTime,
     checkOutTime: policy.checkOutTime,
   };

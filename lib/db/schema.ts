@@ -330,6 +330,10 @@ export const expenses = pgTable('expenses', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+/**
+ * Outbox for email + SMS. Rows are written inside the same transaction as the booking change
+ * (status 'queued'), then delivered after commit; the daily cron retries failures.
+ */
 export const notifications = pgTable('notifications', {
   id: serial('id').primaryKey(),
   channel: varchar('channel', { length: 8 }).notNull(),
@@ -341,8 +345,10 @@ export const notifications = pgTable('notifications', {
   status: varchar('status', { length: 16 }).notNull(),
   error: text('error'),
   bookingId: integer('booking_id'),
+  attempts: integer('attempts').notNull().default(0),
+  sentAt: timestamp('sent_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-});
+}, (t) => [index('notifications_status_idx').on(t.status)]);
 
 export const channelSyncLog = pgTable('channel_sync_log', {
   id: serial('id').primaryKey(),
