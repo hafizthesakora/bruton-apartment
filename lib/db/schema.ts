@@ -162,7 +162,10 @@ export const bookings = pgTable('bookings', {
   notes: text('notes').notNull().default(''),
   idCaptured: boolean('id_captured').notNull().default(false),
   keyIssued: boolean('key_issued').notNull().default(false),
+  /** Refundable security deposit held at check-in (pesewas). Not revenue, so it stays off the folio. */
   securityDeposit: integer('security_deposit').notNull().default(0),
+  securityDepositReturned: integer('security_deposit_returned'),
+  keyReturned: boolean('key_returned').notNull().default(false),
   checkedInAt: timestamp('checked_in_at', { withTimezone: true }),
   checkedOutAt: timestamp('checked_out_at', { withTimezone: true }),
   cancelledAt: timestamp('cancelled_at', { withTimezone: true }),

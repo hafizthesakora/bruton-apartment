@@ -36,6 +36,13 @@
       "when": 1793132605699,
       "tag": "0004_event_pipeline",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793134504300,
+      "tag": "0005_front_desk",
+      "breakpoints": true
     }
   ]
 }
