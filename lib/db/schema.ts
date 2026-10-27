@@ -212,21 +212,31 @@ export const paymentIntents = pgTable('payment_intents', {
   completedAt: timestamp('completed_at', { withTimezone: true }),
 });
 
+/** Guest requests from their account ("can I arrive a day later?"), handled by the front desk. */
 export const changeRequests = pgTable('change_requests', {
   id: serial('id').primaryKey(),
   bookingId: integer('booking_id').notNull().references(() => bookings.id, { onDelete: 'cascade' }),
   message: text('message').notNull(),
   status: varchar('status', { length: 16 }).notNull().default('open'),
+  response: text('response').notNull().default(''),
+  resolvedBy: integer('resolved_by'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   resolvedAt: timestamp('resolved_at', { withTimezone: true }),
-});
+}, (t) => [index('change_requests_status_idx').on(t.status)]);
 
-export const guestLoginTokens = pgTable('guest_login_tokens', {
-  tokenHash: varchar('token_hash', { length: 64 }).primaryKey(),
-  email: text('email').notNull(),
+/**
+ * One-time sign-in codes for the guest account. `contactKey` is 'e:<email>' or 'p:<last 9 phone
+ * digits>'; the account shows every booking made with that contact. Only a hash of the code is kept.
+ */
+export const guestLoginCodes = pgTable('guest_login_codes', {
+  id: serial('id').primaryKey(),
+  contactKey: varchar('contact_key', { length: 160 }).notNull(),
+  codeHash: varchar('code_hash', { length: 64 }).notNull(),
+  attempts: integer('attempts').notNull().default(0),
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
   usedAt: timestamp('used_at', { withTimezone: true }),
-});
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [index('guest_login_codes_contact_idx').on(t.contactKey, t.createdAt)]);
 
 /* ── Viewings & events ─────────────────────────────────────────────────── */
 

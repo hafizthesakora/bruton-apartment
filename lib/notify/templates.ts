@@ -429,3 +429,47 @@ export function bookingCancelledEmail(d: BookingMessageData): EmailMessage {
 export function bookingCancelledSms(d: BookingMessageData) {
   return `Bruton Gardens: booking ${d.reference} (${shortDate(d.checkIn)} - ${shortDate(d.checkOut)}) has been cancelled.${d.site.phone ? ` Questions? ${d.site.phone}` : ''}`;
 }
+
+/* ── Guest account ─────────────────────────────────────────────────────── */
+
+export function loginCodeEmail(site: SiteInfo, code: string): EmailMessage {
+  return {
+    subject: `${code} is your ${site.name} sign-in code`,
+    html: layout({ site }, 'Your sign-in code', [
+      p('Use this code to see your bookings and receipts. It expires in 10 minutes.'),
+      `<p style="margin:8px 0 20px;font-size:32px;font-weight:bold;letter-spacing:6px">${esc(code)}</p>`,
+      p('If you didn’t ask for this, you can ignore this email.'),
+    ].join('')),
+  };
+}
+
+export function loginCodeSms(site: SiteInfo, code: string) {
+  return `${code} is your ${site.name.replace(/&/g, 'and')} sign-in code. It expires in 10 minutes.`;
+}
+
+export function staffChangeRequestEmail(d: BookingMessageData, message: string): EmailMessage {
+  return {
+    subject: `Guest request · ${d.reference} · ${d.guestName}`,
+    html: layout(d, 'A guest has asked for a change', [
+      p(`<strong>${esc(d.guestName)}</strong> wrote:`),
+      `<blockquote style="margin:0 0 16px;padding:12px 16px;background:#fefce8;border-left:4px solid #a3e635;font-size:15px;line-height:1.5">${esc(message).replace(/\n/g, '<br>')}</blockquote>`,
+      stayRows(d),
+      button(`${d.site.url}/admin`, 'Reply from the dashboard'),
+    ].join('')),
+  };
+}
+
+export function changeRequestReplyEmail(d: BookingMessageData, response: string): EmailMessage {
+  return {
+    subject: `About your request · ${d.reference} · ${d.site.name}`,
+    html: layout(d, `Hi ${firstName(d.guestName)}`, [
+      p(esc(response).replace(/\n/g, '<br>')),
+      stayRows(d),
+      button(`${d.site.url}/account`, 'View your booking'),
+    ].join('')),
+  };
+}
+
+export function changeRequestReplySms(d: BookingMessageData) {
+  return `${d.site.name.replace(/&/g, 'and')}: we've replied to your request about booking ${d.reference}. See ${d.site.url}/account`;
+}
