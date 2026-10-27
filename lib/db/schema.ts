@@ -8,6 +8,7 @@ import {
   pgTable, pgEnum, serial, integer, text, varchar, boolean, timestamp, date,
   jsonb, uniqueIndex, index, primaryKey,
 } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 /* ── Enums ─────────────────────────────────────────────────────────────── */
 
@@ -231,8 +232,15 @@ export const viewings = pgTable('viewings', {
   scheduledAt: timestamp('scheduled_at', { withTimezone: true }).notNull(),
   status: viewingStatus('status').notNull().default('requested'),
   notes: text('notes').notNull().default(''),
+  staffNotes: text('staff_notes').notNull().default(''),
+  outlookEventId: text('outlook_event_id'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-}, (t) => [index('viewings_when_idx').on(t.scheduledAt)]);
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('viewings_when_idx').on(t.scheduledAt),
+  // One live viewing per slot — the race guard for two guests picking the same time.
+  uniqueIndex('viewings_slot_idx').on(t.scheduledAt).where(sql`${t.status} in ('requested', 'confirmed')`),
+]);
 
 export const eventLeads = pgTable('event_leads', {
   id: serial('id').primaryKey(),
@@ -345,6 +353,7 @@ export const notifications = pgTable('notifications', {
   status: varchar('status', { length: 16 }).notNull(),
   error: text('error'),
   bookingId: integer('booking_id'),
+  viewingId: integer('viewing_id'),
   attempts: integer('attempts').notNull().default(0),
   sentAt: timestamp('sent_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
