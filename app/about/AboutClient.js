@@ -9,7 +9,7 @@ import {
   Star,
 } from 'lucide-react';
 import { FadeIn, StaggerContainer, StaggerItem, ScaleIn, AnimatedCounter, motion, AnimatePresence } from '../_Components/MotionWrapper';
-import BookingModal from '../_Components/BookingModal';
+import Link from 'next/link';
 import ContactModal from '../_Components/ContactModal';
 
 const defaultSlideImages = [
@@ -32,7 +32,6 @@ const statIcons = [Users, Calendar, MapPin, Star];
 
 export default function AboutClient({ initialData, initialSlideImages }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [bookingOpen, setBookingOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [c, setC] = useState(initialData && Object.keys(initialData).length ? { ...DEFAULT_ABOUT, ...initialData } : DEFAULT_ABOUT);
   const [slideImages, setSlideImages] = useState(initialSlideImages?.length ? initialSlideImages : defaultSlideImages);
@@ -112,9 +111,9 @@ export default function AboutClient({ initialData, initialSlideImages }) {
             </div>
             <FadeIn direction="right" delay={0.3}>
               <div className="flex gap-4">
-                <button onClick={() => setBookingOpen(true)} className="bg-lime-400 text-gray-900 px-6 py-3 rounded-full hover:bg-lime-500 transition-colors font-semibold">
+                <Link href="/book" className="bg-lime-400 text-gray-900 px-6 py-3 rounded-full hover:bg-lime-500 transition-colors font-semibold">
                   {c.story?.primaryCta || DEFAULT_ABOUT.story.primaryCta}
-                </button>
+                </Link>
                 <button onClick={() => setContactOpen(true)} className="border-2 border-lime-400 text-lime-600 px-6 py-3 rounded-full hover:bg-lime-50 transition-colors font-semibold">
                   {c.story?.secondaryCta || DEFAULT_ABOUT.story.secondaryCta}
                 </button>
@@ -193,7 +192,6 @@ export default function AboutClient({ initialData, initialSlideImages }) {
         </div>
       </div>
 
-      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
       <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
     </div>
   );

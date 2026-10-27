@@ -1,7 +1,7 @@
 'use client';
 import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import BookingModal from './BookingModal';
+import Link from 'next/link';
 import ContactModal from './ContactModal';
 import { socialLinks } from '@/lib/social';
 
@@ -27,7 +27,6 @@ const Banner = ({ content = {}, social = {} }) => {
   });
   const videoY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
 
-  const [bookingOpen, setBookingOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
 
   return (
@@ -88,12 +87,12 @@ const Banner = ({ content = {}, social = {} }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}
           >
-            <button
-              onClick={() => setBookingOpen(true)}
+            <Link
+              href="/book"
               className="bg-lime-400 hover:bg-lime-500 text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
             >
               {primaryCta}
-            </button>
+            </Link>
             <button
               onClick={() => setContactOpen(true)}
               className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105"
@@ -127,7 +126,6 @@ const Banner = ({ content = {}, social = {} }) => {
         </div>
       </div>
 
-      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
       <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
     </div>
   );
