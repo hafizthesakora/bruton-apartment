@@ -1,4 +1,21 @@
+import { Jost, Cormorant_Garamond } from 'next/font/google';
 import ClientWrapper from './ClientWrapper';
+import './globals.css';
+
+const jost = Jost({
+  variable: '--font-jost',
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+});
+
+const cormorant = Cormorant_Garamond({
+  variable: '--font-cormorant',
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+});
 
 export const metadata = {
   title: 'Bruton Gardens & Apartments - Find Your Perfect Stay',
@@ -12,8 +29,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
+    <html lang="en" suppressHydrationWarning className={`${jost.variable} ${cormorant.variable}`}>
+      <body className="font-sans">
         <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>

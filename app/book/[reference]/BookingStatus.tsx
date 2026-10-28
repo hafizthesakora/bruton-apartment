@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { CheckCircle2, Clock, XCircle, Loader2, CalendarDays, Home } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Clock, XCircle, Loader2, CalendarDays, Home } from 'lucide-react';
 import { formatGHS } from '@/lib/money';
 
 type Booking = {
@@ -62,38 +63,38 @@ export default function BookingStatus({ reference }: { reference: string }) {
 
   if (notFound) {
     return (
-      <Panel icon={<XCircle size={40} className="text-red-500" />} title="Booking not found">
-        <p className="text-gray-600 text-sm">Check the reference and try again, or contact us and we’ll look it up.</p>
+      <Panel icon={<XCircle size={44} strokeWidth={1.25} className="text-red-700" />} title="Booking not found">
+        <p className="text-ink/60">Check the reference and try again, or contact us and we’ll look it up.</p>
         <Actions />
       </Panel>
     );
   }
 
   if (!booking) {
-    return <div className="flex justify-center py-24"><Loader2 className="animate-spin text-gray-400" size={32} /></div>;
+    return <div className="flex justify-center py-24"><Loader2 className="animate-spin text-brass" size={32} /></div>;
   }
 
   const balance = booking.totalAmount - booking.paid;
 
   if (booking.status === 'held' || booking.status === 'pending_payment') {
     return (
-      <Panel icon={gaveUp ? <Clock size={40} className="text-amber-500" /> : <Loader2 size={40} className="animate-spin text-lime-500" />}
+      <Panel icon={gaveUp ? <Clock size={44} strokeWidth={1.25} className="text-brass" /> : <Loader2 size={44} strokeWidth={1.25} className="animate-spin text-brass" />}
         title={gaveUp ? 'Still waiting for your payment' : 'Confirming your payment…'}>
-        <p className="text-gray-600 text-sm">
+        <p className="text-ink/60">
           {gaveUp
             ? 'If you completed the payment, your booking will be confirmed as soon as Paystack notifies us — you’ll get an email. If you didn’t finish paying, the apartment will be released shortly.'
             : 'This usually takes a few seconds. Mobile Money payments may need you to approve the prompt on your phone.'}
         </p>
-        <p className="text-xs text-gray-400 mt-4">Reference {booking.reference}</p>
+        <p className="eyebrow mt-6 text-ink/40">Reference {booking.reference}</p>
       </Panel>
     );
   }
 
   if (booking.status === 'expired' || booking.status === 'cancelled') {
     return (
-      <Panel icon={<XCircle size={40} className="text-red-500" />}
+      <Panel icon={<XCircle size={44} strokeWidth={1.25} className="text-red-700" />}
         title={booking.status === 'expired' ? 'This booking hold has expired' : 'This booking was cancelled'}>
-        <p className="text-gray-600 text-sm">
+        <p className="text-ink/60">
           {booking.paid > 0
             ? 'We received a payment for this booking — our front desk will contact you shortly to sort it out.'
             : 'No payment was taken. You can search again to make a new booking.'}
@@ -104,48 +105,72 @@ export default function BookingStatus({ reference }: { reference: string }) {
   }
 
   return (
-    <Panel icon={<CheckCircle2 size={40} className="text-lime-500" />} title={`You’re booked, ${booking.guestFirstName}!`}>
-      <p className="text-gray-600 text-sm">We’ve saved your booking. Keep your reference handy for check-in.</p>
+    <Panel icon={<SuccessMark />} title={`You’re booked, ${booking.guestFirstName}!`}>
+      <p className="text-ink/60">We’ve saved your booking. Keep your reference handy for check-in.</p>
 
-      <div className="bg-gray-50 rounded-xl p-5 mt-6 text-left text-sm space-y-3">
-        <div className="flex justify-between"><span className="text-gray-500">Reference</span><span className="font-mono font-semibold">{booking.reference}</span></div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="mt-8 space-y-4 rounded-[1.5rem] bg-garden p-6 text-left text-sm text-ivory/85 md:p-8"
+      >
+        <div className="flex items-baseline justify-between"><span className="eyebrow text-ivory/50">Reference</span><span className="font-mono text-lg tracking-wider text-ivory">{booking.reference}</span></div>
         <div className="flex items-start gap-2">
-          <Home size={16} className="mt-0.5 text-lime-600 shrink-0" />
+          <Home size={16} className="mt-0.5 shrink-0 text-brass" />
           <span>{booking.apartmentName} · {booking.adults + booking.children} guest{booking.adults + booking.children === 1 ? '' : 's'}</span>
         </div>
         <div className="flex items-start gap-2">
-          <CalendarDays size={16} className="mt-0.5 text-lime-600 shrink-0" />
+          <CalendarDays size={16} className="mt-0.5 shrink-0 text-brass" />
           <span>
             {fmtDate(booking.checkIn)} from {booking.checkInTime}<br />
             to {fmtDate(booking.checkOut)} by {booking.checkOutTime} · {booking.nights} night{booking.nights === 1 ? '' : 's'}
           </span>
         </div>
-        <div className="border-t border-gray-200 pt-3 space-y-1">
+        <div className="space-y-1.5 border-t border-ivory/10 pt-4">
           <div className="flex justify-between"><span>Total</span><span>{formatGHS(booking.totalAmount)}</span></div>
-          {booking.paid > 0 && <div className="flex justify-between text-lime-700"><span>Paid</span><span>{formatGHS(booking.paid)}</span></div>}
-          {balance > 0 && <div className="flex justify-between font-semibold"><span>Due at check-in</span><span>{formatGHS(balance)}</span></div>}
+          {booking.paid > 0 && <div className="flex justify-between text-brass"><span>Paid</span><span>{formatGHS(booking.paid)}</span></div>}
+          {balance > 0 && <div className="flex justify-between font-medium text-ivory"><span>Due at check-in</span><span>{formatGHS(balance)}</span></div>}
         </div>
-      </div>
+      </motion.div>
       <Actions />
     </Panel>
   );
 }
 
+// Brass ring and tick that draw themselves in.
+function SuccessMark() {
+  const draw = { hidden: { pathLength: 0 }, show: { pathLength: 1 } };
+  return (
+    <motion.svg width="88" height="88" viewBox="0 0 88 88" initial="hidden" animate="show" aria-hidden>
+      <motion.circle cx="44" cy="44" r="40" fill="none" stroke="#B08D57" strokeWidth="2" variants={draw}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} />
+      <motion.path d="M28 45 L39 56 L61 33" fill="none" stroke="#1F3B2D" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+        variants={draw} transition={{ duration: 0.6, delay: 0.7, ease: 'easeOut' }} />
+    </motion.svg>
+  );
+}
+
 function Panel({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
-      <div className="flex justify-center mb-4">{icon}</div>
-      <h1 className="text-2xl font-semibold mb-2">{title}</h1>
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="rounded-[2rem] border border-garden/10 bg-white/60 p-8 text-center shadow-[0_30px_80px_-40px_rgba(31,59,45,0.4)] backdrop-blur md:p-12"
+    >
+      <div className="mb-6 flex justify-center">{icon}</div>
+      <h1 className="font-display mb-4 text-4xl leading-tight text-garden md:text-5xl">{title}</h1>
       {children}
-    </div>
+    </motion.div>
   );
 }
 
 function Actions({ book }: { book?: boolean }) {
   return (
-    <div className="flex gap-3 mt-6">
-      <Link href="/" className="flex-1 border-2 border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-lg transition-colors">Home</Link>
-      {book && <Link href="/book" className="flex-1 bg-lime-400 hover:bg-lime-500 text-gray-900 font-semibold py-3 rounded-lg transition-colors">Search again</Link>}
+    <div className="mt-8 flex gap-3">
+      <Link href="/" className="flex-1 rounded-full border border-garden/20 py-3.5 text-sm tracking-wide text-garden transition-colors hover:bg-garden/5">Home</Link>
+      <Link href="/account" className="flex-1 rounded-full border border-garden/20 py-3.5 text-sm tracking-wide text-garden transition-colors hover:bg-garden/5">My Booking</Link>
+      {book && <Link href="/book" className="flex-1 rounded-full bg-brass py-3.5 text-sm tracking-wide text-white transition-colors hover:bg-brass-dark">Search again</Link>}
     </div>
   );
 }
