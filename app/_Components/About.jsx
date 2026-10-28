@@ -1,15 +1,20 @@
 'use client';
-import { Home, Building2, Key } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
-import { FadeIn, StaggerContainer, StaggerItem } from './MotionWrapper';
-
-const CARD_ICONS = [Home, Building2, Key];
+import { FadeIn, ImageReveal, Parallax, AnimatedCounter, StaggerContainer, StaggerItem } from './MotionWrapper';
+import SectionHeading from './ui/SectionHeading';
+import LuxeButton from './ui/LuxeButton';
 
 const defaultCards = [
   { image: '/assets/main-home1.jpg' },
   { image: '/assets/BRTN GRDN-3.JPEG' },
   { image: '/assets/BRTN GRDN-25 2.JPEG' },
+];
+
+const STATS = [
+  { value: '24/7', label: 'Security & support' },
+  { value: '100%', label: 'Fully furnished' },
+  { value: 'Starlink', label: 'Wi-Fi throughout' },
 ];
 
 const About = ({ content = {} }) => {
@@ -22,76 +27,55 @@ const About = ({ content = {} }) => {
   } = content;
 
   return (
-    <>
-      <div className="container pt-24 md:py-40 mx-auto p-6">
-        <div className="grid md:grid-cols-2 gap-20 items-center">
-          <div className="relative order-2 md:order-1 md:block hidden">
-            <FadeIn direction="left" delay={0.2}>
-              <div className="absolute right-34 z-10">
-                <div className="bg-gray-200/90 rounded-t-full w-40 p-3 shadow-md">
-                  <div className="bg-white shadow-md w-34 p-3 rounded-t-full">
-                    <div className="w-28 p-5 bg-gradient-to-r from-lime-400 to-lime-500 rounded-t-full">
-                      <h1 className="text-lg pt-4 text-gray-900 font-semibold text-center">
-                        {premiumBadge}
-                      </h1>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
-            <FadeIn direction="down" delay={0.1}>
-              <div className="relative">
-                <Image
-                  src={mainImage}
-                  alt="Bruton Gardens"
-                  width={600}
-                  height={400}
-                  className="object-center rounded-t-full px-10"
-                />
-              </div>
-            </FadeIn>
-          </div>
-          <div className="order-1 md:order-2">
-            <FadeIn direction="up" delay={0}>
-              <h1 className="text-4xl md:text-7xl font-semibold py-5 capitalize">
-                {heading}
-              </h1>
-            </FadeIn>
-            <FadeIn direction="up" delay={0.15}>
-              <p className="pt-5 text-lg text-gray-600">{body}</p>
-            </FadeIn>
-            <div className="px-10 md:px-0">
-              <StaggerContainer staggerDelay={0.15} className="grid md:grid-cols-3 gap-10 pt-16">
-                {cards.map((card, index) => {
-                  const Icon = CARD_ICONS[index] || Home;
-                  return (
-                    <StaggerItem key={index}>
-                      <div className="p-6 md:p-4 bg-gray-100 rounded-t-full text-center relative">
-                        <Image
-                          src={card.image}
-                          alt="about"
-                          width={600}
-                          height={600}
-                          className="rounded-t-full h-40 object-cover"
-                        />
-                        <h1 className="py-3 text-lg font-semibold"></h1>
-                        <div className="absolute top-0 right-0 bg-gray-100/50 p-[5px] rounded-xl shadow-md">
-                          <div className="bg-gray-100 p-[5px] rounded-xl">
-                            <div className="bg-lime-400 rounded-xl p-2 w-13">
-                              <Icon size={35} className="text-gray-900 p-1" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </StaggerItem>
-                  );
-                })}
-              </StaggerContainer>
+    <section className="section-y bg-ivory">
+      <div className="container-luxe grid items-center gap-16 lg:grid-cols-12 lg:gap-10">
+        {/* Images */}
+        <div className="relative lg:col-span-6">
+          <ImageReveal className="relative aspect-[4/5] rounded-t-full rounded-b-[2rem] md:w-4/5">
+            <Image src={mainImage} alt="Bruton Gardens" fill sizes="(min-width: 1024px) 40vw, 90vw" className="object-cover" />
+          </ImageReveal>
+          {cards[1] && (
+            <div className="absolute -bottom-10 right-0 w-2/5 md:w-1/3">
+              <ImageReveal delay={0.3} from="left" className="relative aspect-square rounded-[2rem] border-8 border-ivory">
+                <Image src={cards[1].image} alt="" fill sizes="20vw" className="object-cover" />
+              </ImageReveal>
             </div>
-          </div>
+          )}
+          <FadeIn direction="up" delay={0.5} className="absolute left-4 top-10 md:-left-4">
+            <span className="font-display flex size-28 items-center justify-center rounded-full bg-brass p-4 text-center text-lg leading-tight text-white shadow-xl md:size-36 md:text-2xl">
+              {premiumBadge}
+            </span>
+          </FadeIn>
+        </div>
+
+        {/* Copy */}
+        <div className="lg:col-span-5 lg:col-start-8">
+          <SectionHeading eyebrow="The residence" title={heading} intro={body} />
+
+          <StaggerContainer staggerDelay={0.12} className="mt-14 grid grid-cols-3 gap-6 border-t border-garden/10 pt-10">
+            {STATS.map((s) => (
+              <StaggerItem key={s.label}>
+                <AnimatedCounter target={s.value} className="font-display block text-4xl text-garden md:text-5xl" />
+                <p className="mt-2 text-sm text-ink/55">{s.label}</p>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+
+          <FadeIn direction="up" delay={0.2} className="mt-12">
+            <LuxeButton href="/about" variant="garden" arrow>Discover the residence</LuxeButton>
+          </FadeIn>
         </div>
       </div>
-    </>
+
+      {/* Wide parallax band */}
+      {cards[2] && (
+        <div className="container-luxe mt-28 md:mt-40">
+          <Parallax speed={0.12} className="relative h-[50vh] rounded-[2rem] md:h-[70vh]">
+            <Image src={cards[2].image} alt="Bruton Gardens grounds" fill sizes="100vw" className="object-cover" />
+          </Parallax>
+        </div>
+      )}
+    </section>
   );
 };
 

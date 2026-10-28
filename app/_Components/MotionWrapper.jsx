@@ -246,7 +246,7 @@ export function Parallax({ children, speed = 0.15, className = '' }) {
 
   return (
     <div ref={ref} className={`overflow-hidden ${className}`}>
-      <motion.div className="h-full w-full scale-[1.25]" style={reduce ? undefined : { y }}>
+      <motion.div className="relative h-full w-full scale-[1.25]" style={reduce ? undefined : { y }}>
         {children}
       </motion.div>
     </div>
@@ -273,7 +273,7 @@ export function ImageReveal({ children, className = '', delay = 0, from = 'botto
       transition={{ duration: 1.3, delay, ease: EASE_LUXE }}
     >
       <motion.div
-        className="h-full w-full"
+        className="relative h-full w-full"
         initial={reduce ? {} : { scale: 1.2 }}
         animate={isInView && !reduce ? { scale: 1 } : {}}
         transition={{ duration: 1.6, delay, ease: EASE_LUXE }}
