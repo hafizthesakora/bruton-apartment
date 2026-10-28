@@ -1,291 +1,213 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Dialog, DialogPanel, PopoverGroup } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  MapPinHouse,
-  UserRoundSearch,
-  Navigation,
-  X,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Dialog, DialogPanel } from '@headlessui/react';
+import { MapPin, Navigation, X, Menu, UserRound } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
+import LuxeButton from './ui/LuxeButton';
+import { Magnetic, EASE_LUXE } from './MotionWrapper';
 
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About Us' },
-  { href: '/services', label: 'Services' },
+  { href: '/book', label: 'Stay' },
+  { href: '/services', label: 'Apartments' },
   { href: '/facilities', label: 'Facilities' },
-  { href: '/blog', label: 'Gallery & Blog' },
+  { href: '/blog', label: 'Gallery' },
+  { href: '/about', label: 'About' },
 ];
 
+// Pages that open with a dark full-bleed hero, where the header starts transparent.
+const HERO_PAGES = ['/', '/about', '/services', '/facilities', '/blog'];
+
+const MAPS_URL = 'https://maps.app.goo.gl/uAjiMzC2AW4HJxGJ9?g_st=com.google.maps.preview.copy';
+
 export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [directionsPopupOpen, setDirectionsPopupOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [directionsOpen, setDirectionsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const { scrollY } = useScroll();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const prev = scrollY.getPrevious() ?? 0;
+    setScrolled(y > 40);
+    setHidden(y > 400 && y > prev);
+  });
 
-  const handleGetDirections = () => {
-    window.open(
-      'https://maps.app.goo.gl/uAjiMzC2AW4HJxGJ9?g_st=com.google.maps.preview.copy',
-      '_blank'
-    );
-    setDirectionsPopupOpen(false);
-  };
+  useEffect(() => setMenuOpen(false), [pathname]);
 
-  const handleContactScroll = () => {
-    const servicesSection = document.querySelector('#services-section');
-    if (servicesSection) {
-      servicesSection.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      window.location.href = '/services';
-    }
-  };
+  const overHero = HERO_PAGES.includes(pathname) && !scrolled;
+  const isActive = (href) => pathname === href || (href !== '/' && pathname?.startsWith(href));
 
   return (
-    <motion.header
-      className={`w-full transition-all duration-500 ${
-        scrolled
-          ? 'bg-white/60 backdrop-blur-xl shadow-lg border-b border-white/20'
-          : 'bg-white/90 backdrop-blur-sm'
-      }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-    >
-      <nav
-        aria-label="Global"
-        className="mx-auto flex container items-center justify-between py-2 px-4 lg:px-8"
+    <>
+      <motion.header
+        animate={{ y: hidden && !menuOpen ? '-110%' : 0 }}
+        transition={{ duration: 0.6, ease: EASE_LUXE }}
+        className={`w-full transition-[background-color,color,box-shadow,backdrop-filter] duration-700 ${
+          overHero
+            ? 'bg-transparent text-ivory'
+            : 'bg-ivory/80 text-garden shadow-[0_1px_0_rgba(31,59,45,0.08)] backdrop-blur-xl'
+        }`}
       >
-        <motion.div
-          className="flex lg:flex-1"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <Link href="/">
+        <nav aria-label="Main" className="container-luxe flex h-20 items-center justify-between gap-6 md:h-24">
+          <Link href="/" className="relative z-10 shrink-0" aria-label="Bruton Gardens home">
             <Image
               src="/logo.png"
-              alt="logo"
-              width={80}
-              height={40}
+              alt="Bruton Gardens & Apartments"
+              width={96}
+              height={48}
+              priority
+              className={`h-10 w-auto transition-[filter] duration-700 md:h-12 ${overHero ? 'brightness-0 invert' : ''}`}
             />
           </Link>
-        </motion.div>
-        <div className="flex lg:hidden">
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(true)}
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-          >
-            <span className="sr-only">Open main menu</span>
-            <Bars3Icon aria-hidden="true" className="size-6" />
-          </button>
-        </div>
-        <PopoverGroup className="hidden lg:flex lg:gap-x-10">
-          {navLinks.map((link, index) => (
-            <motion.div
-              key={link.href}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 + index * 0.05 }}
-            >
-              <Link
-                href={link.href}
-                className={`text-sm font-normal tracking-wide transition-colors duration-200 ${
-                  pathname === link.href
-                    ? 'text-lime-500 font-medium'
-                    : 'text-gray-900 hover:text-lime-500'
-                }`}
-              >
-                {link.label}
-                {pathname === link.href && (
-                  <motion.div
-                    className="h-0.5 bg-lime-400 mt-1 rounded-full"
-                    layoutId="activeNav"
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </Link>
-            </motion.div>
-          ))}
-        </PopoverGroup>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-3">
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
-          >
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setDirectionsPopupOpen(true)}
-            >
-              <MapPinHouse size={16} /> Visit Now
-            </Button>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: 0.5 }}
-          >
-            <Button
-              className="bg-lime-400 hover:bg-lime-500"
-              size="sm"
-              onClick={handleContactScroll}
-            >
-              <UserRoundSearch size={16} /> Contact Us
-            </Button>
-          </motion.div>
-        </div>
-      </nav>
 
-      {/* Mobile Menu Dialog */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <Dialog
-            open={mobileMenuOpen}
-            onClose={setMobileMenuOpen}
-            className="lg:hidden"
-          >
-            <div className="fixed inset-0 z-10" />
-            <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-              <div className="flex items-center justify-between">
-                <Link href="/">
-                  <Image src="/logo.png" alt="logo" width={80} height={40} />
+          <ul className="hidden items-center gap-10 lg:flex">
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <Link href={link.href} className="group relative py-2 text-[0.95rem] tracking-wide">
+                  {link.label}
+                  <span
+                    className={`absolute -bottom-0.5 left-0 h-px bg-current transition-all duration-500 ease-[var(--ease-luxe)] ${
+                      isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                    }`}
+                  />
                 </Link>
-                <button
-                  type="button"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="-m-2.5 rounded-md p-2.5 text-gray-700"
-                >
-                  <span className="sr-only">Close menu</span>
-                  <XMarkIcon aria-hidden="true" className="size-6" />
+              </li>
+            ))}
+          </ul>
+
+          <div className="hidden items-center gap-6 lg:flex">
+            <button
+              type="button"
+              onClick={() => setDirectionsOpen(true)}
+              className="flex items-center gap-2 text-sm tracking-wide opacity-80 transition-opacity hover:opacity-100"
+            >
+              <MapPin size={16} /> Visit
+            </button>
+            <Link href="/account" className="flex items-center gap-2 text-sm tracking-wide opacity-80 transition-opacity hover:opacity-100">
+              <UserRound size={16} /> My Booking
+            </Link>
+            <Magnetic>
+              <LuxeButton href="/book" size="sm" arrow>Book now</LuxeButton>
+            </Magnetic>
+          </div>
+
+          <div className="flex items-center gap-3 lg:hidden">
+            <LuxeButton href="/book" size="sm">Book</LuxeButton>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              className="flex size-11 items-center justify-center rounded-full border border-current/25"
+              aria-label="Open menu"
+            >
+              <Menu size={20} />
+            </button>
+          </div>
+        </nav>
+      </motion.header>
+
+      {/* Full-screen mobile menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <Dialog static open={menuOpen} onClose={setMenuOpen} className="relative z-[60] lg:hidden">
+            <DialogPanel
+              as={motion.div}
+              initial={{ clipPath: 'inset(0 0 100% 0)' }}
+              animate={{ clipPath: 'inset(0 0 0% 0)' }}
+              exit={{ clipPath: 'inset(0 0 100% 0)' }}
+              transition={{ duration: 0.8, ease: EASE_LUXE }}
+              className="fixed inset-0 flex flex-col overflow-y-auto bg-garden px-6 pb-10 text-ivory"
+            >
+              <div className="flex h-20 items-center justify-between">
+                <Image src="/logo.png" alt="Bruton Gardens & Apartments" width={96} height={48} className="h-10 w-auto brightness-0 invert" />
+                <button type="button" onClick={() => setMenuOpen(false)} className="flex size-11 items-center justify-center rounded-full border border-ivory/25" aria-label="Close menu">
+                  <X size={20} />
                 </button>
               </div>
-              <div className="mt-6 flow-root">
-                <div className="-my-6 divide-y divide-gray-500/10">
-                  <div className="space-y-5 py-10 flex flex-col">
-                    {navLinks.map((link) => (
+
+              <ul className="mt-12 flex flex-col gap-2">
+                {[{ href: '/', label: 'Home' }, ...navLinks, { href: '/account', label: 'My Booking' }, { href: '/room-service', label: 'Room Service' }].map((link, i) => (
+                  <li key={link.href} className="overflow-hidden">
+                    <motion.div
+                      initial={{ y: '110%' }}
+                      animate={{ y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.25 + i * 0.05, ease: EASE_LUXE }}
+                    >
                       <Link
-                        key={link.href}
                         href={link.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={`text-lg font-normal tracking-wide ${
-                          pathname === link.href
-                            ? 'text-lime-500 font-medium'
-                            : 'text-gray-900'
-                        }`}
+                        onClick={() => setMenuOpen(false)}
+                        className={`font-display block py-1 text-5xl ${isActive(link.href) && link.href !== '/' ? 'text-brass' : ''}`}
                       >
                         {link.label}
                       </Link>
-                    ))}
-                  </div>
-                  <div className="py-6 gap-3 flex mt-5">
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setDirectionsPopupOpen(true);
-                      }}
-                    >
-                      <MapPinHouse size={16} /> Visit Now
-                    </Button>
-                    <Button
-                      className="bg-lime-400 hover:bg-lime-500"
-                      size="sm"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        handleContactScroll();
-                      }}
-                    >
-                      <UserRoundSearch size={16} /> Contact Us
-                    </Button>
-                  </div>
-                </div>
-              </div>
+                    </motion.div>
+                  </li>
+                ))}
+              </ul>
+
+              <motion.div
+                className="mt-auto flex flex-col gap-3 pt-12"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+              >
+                <LuxeButton href="/book" size="lg" arrow onClick={() => setMenuOpen(false)}>Book your stay</LuxeButton>
+                <LuxeButton variant="outline" size="lg" onClick={() => { setMenuOpen(false); setDirectionsOpen(true); }}>
+                  <MapPin size={16} className="inline -mt-0.5 mr-2" />Get directions
+                </LuxeButton>
+              </motion.div>
             </DialogPanel>
           </Dialog>
         )}
       </AnimatePresence>
 
-      {/* Directions Popup Dialog */}
+      {/* Directions dialog */}
       <AnimatePresence>
-        {directionsPopupOpen && (
-          <Dialog
-            open={directionsPopupOpen}
-            onClose={() => setDirectionsPopupOpen(false)}
-            className="relative z-50"
-          >
+        {directionsOpen && (
+          <Dialog static open={directionsOpen} onClose={() => setDirectionsOpen(false)} className="relative z-[70]">
             <motion.div
-              className="fixed inset-0 bg-black/30"
+              className="fixed inset-0 bg-garden/60 backdrop-blur-sm"
               aria-hidden="true"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-              <DialogPanel>
-                <motion.div
-                  className="mx-auto max-w-md rounded-2xl bg-white p-8 shadow-xl"
-                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <h2 className="text-2xl font-semibold text-gray-900">
-                      Get Directions
-                    </h2>
-                    <button
-                      onClick={() => setDirectionsPopupOpen(false)}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      <X size={24} />
-                    </button>
-                  </div>
-
-                  <p className="text-gray-600 mb-6">
-                    We&apos;ll open Google Maps to show you directions to Bruton Gardens
-                    Apartment from your current location.
-                  </p>
-
-                  <div className="flex flex-col gap-3">
-                    <Button
-                      onClick={handleGetDirections}
-                      className="w-full bg-lime-400 hover:bg-lime-500 text-black font-semibold flex items-center justify-center gap-2"
-                    >
-                      <Navigation size={20} />
-                      Open Google Maps
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      onClick={() => setDirectionsPopupOpen(false)}
-                      className="w-full"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </motion.div>
+              <DialogPanel
+                as={motion.div}
+                initial={{ opacity: 0, y: 30, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 30, scale: 0.97 }}
+                transition={{ duration: 0.5, ease: EASE_LUXE }}
+                className="w-full max-w-md rounded-[2rem] bg-ivory p-8 text-garden shadow-2xl md:p-10"
+              >
+                <div className="mb-4 flex items-start justify-between">
+                  <h2 className="font-display text-4xl">Find us</h2>
+                  <button onClick={() => setDirectionsOpen(false)} className="text-garden/50 hover:text-garden" aria-label="Close">
+                    <X size={22} />
+                  </button>
+                </div>
+                <p className="mb-8 text-ink/65">
+                  We&apos;ll open Google Maps with directions to Bruton Gardens &amp; Apartments from where you are.
+                </p>
+                <div className="flex flex-col gap-3">
+                  <LuxeButton
+                    size="lg"
+                    onClick={() => { window.open(MAPS_URL, '_blank'); setDirectionsOpen(false); }}
+                  >
+                    <Navigation size={16} className="inline -mt-0.5 mr-2" />Open Google Maps
+                  </LuxeButton>
+                  <LuxeButton variant="ghost" size="md" className="mx-auto" onClick={() => setDirectionsOpen(false)}>Cancel</LuxeButton>
+                </div>
               </DialogPanel>
             </div>
           </Dialog>
         )}
       </AnimatePresence>
-    </motion.header>
+    </>
   );
 }

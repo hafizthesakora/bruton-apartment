@@ -1,36 +1,21 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Facebook, MessageCircle, Twitter } from 'lucide-react';
 import Link from 'next/link';
-import { FadeIn, StaggerContainer, StaggerItem, motion } from './MotionWrapper';
+import { ArrowUp } from 'lucide-react';
+import { FadeIn, RevealText, Marquee } from './MotionWrapper';
+import LuxeButton from './ui/LuxeButton';
 import { socialLinks } from '@/lib/social';
-
-const TikTokIcon = ({ size = 24, className = '' }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
-  </svg>
-);
-
-const SOCIAL_ICON_MAP = {
-  Facebook: Facebook,
-  Twitter: Twitter,
-  TikTok: TikTokIcon,
-  WhatsApp: MessageCircle,
-};
 
 const DEFAULT_FOOTER = {
   description: 'Experience luxury living at Bruton Gardens & Apartments. We offer modern, well-furnished apartments in a serene environment with world-class amenities and exceptional service. Your comfort is our priority.',
-  quickLinksHeading: 'Quick Links',
+  quickLinksHeading: 'Explore',
   quickLinks: [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
-    { href: '/blog', label: 'Gallery & Blog' },
-    { href: '/services', label: 'Services' },
+    { href: '/services', label: 'Apartments' },
     { href: '/facilities', label: 'Facilities' },
-    { href: '/book', label: 'Book a Stay' },
-    { href: '/room-service', label: 'Room Service' },
-    { href: '/account', label: 'My Booking' },
+    { href: '/blog', label: 'Gallery & Blog' },
   ],
   connectHeading: 'Connect',
   socialLinks: [],
@@ -42,9 +27,20 @@ const DEFAULT_FOOTER = {
   copyright: '© 2026 Bruton Gardens & Apartments. All rights reserved.',
 };
 
+// Always offered, whatever the CMS quick links say.
+const GUEST_LINKS = [
+  { href: '/book', label: 'Book a Stay' },
+  { href: '/account', label: 'My Booking' },
+  { href: '/room-service', label: 'Room Service' },
+];
+
+const scrollTop = () => {
+  if (window.__lenis) window.__lenis.scrollTo(0);
+  else window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 const Footer = () => {
   const [f, setF] = useState(DEFAULT_FOOTER);
-  const [footerBg, setFooterBg] = useState('#f4f5fa');
   const [settingsSocial, setSettingsSocial] = useState([]);
 
   useEffect(() => {
@@ -54,122 +50,96 @@ const Footer = () => {
       .catch(() => {});
     fetch('/api/settings')
       .then(r => r.json())
-      .then(data => {
-        if (data?.design?.footerBg) setFooterBg(data.design.footerBg);
-        // Social links are managed in Admin → Settings; they replace the CMS placeholders.
-        setSettingsSocial(socialLinks(data?.social));
-      })
+      // Social links are managed in Admin → Settings; they replace the CMS placeholders.
+      .then(data => setSettingsSocial(socialLinks(data?.social)))
       .catch(() => {});
   }, []);
 
   const links = (settingsSocial.length ? settingsSocial : f.socialLinks || [])
     .filter((s) => s.url && s.url !== '#');
+  const explore = (f.quickLinks || []).filter((l) => !GUEST_LINKS.some((g) => g.href === l.href));
+
+  const heading = 'eyebrow mb-6 text-sand/60';
+  const link = 'text-ivory/80 transition-colors duration-300 hover:text-brass';
 
   return (
-    <div style={{ backgroundColor: footerBg }}>
-      <div className="container mx-auto py-10 px-7">
-        <div className="grid md:grid-cols-3 gap-10 items-start">
-          {/* Brand + description */}
+    <footer className="relative overflow-hidden bg-garden text-ivory">
+      {/* Closing call to action */}
+      <div className="container-luxe border-b border-ivory/10 pb-20 pt-24 md:pb-28 md:pt-36">
+        <div className="grid items-end gap-12 md:grid-cols-[1fr_auto]">
           <div>
             <FadeIn direction="up">
-              <Image src="/logo.png" alt="logo" width={200} height={100} className="pb-5" />
+              <p className="eyebrow mb-6 flex items-center gap-3 text-brass"><span className="h-px w-8 bg-current" />Your stay awaits</p>
             </FadeIn>
-            <FadeIn direction="up" delay={0.1}>
-              <p className="text-md md:text-lg md:pe-16 pt-5 text-gray-700">{f.description}</p>
-            </FadeIn>
+            <RevealText as="p" text="Stay in the garden." className="font-display text-6xl leading-[0.95] md:text-[9rem]" />
           </div>
-
-          {/* Quick Links + Connect */}
-          <div className="flex gap-10 justify-around py-10 md:py-0">
-            <div>
-              <FadeIn direction="up">
-                <h3 className="text-2xl font-semibold">{f.quickLinksHeading}</h3>
-              </FadeIn>
-              <StaggerContainer staggerDelay={0.1} className="space-y-3 text-lg font-normal pt-8 flex flex-col">
-                {f.quickLinks.map((link) => (
-                  <StaggerItem key={link.href} direction="right">
-                    <Link href={link.href} className="hover:text-lime-400 transition-all hover:translate-x-1 inline-block">
-                      {link.label}
-                    </Link>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </div>
-            <div>
-              <FadeIn direction="up">
-                <h3 className="text-2xl font-semibold">{f.connectHeading}</h3>
-              </FadeIn>
-              <StaggerContainer staggerDelay={0.1} className="space-y-3 text-lg font-normal pt-8">
-                {links.map((social) => (
-                  <StaggerItem key={social.name} direction="right">
-                    <a
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-lime-400 cursor-pointer transition-colors block"
-                    >
-                      {social.name}
-                    </a>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </div>
-          </div>
-
-          {/* Featured items */}
-          <div className="flex justify-around">
-            <StaggerContainer staggerDelay={0.15} className="space-y-4">
-              {f.featuredItems.map((item, index) => (
-                <StaggerItem key={index}>
-                  <Link href="/blog" className="flex items-center space-x-7 group">
-                    <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-black text-lg font-medium group-hover:text-lime-500 transition-colors">{item.title}</h3>
-                      <p className="text-gray-700">{item.subtitle}</p>
-                    </div>
-                  </Link>
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
-          </div>
-        </div>
-
-        {/* Bottom bar */}
-        <div className="border-t-2 border-gray-200 mt-10">
-          <FadeIn direction="up" delay={0.1}>
-            <div className="md:flex justify-between items-center py-5 space-y-8 md:space-y-0 md:text-start text-center">
-              <p className="text-gray-500">{f.copyright}</p>
-              <div className="flex gap-5 justify-center">
-                {links.map((social) => {
-                  const Icon = SOCIAL_ICON_MAP[social.name] || MessageCircle;
-                  return (
-                    <motion.a
-                      key={social.name}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.25, color: '#a3e635' }}
-                      transition={{ duration: 0.2 }}
-                      className="cursor-pointer"
-                    >
-                      <Icon size={20} className="hover:text-lime-400 transition-colors" />
-                    </motion.a>
-                  );
-                })}
-              </div>
-            </div>
+          <FadeIn direction="up" delay={0.3} className="flex flex-wrap gap-3">
+            <LuxeButton href="/book" size="lg" arrow>Book your stay</LuxeButton>
+            <LuxeButton href="/account" size="lg" variant="outline">My Booking</LuxeButton>
           </FadeIn>
         </div>
       </div>
-    </div>
+
+      <div className="container-luxe grid gap-14 py-20 md:grid-cols-12">
+        <div className="md:col-span-4">
+          <Image src="/logo.png" alt="Bruton Gardens & Apartments" width={160} height={80} className="h-14 w-auto brightness-0 invert" />
+          <p className="mt-8 max-w-sm leading-relaxed text-ivory/60">{f.description}</p>
+        </div>
+
+        <div className="md:col-span-2">
+          <p className={heading}>{f.quickLinksHeading}</p>
+          <ul className="space-y-3">
+            {explore.map((l) => <li key={l.href}><Link href={l.href} className={link}>{l.label}</Link></li>)}
+          </ul>
+        </div>
+
+        <div className="md:col-span-2">
+          <p className={heading}>Guests</p>
+          <ul className="space-y-3">
+            {GUEST_LINKS.map((l) => <li key={l.href}><Link href={l.href} className={link}>{l.label}</Link></li>)}
+          </ul>
+        </div>
+
+        <div className="md:col-span-4">
+          <p className={heading}>Around the property</p>
+          <ul className="space-y-5">
+            {f.featuredItems.map((item) => (
+              <li key={item.title}>
+                <Link href="/blog" className="group flex items-center gap-5">
+                  <span className="relative size-16 shrink-0 overflow-hidden rounded-2xl">
+                    <Image src={item.image} alt={item.title} fill sizes="64px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                  </span>
+                  <span>
+                    <span className="font-display block text-2xl transition-colors group-hover:text-brass">{item.title}</span>
+                    <span className="text-sm text-ivory/55">{item.subtitle}</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <Marquee duration={50} className="border-y border-ivory/10 py-6 text-ivory/15">
+        {['Bruton Gardens', 'Apartments', 'Event Center', 'Gardens', 'Room Service'].map((w) => (
+          <span key={w} className="font-display flex items-center gap-10 pr-10 text-6xl italic md:text-8xl">
+            {w}<span className="text-brass/40">✦</span>
+          </span>
+        ))}
+      </Marquee>
+
+      <div className="container-luxe flex flex-col items-center justify-between gap-6 py-8 text-sm text-ivory/50 md:flex-row">
+        <p>{f.copyright}</p>
+        <div className="flex items-center gap-6">
+          {links.map((s) => (
+            <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-brass">{s.name}</a>
+          ))}
+          <button onClick={scrollTop} className="flex size-10 items-center justify-center rounded-full border border-ivory/20 transition-colors hover:border-brass hover:text-brass" aria-label="Back to top">
+            <ArrowUp size={16} />
+          </button>
+        </div>
+      </div>
+    </footer>
   );
 };
 
