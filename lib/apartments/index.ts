@@ -43,6 +43,24 @@ export async function listApartments(db: DB) {
   });
 }
 
+/** Public showcase for the marketing pages: active units, cover photo and the lowest standard nightly rate. */
+export async function listShowcase(db: DB) {
+  const all = await listApartments(db);
+  return all.filter((a) => a.active).map((a) => {
+    const open = a.ratePlans.filter((p) => p.active && !p.validFrom && !p.validTo);
+    return {
+      id: a.id,
+      slug: a.slug,
+      name: a.name,
+      description: a.description,
+      bedrooms: a.bedrooms,
+      maxGuests: a.maxGuests,
+      photo: a.photos[0] ? { url: a.photos[0].url, alt: a.photos[0].alt } : null,
+      fromRate: open.length ? Math.min(...open.map((p) => p.baseRate)) : null,
+    };
+  });
+}
+
 export type ApartmentInput = {
   name: string; description?: string; maxGuests: number; bedrooms: number; bathrooms: number; amenities?: string[];
 };

@@ -7,8 +7,18 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  --font-mono: ui-monospace, monospace;
+  --color-ivory: #F7F3EC;
+  --color-sand: #E8DFD0;
+  --color-garden: #1F3B2D;
+  --color-garden-light: #2C5240;
+  --color-sage: #8A9A7B;
+  --color-brass: #B08D57;
+  --color-brass-dark: #94743F;
+  --color-ink: #1A1A1A;
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -46,15 +56,15 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: #F7F3EC;
+  --foreground: #1A1A1A;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #4375ff;
+  --primary: #1F3B2D;
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: #efefef;
+  --secondary: #E8DFD0;
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -120,4 +130,55 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ── Editorial type & helpers ───────────────────────────────────────────── */
+@layer base {
+  html { -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--color-brass); color: #fff; }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+@utility container-luxe {
+  width: 100%;
+  max-width: 88rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) { padding-inline: 2.5rem; }
+}
+
+@utility section-y {
+  padding-block: 6rem;
+  @media (width >= 48rem) { padding-block: 9rem; }
+}
+
+/* Lenis smooth scroll */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes kenburns {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
 }
