@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { BedDouble, Bath, Users, Check, ChevronLeft, Loader2, ShieldCheck, CalendarDays } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { BedDouble, Bath, Users, Check, ChevronLeft, Loader2, ShieldCheck, CalendarDays, Search } from 'lucide-react';
 import { formatGHS } from '@/lib/money';
 import { addDays, todayAtProperty } from '@/lib/booking/pricing';
 import type { SearchResult } from '@/lib/booking/engine';
@@ -17,15 +18,40 @@ const PAYMENT_LABELS: Record<PaymentModeOption, { title: string; hint: (p: Polic
   pay_on_arrival: { title: 'Pay on arrival', hint: () => 'Cash, Mobile Money or transfer at check-in' },
 };
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 const fmtDate = (d: string) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
 
-const inputCls = 'w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-lime-400 text-sm bg-white';
+const inputCls = 'w-full px-5 py-3.5 rounded-2xl border border-garden/15 bg-white/70 focus:outline-none focus:border-brass focus:ring-4 focus:ring-brass/15 transition text-[0.95rem]';
+const labelCls = 'block eyebrow text-[0.65rem] text-brass mb-2';
+const errorCls = 'bg-red-50 text-red-800 border border-red-200 px-5 py-4 rounded-2xl text-sm';
+
+const STEPS = ['Dates', 'Apartment', 'Details & payment'];
+
+function Steps({ current }: { current: number }) {
+  return (
+    <ol className="flex items-center gap-3 text-sm">
+      {STEPS.map((label, i) => (
+        <li key={label} className="flex items-center gap-3">
+          <span className={`flex size-8 items-center justify-center rounded-full border text-xs transition-colors duration-500 ${
+            i < current ? 'border-garden bg-garden text-ivory' : i === current ? 'border-brass bg-brass text-white' : 'border-garden/20 text-garden/50'
+          }`}>
+            {i < current ? <Check size={14} /> : i + 1}
+          </span>
+          <span className={`hidden sm:inline ${i === current ? 'text-garden' : 'text-ink/45'}`}>{label}</span>
+          {i < STEPS.length - 1 && <span className="h-px w-6 bg-garden/20 sm:w-10" />}
+        </li>
+      ))}
+    </ol>
+  );
+}
 
 export default function BookClient() {
   const router = useRouter();
   const params = useSearchParams();
   const today = todayAtProperty();
+  const preferred = params.get('apartment');
 
   const [checkIn, setCheckIn] = useState(params.get('checkIn') || today);
   const [checkOut, setCheckOut] = useState(params.get('checkOut') || addDays(today, 2));
@@ -48,6 +74,7 @@ export default function BookClient() {
       if (!res.ok) throw new Error(data.error || 'Search failed');
       setResult(data);
       setSearched(q);
+      if (preferred) qs.set('apartment', preferred);
       router.replace(`/book?${qs}`, { scroll: false });
     } catch (err) {
       setResult(null);
@@ -55,11 +82,11 @@ export default function BookClient() {
     } finally {
       setLoading(false);
     }
-  }, [router]);
+  }, [router, preferred]);
 
-  // Deep links from "Book Now" buttons (/book?checkIn=…) search straight away.
+  // Deep links from "Book Now" buttons (/book?checkIn=…) and apartment cards (/book?apartment=…) search straight away.
   useEffect(() => {
-    if (params.get('checkIn') && params.get('checkOut')) search({ checkIn, checkOut, guests });
+    if ((params.get('checkIn') && params.get('checkOut')) || preferred) search({ checkIn, checkOut, guests });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -68,113 +95,144 @@ export default function BookClient() {
     search({ checkIn, checkOut, guests });
   };
 
+  const step = selected ? 2 : result ? 1 : 0;
+
   return (
-    <div className="space-y-8">
-      {!selected && (
-        <form onSubmit={onSearch} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto_auto] gap-4 items-end">
-          <label className="block">
-            <span className="block text-sm font-medium mb-1">Check-in</span>
-            <input type="date" className={inputCls} value={checkIn} min={today} required
-              onChange={(e) => {
-                setCheckIn(e.target.value);
-                if (e.target.value >= checkOut) setCheckOut(addDays(e.target.value, 1));
-              }} />
-          </label>
-          <label className="block">
-            <span className="block text-sm font-medium mb-1">Check-out</span>
-            <input type="date" className={inputCls} value={checkOut} min={addDays(checkIn, 1)} required
-              onChange={(e) => setCheckOut(e.target.value)} />
-          </label>
-          <label className="block">
-            <span className="block text-sm font-medium mb-1">Guests</span>
-            <select className={inputCls} value={guests} onChange={(e) => setGuests(Number(e.target.value))}>
-              {Array.from({ length: 8 }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{n}</option>)}
-            </select>
-          </label>
-          <button type="submit" disabled={loading}
-            className="bg-lime-400 hover:bg-lime-500 text-gray-900 font-semibold px-6 py-2.5 rounded-lg transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
-            {loading && <Loader2 size={16} className="animate-spin" />}
-            Search
-          </button>
-        </form>
-      )}
+    <div className="space-y-10">
+      <Steps current={step} />
 
-      {error && <div className="bg-red-50 text-red-700 border border-red-200 px-4 py-3 rounded-lg text-sm">{error}</div>}
+      <AnimatePresence mode="wait">
+        {!selected && (
+          <motion.form
+            key="search"
+            onSubmit={onSearch}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5, ease: EASE }}
+            className="grid grid-cols-1 items-end gap-4 rounded-[2rem] border border-garden/10 bg-white/60 p-5 shadow-[0_20px_60px_-30px_rgba(31,59,45,0.35)] backdrop-blur sm:grid-cols-[1fr_1fr_auto_auto] md:p-6"
+          >
+            <label className="block">
+              <span className={labelCls}>Check-in</span>
+              <input type="date" className={inputCls} value={checkIn} min={today} required
+                onChange={(e) => {
+                  setCheckIn(e.target.value);
+                  if (e.target.value >= checkOut) setCheckOut(addDays(e.target.value, 1));
+                }} />
+            </label>
+            <label className="block">
+              <span className={labelCls}>Check-out</span>
+              <input type="date" className={inputCls} value={checkOut} min={addDays(checkIn, 1)} required
+                onChange={(e) => setCheckOut(e.target.value)} />
+            </label>
+            <label className="block">
+              <span className={labelCls}>Guests</span>
+              <select className={inputCls} value={guests} onChange={(e) => setGuests(Number(e.target.value))}>
+                {Array.from({ length: 8 }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{n}</option>)}
+              </select>
+            </label>
+            <button type="submit" disabled={loading}
+              className="flex h-[3.2rem] items-center justify-center gap-2 rounded-full bg-brass px-8 font-medium tracking-wide text-white transition-colors duration-500 hover:bg-brass-dark disabled:opacity-60">
+              {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
+              Search
+            </button>
+          </motion.form>
+        )}
+      </AnimatePresence>
 
-      {result && searched && !selected && (
-        <Results result={result} searched={searched} onSelect={setSelected} />
-      )}
+      {error && <div className={errorCls}>{error}</div>}
 
-      {result && searched && selected && (
-        <Checkout
-          apartment={selected}
-          searched={searched}
-          policy={result.policy}
-          paymentOptions={result.paymentOptions}
-          onBack={() => setSelected(null)}
-          onUnavailable={(msg) => { setError(msg); search(searched); }}
-        />
-      )}
+      <AnimatePresence mode="wait">
+        {result && searched && !selected && (
+          <motion.div key={`results-${searched.checkIn}-${searched.checkOut}-${searched.guests}`}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }}>
+            <Results result={result} searched={searched} preferred={preferred} onSelect={(a) => { setSelected(a); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />
+          </motion.div>
+        )}
+
+        {result && searched && selected && (
+          <motion.div key="checkout" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} transition={{ duration: 0.6, ease: EASE }}>
+            <Checkout
+              apartment={selected}
+              searched={searched}
+              policy={result.policy}
+              paymentOptions={result.paymentOptions}
+              onBack={() => setSelected(null)}
+              onUnavailable={(msg) => { setError(msg); search(searched); }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
-function Results({ result, searched, onSelect }: {
+function Results({ result, searched, preferred, onSelect }: {
   result: SearchResponse;
   searched: { checkIn: string; checkOut: string; guests: number };
+  preferred: string | null;
   onSelect: (a: SearchResult) => void;
 }) {
-  const available = result.apartments.filter((a) => a.available);
-  const unavailable = result.apartments.filter((a) => !a.available);
+  const byPreference = (a: SearchResult, b: SearchResult) => Number(b.slug === preferred) - Number(a.slug === preferred);
+  const available = result.apartments.filter((a) => a.available).sort(byPreference);
+  const unavailable = result.apartments.filter((a) => !a.available).sort(byPreference);
 
   return (
-    <div className="space-y-4">
-      <p className="text-gray-600 text-sm">
+    <div className="space-y-6">
+      <p className="text-ink/60">
         {available.length
           ? `${available.length} apartment${available.length === 1 ? '' : 's'} available · ${fmtDate(searched.checkIn)} → ${fmtDate(searched.checkOut)}`
           : 'Nothing is free for those dates — try different dates, or contact us and we’ll help.'}
       </p>
-      {[...available, ...unavailable].map((a) => (
-        <div key={a.id} className={`bg-white rounded-2xl border border-gray-200 overflow-hidden flex flex-col md:flex-row ${a.available ? '' : 'opacity-60'}`}>
-          <div className="relative md:w-72 h-48 md:h-auto shrink-0 bg-gray-100">
-            {a.photos[0] && <Image src={a.photos[0].url} alt={a.photos[0].alt || a.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, 288px" />}
+      {[...available, ...unavailable].map((a, i) => (
+        <motion.div
+          key={a.id}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: a.available ? 1 : 0.55, y: 0 }}
+          transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
+          className={`group flex flex-col overflow-hidden rounded-[2rem] border bg-white/70 md:flex-row ${
+            a.slug === preferred && a.available ? 'border-brass ring-4 ring-brass/15' : 'border-garden/10'
+          }`}
+        >
+          <div className="relative h-60 shrink-0 overflow-hidden bg-sand md:h-auto md:w-80">
+            {a.photos[0] && <Image src={a.photos[0].url} alt={a.photos[0].alt || a.name} fill className="object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-105" sizes="(max-width: 768px) 100vw, 320px" />}
           </div>
-          <div className="p-5 flex-1 flex flex-col gap-3">
+          <div className="flex flex-1 flex-col gap-4 p-6 md:p-8">
             <div>
-              <h3 className="text-xl font-semibold">{a.name}</h3>
-              <p className="text-gray-600 text-sm mt-1">{a.description}</p>
+              <h3 className="font-display text-3xl text-garden">{a.name}</h3>
+              <p className="mt-2 text-ink/60">{a.description}</p>
             </div>
-            <div className="flex flex-wrap gap-4 text-sm text-gray-700">
-              <span className="flex items-center gap-1.5"><BedDouble size={16} /> {a.bedrooms} bed</span>
-              <span className="flex items-center gap-1.5"><Bath size={16} /> {a.bathrooms} bath</span>
-              <span className="flex items-center gap-1.5"><Users size={16} /> Sleeps {a.maxGuests}</span>
+            <div className="flex flex-wrap gap-5 text-sm text-ink/70">
+              <span className="flex items-center gap-2"><BedDouble size={16} className="text-brass" /> {a.bedrooms} bed</span>
+              <span className="flex items-center gap-2"><Bath size={16} className="text-brass" /> {a.bathrooms} bath</span>
+              <span className="flex items-center gap-2"><Users size={16} className="text-brass" /> Sleeps {a.maxGuests}</span>
             </div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {a.amenities.slice(0, 6).map((am) => (
-                <span key={am} className="text-xs bg-gray-100 text-gray-700 rounded-full px-2.5 py-1">{am}</span>
+                <span key={am} className="rounded-full border border-garden/10 px-3 py-1 text-xs text-ink/65">{am}</span>
               ))}
             </div>
-            <div className="mt-auto flex flex-wrap items-end justify-between gap-3 pt-2">
+            <div className="mt-auto flex flex-wrap items-end justify-between gap-4 border-t border-garden/10 pt-5">
               {a.available && a.quote ? (
                 <>
                   <div>
-                    <p className="text-2xl font-semibold">{formatGHS(a.quote.total)}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="font-display text-4xl text-garden">{formatGHS(a.quote.total)}</p>
+                    <p className="mt-1 text-xs text-ink/50">
                       {a.quote.nights} night{a.quote.nights === 1 ? '' : 's'}
-                      {a.quote.discountPct > 0 && <span className="text-lime-700"> · {a.quote.discountPct}% long-stay discount</span>}
+                      {a.quote.discountPct > 0 && <span className="text-brass-dark"> · {a.quote.discountPct}% long-stay discount</span>}
                     </p>
                   </div>
                   <button onClick={() => onSelect(a)}
-                    className="bg-lime-400 hover:bg-lime-500 text-gray-900 font-semibold px-6 py-2.5 rounded-lg transition-colors">
+                    className="rounded-full bg-garden px-8 py-3 text-sm font-medium tracking-wide text-ivory transition-colors duration-500 hover:bg-brass">
                     Select
                   </button>
                 </>
               ) : (
-                <p className="text-sm text-gray-500">{a.reason}</p>
+                <p className="text-sm text-ink/50">{a.reason}</p>
               )}
             </div>
           </div>
-        </div>
+        </motion.div>
       ))}
     </div>
   );
@@ -229,94 +287,97 @@ function Checkout({ apartment, searched, policy, paymentOptions, onBack, onUnava
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 items-start">
-      <form onSubmit={submit} className="bg-white rounded-2xl border border-gray-200 p-6 space-y-5 order-2 lg:order-1">
-        <button type="button" onClick={onBack} className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1">
+    <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_380px]">
+      <form onSubmit={submit} className="order-2 space-y-10 rounded-[2rem] border border-garden/10 bg-white/60 p-6 md:p-10 lg:order-1">
+        <button type="button" onClick={onBack} className="flex items-center gap-1 text-sm text-ink/55 transition-colors hover:text-garden">
           <ChevronLeft size={16} /> Back to apartments
         </button>
 
         <div>
-          <h2 className="text-xl font-semibold mb-3">Your details</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <h2 className="font-display mb-6 text-4xl text-garden">Your details</h2>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <label className="block sm:col-span-2">
-              <span className="block text-sm font-medium mb-1">Full name *</span>
+              <span className={labelCls}>Full name *</span>
               <input className={inputCls} required autoComplete="name" value={form.fullName}
                 onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
             </label>
             <label className="block">
-              <span className="block text-sm font-medium mb-1">Email *</span>
+              <span className={labelCls}>Email *</span>
               <input type="email" className={inputCls} required autoComplete="email" value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })} />
             </label>
             <label className="block">
-              <span className="block text-sm font-medium mb-1">Phone (WhatsApp preferred) *</span>
+              <span className={labelCls}>Phone (WhatsApp preferred) *</span>
               <input type="tel" className={inputCls} required autoComplete="tel" placeholder="+233 …" value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })} />
             </label>
             <label className="block">
-              <span className="block text-sm font-medium mb-1">Adults</span>
+              <span className={labelCls}>Adults</span>
               <select className={inputCls} value={adults} onChange={(e) => setAdults(Number(e.target.value))}>
                 {Array.from({ length: apartment.maxGuests }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{n}</option>)}
               </select>
             </label>
             <label className="block">
-              <span className="block text-sm font-medium mb-1">Children</span>
+              <span className={labelCls}>Children</span>
               <select className={inputCls} value={children} onChange={(e) => setChildren(Number(e.target.value))}>
                 {Array.from({ length: Math.max(0, apartment.maxGuests - adults) + 1 }, (_, i) => i).map((n) => <option key={n} value={n}>{n}</option>)}
               </select>
             </label>
             <label className="block sm:col-span-2">
-              <span className="block text-sm font-medium mb-1">Anything we should know?</span>
-              <textarea rows={2} className={`${inputCls} resize-none`} placeholder="Arrival time, special requests…" value={form.notes}
+              <span className={labelCls}>Anything we should know?</span>
+              <textarea rows={3} className={`${inputCls} resize-none`} placeholder="Arrival time, special requests…" value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })} />
             </label>
           </div>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-3">Payment</h2>
-          <div className="space-y-2">
+          <h2 className="font-display mb-6 text-4xl text-garden">Payment</h2>
+          <div className="space-y-3">
             {paymentOptions.map((opt) => (
-              <label key={opt} className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-colors ${mode === opt ? 'border-lime-400 bg-lime-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                <input type="radio" name="mode" className="mt-1 accent-lime-500" checked={mode === opt} onChange={() => setMode(opt)} />
+              <label key={opt} className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition-all duration-300 ${mode === opt ? 'border-brass bg-brass/5 ring-4 ring-brass/10' : 'border-garden/15 hover:border-garden/30'}`}>
+                <input type="radio" name="mode" className="mt-1 accent-[#B08D57]" checked={mode === opt} onChange={() => setMode(opt)} />
                 <span>
-                  <span className="block font-medium">{PAYMENT_LABELS[opt].title}</span>
-                  <span className="block text-sm text-gray-600">{PAYMENT_LABELS[opt].hint(policy)}</span>
+                  <span className="block font-medium text-garden">{PAYMENT_LABELS[opt].title}</span>
+                  <span className="mt-0.5 block text-sm text-ink/55">{PAYMENT_LABELS[opt].hint(policy)}</span>
                 </span>
               </label>
             ))}
           </div>
-          {policy.cancellationText && <p className="text-xs text-gray-500 mt-3">{policy.cancellationText}</p>}
+          {policy.cancellationText && <p className="mt-4 text-xs leading-relaxed text-ink/50">{policy.cancellationText}</p>}
         </div>
 
-        {error && <div className="bg-red-50 text-red-700 border border-red-200 px-4 py-3 rounded-lg text-sm">{error}</div>}
+        {error && <div className={errorCls}>{error}</div>}
 
-        <button type="submit" disabled={submitting}
-          className="w-full bg-lime-400 hover:bg-lime-500 text-gray-900 font-semibold py-3 rounded-lg transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
-          {submitting && <Loader2 size={16} className="animate-spin" />}
-          {dueNow > 0 ? `Continue to payment · ${formatGHS(dueNow)}` : 'Confirm booking'}
-        </button>
-        {dueNow > 0 && (
-          <p className="text-xs text-gray-500 flex items-center gap-1.5 justify-center">
-            <ShieldCheck size={14} /> Secure payment by Paystack. We hold the apartment for {policy.holdMinutes} minutes while you pay.
-          </p>
-        )}
+        <div>
+          <button type="submit" disabled={submitting}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-brass py-4 font-medium tracking-wide text-white transition-colors duration-500 hover:bg-brass-dark disabled:opacity-60">
+            {submitting && <Loader2 size={16} className="animate-spin" />}
+            {dueNow > 0 ? `Continue to payment · ${formatGHS(dueNow)}` : 'Confirm booking'}
+          </button>
+          {dueNow > 0 && (
+            <p className="mt-4 flex items-center justify-center gap-1.5 text-center text-xs text-ink/50">
+              <ShieldCheck size={14} /> Secure payment by Paystack. We hold the apartment for {policy.holdMinutes} minutes while you pay.
+            </p>
+          )}
+        </div>
       </form>
 
-      <aside className="bg-white rounded-2xl border border-gray-200 overflow-hidden order-1 lg:order-2 lg:sticky lg:top-32">
-        <div className="relative h-40 bg-gray-100">
-          {apartment.photos[0] && <Image src={apartment.photos[0].url} alt={apartment.name} fill className="object-cover" sizes="360px" />}
+      <aside className="order-1 overflow-hidden rounded-[2rem] bg-garden text-ivory lg:sticky lg:top-28 lg:order-2">
+        <div className="relative h-48 bg-garden-light">
+          {apartment.photos[0] && <Image src={apartment.photos[0].url} alt={apartment.name} fill className="object-cover" sizes="380px" />}
+          <div className="absolute inset-0 bg-gradient-to-t from-garden to-transparent" />
+          <h3 className="font-display absolute bottom-4 left-6 right-6 text-3xl">{apartment.name}</h3>
         </div>
-        <div className="p-5 space-y-4 text-sm">
-          <h3 className="text-lg font-semibold">{apartment.name}</h3>
-          <div className="flex items-start gap-2 text-gray-700">
-            <CalendarDays size={16} className="mt-0.5 shrink-0" />
+        <div className="space-y-5 p-6 text-sm">
+          <div className="flex items-start gap-3 text-ivory/85">
+            <CalendarDays size={16} className="mt-0.5 shrink-0 text-brass" />
             <div>
               <p>{fmtDate(searched.checkIn)} → {fmtDate(searched.checkOut)}</p>
-              <p className="text-gray-500 text-xs">Check-in from {policy.checkInTime} · check-out by {policy.checkOutTime}</p>
+              <p className="mt-1 text-xs text-ivory/50">Check-in from {policy.checkInTime} · check-out by {policy.checkOutTime}</p>
             </div>
           </div>
-          <div className="border-t border-gray-100 pt-4 space-y-1.5">
+          <div className="space-y-2 border-t border-ivory/10 pt-5">
             {quote.nights - weekendNights > 0 && (
               <Row label={`${quote.nights - weekendNights} weeknight${quote.nights - weekendNights === 1 ? '' : 's'}`}
                 value={formatGHS(quote.lines.filter((l) => !l.weekend).reduce((s, l) => s + l.rate, 0))} />
@@ -326,15 +387,16 @@ function Checkout({ apartment, searched, policy, paymentOptions, onBack, onUnava
                 value={formatGHS(quote.lines.filter((l) => l.weekend).reduce((s, l) => s + l.rate, 0))} />
             )}
             {quote.discount > 0 && <Row label={`Long-stay discount (${quote.discountPct}%)`} value={`− ${formatGHS(quote.discount)}`} accent />}
-            <div className="flex justify-between font-semibold text-base pt-2 border-t border-gray-100">
-              <span>Total</span><span>{formatGHS(quote.total)}</span>
+            <div className="flex items-baseline justify-between border-t border-ivory/10 pt-4">
+              <span className="eyebrow text-ivory/60">Total</span>
+              <span className="font-display text-3xl">{formatGHS(quote.total)}</span>
             </div>
             {dueNow > 0 && dueNow < quote.total && <Row label="Due now" value={formatGHS(dueNow)} />}
             {dueNow < quote.total && <Row label="Due at check-in" value={formatGHS(quote.total - dueNow)} />}
           </div>
-          <ul className="space-y-1 text-gray-600">
+          <ul className="space-y-2 text-ivory/70">
             {apartment.amenities.slice(0, 4).map((am) => (
-              <li key={am} className="flex items-center gap-2"><Check size={14} className="text-lime-600" /> {am}</li>
+              <li key={am} className="flex items-center gap-2"><Check size={14} className="text-brass" /> {am}</li>
             ))}
           </ul>
         </div>
@@ -345,7 +407,7 @@ function Checkout({ apartment, searched, policy, paymentOptions, onBack, onUnava
 
 function Row({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div className={`flex justify-between ${accent ? 'text-lime-700' : 'text-gray-700'}`}>
+    <div className={`flex justify-between ${accent ? 'text-brass' : 'text-ivory/75'}`}>
       <span>{label}</span><span>{value}</span>
     </div>
   );

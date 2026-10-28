@@ -114,14 +114,14 @@ export default function Header() {
       <AnimatePresence>
         {menuOpen && (
           <Dialog static open={menuOpen} onClose={setMenuOpen} className="relative z-[60] lg:hidden">
-            <DialogPanel
-              as={motion.div}
+            <motion.div
               initial={{ clipPath: 'inset(0 0 100% 0)' }}
               animate={{ clipPath: 'inset(0 0 0% 0)' }}
               exit={{ clipPath: 'inset(0 0 100% 0)' }}
               transition={{ duration: 0.8, ease: EASE_LUXE }}
-              className="fixed inset-0 flex flex-col overflow-y-auto bg-garden px-6 pb-10 text-ivory"
+              className="fixed inset-0 bg-garden text-ivory"
             >
+            <DialogPanel className="flex h-full flex-col overflow-y-auto px-6 pb-10">
               <div className="flex h-20 items-center justify-between">
                 <Image src="/logo.png" alt="Bruton Gardens & Apartments" width={96} height={48} className="h-10 w-auto brightness-0 invert" />
                 <button type="button" onClick={() => setMenuOpen(false)} className="flex size-11 items-center justify-center rounded-full border border-ivory/25" aria-label="Close menu">
@@ -161,6 +161,7 @@ export default function Header() {
                 </LuxeButton>
               </motion.div>
             </DialogPanel>
+            </motion.div>
           </Dialog>
         )}
       </AnimatePresence>
@@ -177,14 +178,14 @@ export default function Header() {
               exit={{ opacity: 0 }}
             />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-              <DialogPanel
-                as={motion.div}
+              <motion.div
                 initial={{ opacity: 0, y: 30, scale: 0.97 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 30, scale: 0.97 }}
                 transition={{ duration: 0.5, ease: EASE_LUXE }}
-                className="w-full max-w-md rounded-[2rem] bg-ivory p-8 text-garden shadow-2xl md:p-10"
+                className="w-full max-w-md"
               >
+              <DialogPanel className="rounded-[2rem] bg-ivory p-8 text-garden shadow-2xl md:p-10">
                 <div className="mb-4 flex items-start justify-between">
                   <h2 className="font-display text-4xl">Find us</h2>
                   <button onClick={() => setDirectionsOpen(false)} className="text-garden/50 hover:text-garden" aria-label="Close">
@@ -204,6 +205,7 @@ export default function Header() {
                   <LuxeButton variant="ghost" size="md" className="mx-auto" onClick={() => setDirectionsOpen(false)}>Cancel</LuxeButton>
                 </div>
               </DialogPanel>
+              </motion.div>
             </div>
           </Dialog>
         )}
