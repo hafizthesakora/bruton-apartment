@@ -264,23 +264,26 @@ export function ImageReveal({ children, className = '', delay = 0, from = 'botto
     right: 'inset(0% 0% 0% 100%)',
   }[from];
 
+  // The observed wrapper is never clipped: a fully clipped element reports no intersection
+  // in some browsers, which left the image hidden for good.
   return (
-    <motion.div
-      ref={ref}
-      className={`overflow-hidden ${className}`}
-      initial={reduce ? { opacity: 0 } : { clipPath: hidden }}
-      animate={isInView ? (reduce ? { opacity: 1 } : { clipPath: 'inset(0% 0% 0% 0%)' }) : {}}
-      transition={{ duration: 1.3, delay, ease: EASE_LUXE }}
-    >
+    <div ref={ref} className={`relative overflow-hidden ${className}`}>
       <motion.div
-        className="relative h-full w-full"
-        initial={reduce ? {} : { scale: 1.2 }}
-        animate={isInView && !reduce ? { scale: 1 } : {}}
-        transition={{ duration: 1.6, delay, ease: EASE_LUXE }}
+        className="absolute inset-0"
+        initial={reduce ? { opacity: 0 } : { clipPath: hidden }}
+        animate={isInView ? (reduce ? { opacity: 1 } : { clipPath: 'inset(0% 0% 0% 0%)' }) : {}}
+        transition={{ duration: 1.3, delay, ease: EASE_LUXE }}
       >
-        {children}
+        <motion.div
+          className="relative h-full w-full"
+          initial={reduce ? {} : { scale: 1.2 }}
+          animate={isInView && !reduce ? { scale: 1 } : {}}
+          transition={{ duration: 1.6, delay, ease: EASE_LUXE }}
+        >
+          {children}
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
 

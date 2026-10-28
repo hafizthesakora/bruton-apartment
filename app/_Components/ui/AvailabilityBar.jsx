@@ -26,22 +26,22 @@ export default function AvailabilityBar({ className, dark = false }) {
   };
 
   const field = cn(
-    'flex flex-1 flex-col gap-1 px-5 py-3 md:py-4',
+    'flex min-w-0 flex-1 flex-col gap-1 px-4 py-3 md:px-5 md:py-4',
     dark ? 'text-ivory' : 'text-garden'
   );
   const label = cn('eyebrow flex items-center gap-2 text-[0.65rem]', dark ? 'text-sand/80' : 'text-brass');
-  const input = 'bg-transparent text-base outline-none [color-scheme:light] w-full';
+  const input = 'bg-transparent text-[0.95rem] outline-none [color-scheme:light] w-full min-w-0';
 
   return (
     <form
       onSubmit={submit}
       className={cn(
-        'flex w-full flex-col overflow-hidden rounded-3xl border md:flex-row md:items-stretch md:rounded-full',
+        'grid w-full grid-cols-2 overflow-hidden rounded-[1.75rem] border md:flex md:flex-row md:items-stretch md:rounded-full',
         dark ? 'border-ivory/20 bg-garden/60 backdrop-blur-xl' : 'border-white/60 bg-ivory/90 shadow-2xl shadow-black/20 backdrop-blur-xl',
         className
       )}
     >
-      <label className={field}>
+      <label className={cn(field, 'border-r md:border-r-0', dark ? 'border-ivory/15' : 'border-garden/10')}>
         <span className={label}><CalendarDays size={13} /> Arrive</span>
         <input
           type="date"
@@ -55,13 +55,13 @@ export default function AvailabilityBar({ className, dark = false }) {
           required
         />
       </label>
-      <div className={cn('h-px md:h-auto md:w-px', dark ? 'bg-ivory/15' : 'bg-garden/10')} />
+      <div className={cn('hidden md:block md:w-px', dark ? 'bg-ivory/15' : 'bg-garden/10')} />
       <label className={field}>
         <span className={label}><CalendarDays size={13} /> Depart</span>
         <input type="date" value={checkOut} min={plusDays(checkIn, 1)} onChange={(e) => setCheckOut(e.target.value)} className={input} required />
       </label>
-      <div className={cn('h-px md:h-auto md:w-px', dark ? 'bg-ivory/15' : 'bg-garden/10')} />
-      <label className={field}>
+      <div className={cn('hidden md:block md:w-px', dark ? 'bg-ivory/15' : 'bg-garden/10')} />
+      <label className={cn(field, 'border-t md:border-t-0', dark ? 'border-ivory/15' : 'border-garden/10')}>
         <span className={label}><Users size={13} /> Guests</span>
         <select value={guests} onChange={(e) => setGuests(Number(e.target.value))} className={cn(input, 'appearance-none')}>
           {Array.from({ length: 8 }, (_, i) => i + 1).map((n) => (
@@ -69,12 +69,12 @@ export default function AvailabilityBar({ className, dark = false }) {
           ))}
         </select>
       </label>
-      <div className="p-2">
+      <div className={cn('border-t p-2 md:border-t-0', dark ? 'border-ivory/15' : 'border-garden/10')}>
         <button
           type="submit"
           className="flex h-full min-h-12 w-full items-center justify-center gap-2 rounded-full bg-brass px-8 text-sm font-medium tracking-wide text-white transition-colors duration-500 hover:bg-brass-dark"
         >
-          <Search size={16} /> Check availability
+          <Search size={16} /> <span className="md:hidden">Search</span><span className="hidden md:inline">Check availability</span>
         </button>
       </div>
     </form>

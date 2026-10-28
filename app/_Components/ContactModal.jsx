@@ -49,9 +49,10 @@ const ContactModal = ({ isOpen, onClose }) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 z-[90] flex items-end justify-center bg-garden/60 p-3 backdrop-blur-sm sm:items-center sm:p-4" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
           <motion.div
-            className="bg-white rounded-3xl max-w-md w-full p-8 relative"
+            data-lenis-prevent
+            className="relative max-h-[92svh] w-full max-w-md overflow-y-auto overscroll-contain rounded-[2rem] bg-ivory p-6 text-ink sm:p-8"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -64,24 +65,24 @@ const ContactModal = ({ isOpen, onClose }) => {
             <p className="text-ink/55 mb-6">Fill out the form and we&apos;ll get back to you shortly</p>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Full Name *</label>
-                <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-garden/20 focus:outline-none focus:ring-2 focus:ring-brass/30" placeholder="John Doe" required />
+                <label className="mb-2 block text-sm font-medium text-ink/75">Full Name *</label>
+                <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full px-4 py-3 rounded-2xl border border-garden/20 bg-white focus:outline-none focus:ring-2 focus:ring-brass/30" placeholder="John Doe" required />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Email Address *</label>
-                <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-garden/20 focus:outline-none focus:ring-2 focus:ring-brass/30" placeholder="john@example.com" required />
+                <label className="mb-2 block text-sm font-medium text-ink/75">Email Address *</label>
+                <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-3 rounded-2xl border border-garden/20 bg-white focus:outline-none focus:ring-2 focus:ring-brass/30" placeholder="john@example.com" required />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Phone Number</label>
-                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-garden/20 focus:outline-none focus:ring-2 focus:ring-brass/30" placeholder="+233 123 456 789" />
+                <label className="mb-2 block text-sm font-medium text-ink/75">Phone Number</label>
+                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-3 rounded-2xl border border-garden/20 bg-white focus:outline-none focus:ring-2 focus:ring-brass/30" placeholder="+233 123 456 789" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Country</label>
-                <input type="text" name="country" value={formData.country} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-garden/20 focus:outline-none focus:ring-2 focus:ring-brass/30" placeholder="e.g. Ghana" />
+                <label className="mb-2 block text-sm font-medium text-ink/75">Country</label>
+                <input type="text" name="country" value={formData.country} onChange={handleChange} className="w-full px-4 py-3 rounded-2xl border border-garden/20 bg-white focus:outline-none focus:ring-2 focus:ring-brass/30" placeholder="e.g. Ghana" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Message *</label>
-                <textarea name="message" value={formData.message} onChange={handleChange} rows="4" className="w-full px-4 py-3 rounded-lg border border-garden/20 focus:outline-none focus:ring-2 focus:ring-brass/30 resize-none" placeholder="Tell us what you're looking for..." required />
+                <label className="mb-2 block text-sm font-medium text-ink/75">Message *</label>
+                <textarea name="message" value={formData.message} onChange={handleChange} rows="4" className="w-full px-4 py-3 rounded-2xl border border-garden/20 bg-white focus:outline-none focus:ring-2 focus:ring-brass/30 resize-none" placeholder="Tell us what you're looking for..." required />
               </div>
               {submitStatus === 'success' && <div className="bg-sage/20 text-garden px-4 py-3 rounded-lg">Message sent! Our team will get back to you shortly.</div>}
               {submitStatus === 'error' && <div className="bg-red-100 text-red-700 px-4 py-3 rounded-lg">Failed to send message. Please try again.</div>}

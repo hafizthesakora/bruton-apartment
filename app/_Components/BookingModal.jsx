@@ -210,9 +210,10 @@ const BookingModal = ({ isOpen, onClose, defaultViewingType = 'physical' }) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 z-[90] flex items-end justify-center bg-garden/60 p-3 backdrop-blur-sm sm:items-center sm:p-4" onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}>
           <motion.div
-            className="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 relative max-h-[90vh] overflow-y-auto"
+            data-lenis-prevent
+            className="relative max-h-[92svh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-[2rem] bg-ivory p-6 text-ink md:p-8"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -361,19 +362,19 @@ const BookingModal = ({ isOpen, onClose, defaultViewingType = 'physical' }) => {
                   <div className="space-y-3">
                     <div>
                       <label className="block text-sm font-medium mb-1">Full Name *</label>
-                      <input type="text" name="name" value={bookingData.name} onChange={handleChange} className="w-full px-4 py-2.5 rounded-lg border border-garden/20 focus:outline-none focus:ring-2 focus:ring-brass/30 text-sm" placeholder="John Doe" required />
+                      <input type="text" name="name" value={bookingData.name} onChange={handleChange} className="w-full px-4 py-2.5 rounded-2xl border border-garden/20 bg-white focus:outline-none focus:ring-2 focus:ring-brass/30 text-sm" placeholder="John Doe" required />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">Email Address *</label>
-                      <input type="email" name="email" value={bookingData.email} onChange={handleChange} className="w-full px-4 py-2.5 rounded-lg border border-garden/20 focus:outline-none focus:ring-2 focus:ring-brass/30 text-sm" placeholder="john@example.com" required />
+                      <input type="email" name="email" value={bookingData.email} onChange={handleChange} className="w-full px-4 py-2.5 rounded-2xl border border-garden/20 bg-white focus:outline-none focus:ring-2 focus:ring-brass/30 text-sm" placeholder="john@example.com" required />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">Phone Number *</label>
-                      <input type="tel" name="phone" value={bookingData.phone} onChange={handleChange} className="w-full px-4 py-2.5 rounded-lg border border-garden/20 focus:outline-none focus:ring-2 focus:ring-brass/30 text-sm" placeholder="+233 123 456 789" required />
+                      <input type="tel" name="phone" value={bookingData.phone} onChange={handleChange} className="w-full px-4 py-2.5 rounded-2xl border border-garden/20 bg-white focus:outline-none focus:ring-2 focus:ring-brass/30 text-sm" placeholder="+233 123 456 789" required />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">Additional Notes</label>
-                      <textarea name="notes" value={bookingData.notes} onChange={handleChange} rows="2" className="w-full px-4 py-2.5 rounded-lg border border-garden/20 focus:outline-none focus:ring-2 focus:ring-brass/30 resize-none text-sm" placeholder="Any specific requirements..." />
+                      <textarea name="notes" value={bookingData.notes} onChange={handleChange} rows="2" className="w-full px-4 py-2.5 rounded-2xl border border-garden/20 bg-white focus:outline-none focus:ring-2 focus:ring-brass/30 resize-none text-sm" placeholder="Any specific requirements..." />
                     </div>
                   </div>
 

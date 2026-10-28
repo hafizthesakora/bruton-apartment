@@ -1,7 +1,7 @@
 'use client';
 import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
-import ContactModal from './ContactModal';
+import BookingModal from './BookingModal';
 import AvailabilityBar from './ui/AvailabilityBar';
 import { RevealText, FadeIn, EASE_LUXE } from './MotionWrapper';
 import { socialLinks } from '@/lib/social';
@@ -22,7 +22,7 @@ const Banner = ({ content = {}, social = {} }) => {
   const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '-20%']);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
-  const [contactOpen, setContactOpen] = useState(false);
+  const [viewingOpen, setViewingOpen] = useState(false);
 
   return (
     <section ref={ref} className="relative flex min-h-[100svh] flex-col overflow-hidden bg-garden text-ivory">
@@ -44,15 +44,15 @@ const Banner = ({ content = {}, social = {} }) => {
         >
           <source src="/assets/bruton.mp4" type="video/mp4" />
         </motion.video>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-garden/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-garden/95 md:from-black/45 md:via-black/20 md:to-garden/90" />
       </motion.div>
 
       <motion.div
-        className="container-luxe relative z-10 flex flex-1 flex-col justify-end pb-10 pt-36 md:pb-14"
+        className="container-luxe relative z-10 flex flex-1 flex-col justify-end pb-6 pt-28 md:pb-14 md:pt-36"
         style={reduce ? undefined : { y: contentY, opacity: contentOpacity }}
       >
         <FadeIn direction="up" delay={0.3}>
-          <p className="eyebrow mb-8 flex items-center gap-3 text-sand">
+          <p className="eyebrow mb-6 flex items-center gap-3 text-[0.65rem] text-sand md:mb-8 md:text-xs">
             <span className="h-px w-10 bg-current" />
             {tagline}
           </p>
@@ -67,14 +67,14 @@ const Banner = ({ content = {}, social = {} }) => {
           className="font-display max-w-6xl text-[2.9rem] leading-[0.98] sm:text-6xl md:text-8xl lg:text-[7.5rem]"
         />
 
-        <div className="mt-10 grid items-end gap-8 md:grid-cols-[1fr_auto]">
+        <div className="mt-6 grid items-end gap-5 md:mt-10 md:grid-cols-[1fr_auto] md:gap-8">
           <FadeIn direction="up" delay={1}>
-            <p className="max-w-xl text-lg leading-relaxed text-ivory/80">{subtitle}</p>
+            <p className="max-w-xl text-base leading-relaxed text-ivory/85 md:text-lg">{subtitle}</p>
           </FadeIn>
           <FadeIn direction="up" delay={1.1} className="flex items-center gap-6">
             <button
               type="button"
-              onClick={() => setContactOpen(true)}
+              onClick={() => setViewingOpen(true)}
               className="text-sm tracking-wide underline decoration-ivory/40 underline-offset-8 transition-colors hover:decoration-brass"
             >
               {secondaryCta}
@@ -96,7 +96,7 @@ const Banner = ({ content = {}, social = {} }) => {
         </div>
 
         <motion.div
-          className="mt-12"
+          className="mt-8 md:mt-12"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, delay: 1.3, ease: EASE_LUXE }}
@@ -105,7 +105,7 @@ const Banner = ({ content = {}, social = {} }) => {
         </motion.div>
       </motion.div>
 
-      <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
+      <BookingModal isOpen={viewingOpen} onClose={() => setViewingOpen(false)} />
     </section>
   );
 };
