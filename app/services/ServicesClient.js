@@ -1,28 +1,13 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Card } from '@/components/ui/card';
-import {
-  Home,
-  Shield,
-  CreditCard,
-  Building2,
-  Star,
-} from 'lucide-react';
-import Link from 'next/link';
-import { FadeIn, StaggerContainer, StaggerItem, motion, AnimatePresence } from '../_Components/MotionWrapper';
+import { Star, Check } from 'lucide-react';
+import { FadeIn, StaggerContainer, StaggerItem, Parallax, motion, AnimatePresence, EASE_LUXE } from '../_Components/MotionWrapper';
+import PageHero from '../_Components/ui/PageHero';
+import SectionHeading from '../_Components/ui/SectionHeading';
+import LuxeButton from '../_Components/ui/LuxeButton';
+import ApartmentCard from '../_Components/ui/ApartmentCard';
 import EventEnquiryModal from '../_Components/EventEnquiryModal';
-
-const GoogleIcon = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24">
-    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
-    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-  </svg>
-);
-
-const CARD_ICONS = [Home, Building2, CreditCard, Shield];
 
 const DEFAULT_SERVICES = {
   hero: { title: 'Our Services', subtitle: 'Everything you need for a comfortable short-stay experience in our fully furnished apartments' },
@@ -36,253 +21,168 @@ const DEFAULT_SERVICES = {
   reviews: { heading: 'What Our Guests Say' },
 };
 
-const fallbackReviews = [
-  { name: 'Sani Abatcha', text: 'Perfect apartment for my 2-week business trip. Clean, comfortable, and great location!', rating: 5, time: '2 months ago' },
-  { name: 'Gilbert Mwai', text: 'Amazing experience! The apartment felt like home. Will definitely book again.', rating: 5, time: '3 months ago' },
-  { name: 'Samson Wanyoike', text: 'Great for extended stays. Fast WiFi, comfortable workspace, and responsive host!', rating: 5, time: '1 month ago' },
-  { name: 'Ama Owusu', text: 'The event center was stunning for our wedding reception. Everything was handled beautifully by the team.', rating: 5, time: '3 weeks ago' },
-  { name: 'Kwame Mensah', text: 'Loved the restaurant! Authentic Ghanaian dishes with a modern twist. The jollof was exceptional.', rating: 5, time: '1 month ago' },
-  { name: 'Linda Addo', text: 'Stayed for a week and felt completely at home. The daily housekeeping and Starlink WiFi made all the difference.', rating: 5, time: '2 weeks ago' },
-];
+const SERVICE_IMAGES = ['/assets/main-home1.jpg', '/assets/hall.JPEG', '/assets/BRTN GRDN-26.JPG', '/assets/BRTN GRDN-27.JPG'];
 
-export default function ServicesClient({ initialData }) {
-  const [googleReviews, setGoogleReviews] = useState(null);
-  const [googleRating, setGoogleRating] = useState(null);
-  const [totalReviews, setTotalReviews] = useState(null);
+export default function ServicesClient({ initialData, apartments = [] }) {
   const [c] = useState(initialData && Object.keys(initialData).length ? { ...DEFAULT_SERVICES, ...initialData } : DEFAULT_SERVICES);
+  const [reviews, setReviews] = useState([]);
+  const [googleRating, setGoogleRating] = useState(null);
   const [currentReview, setCurrentReview] = useState(0);
   const [eventModalOpen, setEventModalOpen] = useState(false);
 
+  // Only real Google reviews are shown; nothing is displayed until the Places API is configured.
   useEffect(() => {
     fetch('/api/reviews')
       .then((res) => res.json())
       .then((data) => {
-        if (data.reviews && data.reviews.length > 0) {
-          setGoogleReviews(data.reviews);
-          setGoogleRating(data.rating);
-          setTotalReviews(data.totalReviews);
+        if (data.reviews?.length) {
+          setReviews(data.reviews.filter((r) => r.text));
+          setGoogleRating({ value: data.rating, total: data.totalReviews });
         }
       })
       .catch(() => {});
   }, []);
 
-  const reviews = googleReviews || fallbackReviews;
-
   useEffect(() => {
-    if (reviews.length <= 3) return;
-    const timer = setInterval(() => {
-      setCurrentReview((prev) => (prev + 1) % reviews.length);
-    }, 4000);
+    if (reviews.length < 2) return;
+    const timer = setInterval(() => setCurrentReview((prev) => (prev + 1) % reviews.length), 7000);
     return () => clearInterval(timer);
   }, [reviews.length]);
 
-  const services = (c.cards || DEFAULT_SERVICES.cards).map((card, i) => ({
-    ...card,
-    icon: CARD_ICONS[i] || Home,
-  }));
-
-  const getVisibleReviews = () => {
-    const visible = [];
-    for (let i = 0; i < 3; i++) {
-      visible.push(reviews[(currentReview + i) % reviews.length]);
-    }
-    return visible;
-  };
+  const services = c.cards || DEFAULT_SERVICES.cards;
+  const why = c.whyChoose || DEFAULT_SERVICES.whyChoose;
+  const review = reviews[currentReview];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-14">
-      {/* Hero Section */}
-      <div className="relative h-[50vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/assets/BRTN GRDN-6.JPEG"
-            alt="Services Hero"
-            fill
-            className="object-cover brightness-30"
-            priority
-          />
-        </div>
-        <div className="relative z-10 text-center text-white px-4">
-          <FadeIn direction="down">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              {c.hero?.title || DEFAULT_SERVICES.hero.title}
-            </h1>
-          </FadeIn>
-          <FadeIn direction="up" delay={0.15}>
-            <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
-              {c.hero?.subtitle || DEFAULT_SERVICES.hero.subtitle}
-            </p>
-          </FadeIn>
-        </div>
-      </div>
+    <>
+      <PageHero
+        eyebrow="Stay & celebrate"
+        title={c.hero?.title || DEFAULT_SERVICES.hero.title}
+        intro={c.hero?.subtitle || DEFAULT_SERVICES.hero.subtitle}
+        image="/assets/BRTN GRDN-6.JPEG"
+      />
 
-      {/* Services Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <StaggerContainer staggerDelay={0.1} className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {services.map((service, index) => (
-            <StaggerItem key={index}>
-              <Card className="p-6 bg-white hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
-                <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center mb-4">
-                  <service.icon className="w-6 h-6 text-lime-600" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  {service.description}
-                </p>
-                <ul className="space-y-2">
-                  {service.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center text-gray-600">
-                      <Star className="w-4 h-4 text-lime-600 mr-2" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                {/* Card titles are editable in admin, so match on the wording rather than position. */}
-                {/apartment|booking/i.test(service.title) && (
-                  <Link href="/book" className="mt-auto pt-6 text-sm font-semibold text-lime-700 hover:text-lime-800">Check availability →</Link>
-                )}
-                {/event/i.test(service.title) && (
-                  <button onClick={() => setEventModalOpen(true)} className="mt-auto pt-6 text-left text-sm font-semibold text-lime-700 hover:text-lime-800">Enquire about an event →</button>
-                )}
-              </Card>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </div>
-
-      {/* Features Section */}
-      <div className="bg-gray-50 py-28 my-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <FadeIn direction="right">
-                <h2 className="text-4xl font-bold text-gray-900 pb-6">
-                  {c.whyChoose?.heading || DEFAULT_SERVICES.whyChoose.heading}
-                </h2>
+      {/* Apartments */}
+      {apartments.length > 0 && (
+        <section className="section-y bg-ivory">
+          <div className="container-luxe">
+            <div className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
+              <SectionHeading eyebrow="Apartments" title="Choose your apartment" intro="Live rates and availability. Pick your dates on the next step." />
+              <FadeIn direction="up" delay={0.2}>
+                <LuxeButton href="/book" variant="garden" arrow>Check availability</LuxeButton>
               </FadeIn>
-              <StaggerContainer staggerDelay={0.12} className="space-y-4">
-                {(c.whyChoose?.items || DEFAULT_SERVICES.whyChoose.items).map((item, idx) => (
-                  <StaggerItem key={idx}>
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Building2 className="w-6 h-6 text-lime-600" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                        <p className="text-gray-600">{item.description}</p>
-                      </div>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
             </div>
-            <FadeIn direction="left" delay={0.2}>
-              <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
-                <Image
-                  src="/assets/BRTN GRDN-27.JPG"
-                  alt="Services Feature"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </FadeIn>
+            <div className="grid gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
+              {apartments.map((apt, i) => <ApartmentCard key={apt.id} apartment={apt} index={i % 3} />)}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Services: alternating editorial rows */}
+      <section className="section-y bg-sand/50">
+        <div className="container-luxe">
+          <SectionHeading eyebrow="What we offer" title="More than a place to sleep" className="mb-20 md:mb-28" />
+          <div className="space-y-24 md:space-y-36">
+            {services.map((service, index) => {
+              const isBooking = /apartment|booking/i.test(service.title);
+              const isEvent = /event/i.test(service.title);
+              return (
+                <div key={index} className="grid items-center gap-10 md:grid-cols-2 md:gap-20">
+                  <Parallax speed={0.08} className={`relative aspect-[4/3] rounded-[2rem] ${index % 2 ? 'md:order-2' : ''}`}>
+                    <Image src={service.image || SERVICE_IMAGES[index % SERVICE_IMAGES.length]} alt={service.title} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+                  </Parallax>
+                  <div>
+                    <FadeIn direction="up">
+                      <p className="font-display text-7xl text-brass/40">{String(index + 1).padStart(2, '0')}</p>
+                      <h3 className="font-display mt-2 text-4xl text-garden md:text-5xl">{service.title}</h3>
+                      <p className="mt-6 text-lg leading-relaxed text-ink/65">{service.description}</p>
+                    </FadeIn>
+                    <StaggerContainer staggerDelay={0.08} className="mt-8 space-y-3">
+                      {(service.features || []).map((feature, idx) => (
+                        <StaggerItem key={idx} className="flex items-center gap-3 text-ink/75">
+                          <Check size={16} className="text-brass" /> {feature}
+                        </StaggerItem>
+                      ))}
+                    </StaggerContainer>
+                    {/* Card titles are editable in admin, so match on the wording rather than position. */}
+                    {(isBooking || isEvent) && (
+                      <FadeIn direction="up" delay={0.2} className="mt-10">
+                        {isBooking && <LuxeButton href="/book" arrow>Check availability</LuxeButton>}
+                        {isEvent && <LuxeButton variant="garden" arrow onClick={() => setEventModalOpen(true)}>Enquire about an event</LuxeButton>}
+                      </FadeIn>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Google Reviews Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 mb-32">
-        <FadeIn direction="up">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              {c.reviews?.heading || DEFAULT_SERVICES.reviews.heading}
-            </h2>
-            {googleRating && (
-              <div className="flex items-center justify-center gap-3">
-                <GoogleIcon />
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-5 h-5 ${i < Math.round(googleRating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-                    />
-                  ))}
-                </div>
-                <span className="text-lg font-semibold">{googleRating}</span>
-                <span className="text-gray-500">({totalReviews} reviews on Google)</span>
+      {/* Why choose us */}
+      <section className="section-y bg-garden text-ivory">
+        <div className="container-luxe grid items-center gap-16 lg:grid-cols-2">
+          <div>
+            <SectionHeading light eyebrow="The details" title={why.heading} />
+            <StaggerContainer staggerDelay={0.12} className="mt-14 divide-y divide-ivory/10 border-y border-ivory/10">
+              {(why.items || []).map((item, idx) => (
+                <StaggerItem key={idx} className="grid grid-cols-[auto_1fr] gap-6 py-7">
+                  <span className="font-display text-2xl text-brass">{String(idx + 1).padStart(2, '0')}</span>
+                  <div>
+                    <h3 className="font-display text-2xl">{item.title}</h3>
+                    <p className="mt-2 text-ivory/65">{item.description}</p>
+                  </div>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </div>
+          <Parallax speed={0.1} className="relative aspect-[4/5] rounded-[2rem]">
+            <Image src="/assets/BRTN GRDN-27.JPG" alt="Bruton Gardens apartments" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+          </Parallax>
+        </div>
+      </section>
+
+      {/* Google reviews */}
+      {review && (
+        <section className="section-y bg-ivory text-center">
+          <div className="container-luxe">
+            <SectionHeading eyebrow="Guest words" title={c.reviews?.heading || DEFAULT_SERVICES.reviews.heading} align="center" />
+            {googleRating?.value && (
+              <p className="mt-6 text-sm text-ink/55">{googleRating.value.toFixed(1)} out of 5 from {googleRating.total} reviews on Google</p>
+            )}
+            <div className="relative mx-auto mt-14 min-h-[16rem] max-w-4xl">
+              <AnimatePresence mode="wait">
+                <motion.figure
+                  key={currentReview}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -24 }}
+                  transition={{ duration: 0.8, ease: EASE_LUXE }}
+                >
+                  <div className="mb-8 flex justify-center gap-1 text-brass">
+                    {Array.from({ length: review.rating }).map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
+                  </div>
+                  <blockquote className="font-display text-3xl leading-snug text-garden md:text-4xl">&ldquo;{review.text}&rdquo;</blockquote>
+                  <figcaption className="mt-8 flex items-center justify-center gap-3 text-sm text-ink/55">
+                    {review.photo && <img src={review.photo} alt="" referrerPolicy="no-referrer" className="size-8 rounded-full" />}
+                    {review.name} · {review.time}
+                  </figcaption>
+                </motion.figure>
+              </AnimatePresence>
+            </div>
+            {reviews.length > 1 && (
+              <div className="mt-10 flex justify-center gap-2">
+                {reviews.map((_, i) => (
+                  <button key={i} onClick={() => setCurrentReview(i)} aria-label={`Review ${i + 1}`} className={`h-1 rounded-full transition-all duration-500 ${i === currentReview ? 'w-10 bg-brass' : 'w-4 bg-garden/20'}`} />
+                ))}
               </div>
             )}
           </div>
-        </FadeIn>
-        <div className="relative">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentReview}
-              initial={{ opacity: 0, x: 60 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -60 }}
-              transition={{ duration: 0.4 }}
-              className="grid md:grid-cols-3 gap-8"
-            >
-              {getVisibleReviews().map((review, index) => (
-                <Card key={index} className="p-6 bg-white hover:shadow-xl transition-shadow duration-300">
-                  <div className="flex items-center mb-4">
-                    {review.photo ? (
-                      <img
-                        src={review.photo}
-                        alt={review.name}
-                        className="w-12 h-12 rounded-full object-cover mr-4"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-lime-100 flex items-center justify-center mr-4">
-                        <span className="text-lime-600 font-bold text-lg">
-                          {review.name.charAt(0)}
-                        </span>
-                      </div>
-                    )}
-                    <div>
-                      <h3 className="font-semibold">{review.name}</h3>
-                      <p className="text-gray-400 text-sm">{review.time}</p>
-                    </div>
-                  </div>
-                  <div className="flex mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-5 h-5 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-                      />
-                    ))}
-                  </div>
-                  <p className="text-gray-600 line-clamp-4">&ldquo;{review.text}&rdquo;</p>
-                </Card>
-              ))}
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Dots */}
-          <div className="flex justify-center gap-2 mt-8">
-            {reviews.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentReview(i)}
-                className={`w-2 h-2 rounded-full transition-all ${i === currentReview ? 'bg-lime-400 w-5' : 'bg-gray-300'}`}
-              />
-            ))}
-          </div>
-        </div>
-        {googleReviews && (
-          <FadeIn direction="up" delay={0.3}>
-            <p className="text-center text-gray-400 text-sm mt-6 flex items-center justify-center gap-2">
-              <GoogleIcon /> Reviews sourced from Google
-            </p>
-          </FadeIn>
-        )}
-      </div>
+        </section>
+      )}
 
       <EventEnquiryModal isOpen={eventModalOpen} onClose={() => setEventModalOpen(false)} />
-    </div>
+    </>
   );
 }

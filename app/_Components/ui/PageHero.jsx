@@ -17,6 +17,7 @@ export default function PageHero({ eyebrow, title, intro, image = '/assets/BRTN 
       <motion.div className="absolute inset-0" style={reduce ? undefined : { y }}>
         <Image src={image} alt="" fill priority sizes="100vw" className="object-cover animate-[kenburns_9s_var(--ease-luxe)_both]" />
         <div className="absolute inset-0 bg-gradient-to-t from-garden via-garden/40 to-garden/10" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/45 to-transparent" />
       </motion.div>
 
       <motion.div className="container-luxe relative z-10 pb-16 pt-40 md:pb-24" style={reduce ? undefined : { opacity: fade }}>

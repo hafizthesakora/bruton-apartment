@@ -1,23 +1,18 @@
 'use client';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { Card } from '@/components/ui/card';
 import {
-  MapPin,
-  Maximize,
   Search,
   X,
   ChevronLeft,
   ChevronRight,
-  Heart,
-  Share2,
-  Download,
   Clock,
-  ArrowRight,
-  User,
+  ArrowUpRight,
 } from 'lucide-react';
-import { FadeIn, StaggerContainer, StaggerItem, motion, AnimatePresence } from '../_Components/MotionWrapper';
+import { FadeIn, StaggerContainer, StaggerItem, Parallax, motion, AnimatePresence, EASE_LUXE } from '../_Components/MotionWrapper';
+import PageHero from '../_Components/ui/PageHero';
+import SectionHeading from '../_Components/ui/SectionHeading';
+import LuxeButton from '../_Components/ui/LuxeButton';
 
 // ── Blog Posts Data ──────────────────────────────────────────────────────────
 
@@ -91,43 +86,32 @@ const allGalleryImages = [
 
 // ── Blog Post Card ───────────────────────────────────────────────────────────
 
-const BlogPostCard = ({ post }) => (
-  <Card className="overflow-hidden bg-white hover:shadow-xl transition-all duration-300 py-0 group cursor-pointer transform hover:-translate-y-2">
-    <div className="relative h-56 overflow-hidden">
+const BlogPostCard = ({ post, index }) => (
+  <article className="group cursor-pointer">
+    <div className="relative aspect-[16/11] overflow-hidden rounded-[2rem] bg-sand">
       <Image
         src={post.image}
         alt={post.title}
         fill
-        className="object-cover group-hover:scale-110 transition-transform duration-500"
+        sizes="(min-width: 768px) 50vw, 100vw"
+        className="object-cover transition-transform duration-[1.4s] ease-[var(--ease-luxe)] group-hover:scale-110"
       />
-      <div className="absolute top-4 left-4">
-        <span className="bg-lime-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-          {post.category}
-        </span>
-      </div>
+      <span className="absolute left-5 top-5 rounded-full bg-ivory/90 px-4 py-1.5 text-xs tracking-wide text-garden backdrop-blur">
+        {post.category}
+      </span>
     </div>
-    <div className="p-6">
-      <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
-        <div className="flex items-center gap-1">
-          <User className="w-3 h-3" />
-          {post.author}
-        </div>
-        <div className="flex items-center gap-1">
-          <Clock className="w-3 h-3" />
-          {post.readTime}
-        </div>
-      </div>
-      <h3 className="text-lg font-semibold mb-2 group-hover:text-lime-600 transition-colors line-clamp-2">
-        {post.title}
-      </h3>
-      <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-        {post.excerpt}
-      </p>
-      <div className="flex items-center text-lime-600 text-sm font-medium group-hover:gap-2 transition-all">
-        Read More <ArrowRight className="w-4 h-4 ml-1" />
-      </div>
+    <div className="mt-6 flex items-center gap-4 text-xs uppercase tracking-[0.2em] text-ink/45">
+      <span>{post.date}</span>
+      <span className="flex items-center gap-1"><Clock className="size-3" />{post.readTime}</span>
     </div>
-  </Card>
+    <h3 className="font-display mt-3 text-3xl leading-tight text-garden transition-colors group-hover:text-brass md:text-4xl">
+      {post.title}
+    </h3>
+    <p className="mt-3 line-clamp-2 text-ink/60">{post.excerpt}</p>
+    <span className="mt-5 inline-flex items-center gap-2 text-sm text-garden">
+      Read more <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
+    </span>
+  </article>
 );
 
 // ── Main Component ────────────────────────────────────────────────────────────
@@ -218,359 +202,234 @@ export default function BlogClient({ initialData }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedImage, nextImage, prevImage, closeLightbox]);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-14">
-      {/* Hero Section */}
-      <div className="relative h-[50vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/assets/BRTN GRDN-26.JPG"
-            alt="Gallery & Blog Hero"
-            fill
-            className="object-cover brightness-30"
-            priority
-          />
-        </div>
-        <div className="relative z-10 text-center text-white px-4">
-          <FadeIn direction="down">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Gallery & Blog
-            </h1>
-          </FadeIn>
-          <FadeIn direction="up" delay={0.15}>
-            <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed mb-8">
-              Stay updated with our latest news and explore the beauty of Bruton Gardens
-            </p>
-          </FadeIn>
+  const tabBtn = (tab, label) => (
+    <button
+      onClick={() => setActiveTab(tab)}
+      className={`relative rounded-full px-6 py-2.5 text-sm tracking-wide transition-colors duration-500 ${activeTab === tab ? 'text-garden' : 'text-ivory/80 hover:text-ivory'}`}
+    >
+      {activeTab === tab && (
+        <motion.span layoutId="blogTab" className="absolute inset-0 rounded-full bg-ivory" transition={{ duration: 0.6, ease: EASE_LUXE }} />
+      )}
+      <span className="relative">{label}</span>
+    </button>
+  );
 
-          {/* Tab Toggle */}
-          <FadeIn direction="up" delay={0.25}>
-            <div className="inline-flex bg-white/20 backdrop-blur-sm rounded-full p-1">
-              <button
-                onClick={() => setActiveTab('gallery')}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                  activeTab === 'gallery'
-                    ? 'bg-lime-500 text-white shadow-lg'
-                    : 'text-white hover:bg-white/10'
-                }`}
-              >
-                Gallery
-              </button>
-              <button
-                onClick={() => setActiveTab('blog')}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                  activeTab === 'blog'
-                    ? 'bg-lime-500 text-white shadow-lg'
-                    : 'text-white hover:bg-white/10'
-                }`}
-              >
-                Blog Posts
-              </button>
-            </div>
-          </FadeIn>
-        </div>
-      </div>
+  return (
+    <>
+      <PageHero
+        eyebrow="Gallery & journal"
+        title={gc.hero?.title || DEFAULT_GALLERY.hero.title}
+        intro={gc.hero?.subtitle || DEFAULT_GALLERY.hero.subtitle}
+        image="/assets/BRTN GRDN-26.JPG"
+      >
+        <FadeIn direction="up" delay={0.9} className="mt-10">
+          <div className="inline-flex rounded-full border border-ivory/20 bg-garden/40 p-1 backdrop-blur-md">
+            {tabBtn('gallery', 'Gallery')}
+            {tabBtn('blog', 'Journal')}
+          </div>
+        </FadeIn>
+      </PageHero>
 
       <AnimatePresence mode="wait">
         {activeTab === 'blog' ? (
           <motion.div
             key="blog"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.6, ease: EASE_LUXE }}
           >
-            {/* Blog Posts Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-              <FadeIn direction="up">
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Latest Posts</h2>
-                <p className="text-gray-500 mb-10">News, tips, and updates from Bruton Gardens</p>
-              </FadeIn>
+            <section className="section-y bg-ivory">
+              <div className="container-luxe">
+                <SectionHeading eyebrow="Journal" title="Latest from the garden" intro="News, tips, and updates from Bruton Gardens" className="mb-16 md:mb-20" />
+                <StaggerContainer staggerDelay={0.1} className="grid gap-x-10 gap-y-16 md:grid-cols-2">
+                  {blogPosts.map((post, i) => (
+                    <StaggerItem key={post.id} className={i % 2 ? 'md:mt-24' : ''}>
+                      <BlogPostCard post={post} index={i} />
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+              </div>
+            </section>
 
-              <StaggerContainer staggerDelay={0.1} className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
-                {blogPosts.map((post) => (
-                  <StaggerItem key={post.id}>
-                    <BlogPostCard post={post} />
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </div>
-
-            {/* Newsletter CTA */}
-            <div className="bg-gray-50 py-16">
-              <div className="max-w-3xl mx-auto px-4 text-center">
-                <FadeIn direction="up">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-4">Stay in the Loop</h2>
-                  <p className="text-gray-500 mb-8">
-                    Subscribe to our newsletter for the latest updates, offers, and stories from Bruton Gardens.
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            {/* Newsletter */}
+            <section className="bg-sand/50 py-24 md:py-32">
+              <div className="container-luxe max-w-3xl text-center">
+                <SectionHeading eyebrow="Newsletter" title="Stay in the loop" intro="Subscribe for the latest updates, offers, and stories from Bruton Gardens." align="center" />
+                <FadeIn direction="up" delay={0.2}>
+                  <div className="mx-auto mt-10 flex max-w-lg flex-col gap-3 rounded-full sm:flex-row sm:border sm:border-garden/15 sm:bg-ivory sm:p-1.5">
                     <input
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder="Your email address"
                       value={subscribeEmail}
                       onChange={(e) => setSubscribeEmail(e.target.value)}
-                      className="flex-1 px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-lime-500"
+                      className="flex-1 rounded-full border border-garden/15 bg-ivory px-6 py-3 outline-none sm:border-0 sm:bg-transparent"
                     />
-                    <button
-                      onClick={handleSubscribe}
-                      disabled={!subscribeEmail || subscribed}
-                      className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {subscribed ? 'Subscribed!' : 'Subscribe'}
-                    </button>
+                    <LuxeButton variant="garden" onClick={handleSubscribe} disabled={!subscribeEmail || subscribed}>
+                      {subscribed ? 'Subscribed' : 'Subscribe'}
+                    </LuxeButton>
                   </div>
                 </FadeIn>
               </div>
-            </div>
+            </section>
           </motion.div>
         ) : (
           <motion.div
             key="gallery"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.6, ease: EASE_LUXE }}
           >
-            {/* Search and Filter Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-                <div className="relative flex-1 max-w-md">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="text"
-                    placeholder="Search images..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {galleryCategories.map((category, index) => (
-                    <motion.button
-                      key={index}
-                      onClick={() => setSelectedCategory(category)}
-                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                        selectedCategory === category
-                          ? 'bg-lime-600 text-white shadow-lg'
-                          : 'bg-white text-gray-600 hover:bg-lime-50 hover:text-lime-700 border border-gray-200'
-                      }`}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      {category}
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Gallery Grid */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-              <div className="flex items-center justify-between mb-8">
-                <FadeIn direction="right">
-                  <h2 className="text-3xl font-bold text-gray-900">
-                    {selectedCategory === 'All Spaces' ? 'All Images' : selectedCategory}
-                  </h2>
-                </FadeIn>
-                <div className="text-sm text-gray-500">
-                  Showing {filteredImages.length} of {allGalleryImages.length} images
-                </div>
-              </div>
-
-              <motion.div
-                className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6"
-                layout
-              >
-                <AnimatePresence>
-                  {filteredImages.map((item, index) => (
-                    <motion.div
-                      key={item.id}
-                      layout
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <Card
-                        className="break-inside-avoid overflow-hidden bg-white hover:shadow-xl transition-all duration-300 group cursor-pointer transform hover:-translate-y-1"
-                        onClick={() => openLightbox(item, index)}
+            <section className="bg-ivory pb-24 pt-16 md:pb-32">
+              <div className="container-luxe">
+                {/* Filters */}
+                <div className="mb-12 flex flex-col gap-6 border-b border-garden/10 pb-8 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="flex flex-wrap gap-2">
+                    {galleryCategories.map((category) => (
+                      <button
+                        key={category}
+                        onClick={() => setSelectedCategory(category)}
+                        className={`rounded-full border px-5 py-2 text-sm tracking-wide transition-colors duration-500 ${
+                          selectedCategory === category
+                            ? 'border-garden bg-garden text-ivory'
+                            : 'border-garden/15 text-garden hover:border-garden/40'
+                        }`}
                       >
-                        <div className="relative overflow-hidden">
-                          <Image
-                            src={item.image}
-                            alt={item.title}
-                            width={400}
-                            height={300}
-                            className="w-full h-auto object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          <div className="absolute top-4 left-4">
-                            <span className="bg-lime-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                              {item.category}
-                            </span>
-                          </div>
-                          <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="flex items-center gap-2 text-sm">
-                              <MapPin className="w-4 h-4" />
-                              {item.location}
-                            </div>
-                          </div>
-                          <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
-                              <Maximize className="w-4 h-4 text-white" />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="p-4">
-                          <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                          <p className="text-gray-600 mb-3 text-sm line-clamp-2">{item.description}</p>
-                          <div className="flex items-center text-sm text-gray-500">
-                            <Maximize className="w-4 h-4 mr-1" />
-                            {item.details}
-                          </div>
-                        </div>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </motion.div>
-
-              {filteredImages.length === 0 && (
-                <div className="text-center py-20">
-                  <div className="text-gray-400 mb-4">
-                    <Search className="w-16 h-16 mx-auto" />
+                        {category}
+                      </button>
+                    ))}
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-600 mb-2">No images found</h3>
-                  <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+                  <div className="relative w-full lg:max-w-xs">
+                    <Search className="absolute left-0 top-1/2 size-4 -translate-y-1/2 text-garden/50" />
+                    <input
+                      type="text"
+                      placeholder="Search images"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full border-b border-garden/20 bg-transparent py-3 pl-7 outline-none transition-colors focus:border-brass"
+                    />
+                  </div>
                 </div>
-              )}
-            </div>
+
+                <p className="eyebrow mb-8 text-ink/45">
+                  Showing {filteredImages.length} of {allGalleryImages.length}
+                </p>
+
+                {/* Masonry */}
+                <motion.div className="columns-1 gap-6 sm:columns-2 lg:columns-3" layout>
+                  <AnimatePresence>
+                    {filteredImages.map((item, index) => (
+                      <motion.button
+                        type="button"
+                        key={item.id}
+                        layout
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.7, ease: EASE_LUXE, delay: (index % 6) * 0.05 }}
+                        onClick={() => openLightbox(item, index)}
+                        className="group relative mb-6 block w-full break-inside-avoid overflow-hidden rounded-[1.5rem] text-left"
+                      >
+                        <Image
+                          src={item.image}
+                          alt={item.title}
+                          width={800}
+                          height={600}
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                          className="h-auto w-full object-cover transition-transform duration-[1.4s] ease-[var(--ease-luxe)] group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-garden/80 via-garden/0 to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
+                        <div className="absolute inset-x-0 bottom-0 translate-y-4 p-6 text-ivory opacity-0 transition-all duration-700 ease-[var(--ease-luxe)] group-hover:translate-y-0 group-hover:opacity-100">
+                          <p className="eyebrow text-sand">{item.category}</p>
+                          <h3 className="font-display mt-2 text-2xl">{item.title}</h3>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
+
+                {filteredImages.length === 0 && (
+                  <div className="py-24 text-center">
+                    <p className="font-display text-3xl text-garden">No images found</p>
+                    <p className="mt-2 text-ink/55">Try another category or search.</p>
+                  </div>
+                )}
+              </div>
+            </section>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+            className="fixed inset-0 z-[80] flex items-center justify-center bg-garden/95 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onClick={closeLightbox}
           >
-            <motion.div
-              className="relative max-w-7xl max-h-[90vh] mx-4"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-            >
-              <button
-                onClick={closeLightbox}
-                className="absolute top-4 right-4 z-10 bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors"
+            <button onClick={closeLightbox} className="absolute right-6 top-6 z-10 flex size-12 items-center justify-center rounded-full border border-ivory/25 text-ivory hover:border-brass hover:text-brass" aria-label="Close">
+              <X className="size-5" />
+            </button>
+            {filteredImages.length > 1 && (
+              <>
+                <button onClick={(e) => { e.stopPropagation(); prevImage(); }} className="absolute left-4 top-1/2 z-10 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-ivory/25 text-ivory hover:border-brass hover:text-brass md:left-8" aria-label="Previous">
+                  <ChevronLeft className="size-5" />
+                </button>
+                <button onClick={(e) => { e.stopPropagation(); nextImage(); }} className="absolute right-4 top-1/2 z-10 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-ivory/25 text-ivory hover:border-brass hover:text-brass md:right-8" aria-label="Next">
+                  <ChevronRight className="size-5" />
+                </button>
+              </>
+            )}
+            <AnimatePresence mode="wait">
+              <motion.figure
+                key={selectedImage.id}
+                className="mx-4 max-w-6xl"
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.5, ease: EASE_LUXE }}
+                onClick={(e) => e.stopPropagation()}
               >
-                <X className="w-6 h-6 text-white" />
-              </button>
-
-              {filteredImages.length > 1 && (
-                <>
-                  <button
-                    onClick={prevImage}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors"
-                  >
-                    <ChevronLeft className="w-6 h-6 text-white" />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors"
-                  >
-                    <ChevronRight className="w-6 h-6 text-white" />
-                  </button>
-                </>
-              )}
-
-              <div className="relative">
                 <Image
                   src={selectedImage.image}
                   alt={selectedImage.title}
-                  width={1200}
-                  height={800}
-                  className="max-w-full max-h-[80vh] object-contain rounded-lg"
+                  width={1600}
+                  height={1100}
+                  sizes="90vw"
+                  className="max-h-[72vh] w-auto rounded-[1.5rem] object-contain"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
-                  <div className="text-white">
-                    <h3 className="text-2xl font-bold mb-2">{selectedImage.title}</h3>
-                    <p className="text-gray-200 mb-3">{selectedImage.description}</p>
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4" />
-                        {selectedImage.location}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Maximize className="w-4 h-4" />
-                        {selectedImage.details}
-                      </div>
-                      <span className="bg-lime-600 px-3 py-1 rounded-full text-xs">
-                        {selectedImage.category}
-                      </span>
-                    </div>
+                <figcaption className="mt-6 flex flex-col justify-between gap-3 text-ivory md:flex-row md:items-end">
+                  <div>
+                    <p className="eyebrow text-sand">{selectedImage.category} · {selectedImage.details}</p>
+                    <h3 className="font-display mt-2 text-3xl md:text-4xl">{selectedImage.title}</h3>
+                    <p className="mt-2 max-w-2xl text-ivory/65">{selectedImage.description}</p>
                   </div>
-                </div>
-              </div>
-
-              <div className="absolute bottom-4 left-4 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm">
-                {currentImageIndex + 1} of {filteredImages.length}
-              </div>
-
-              <div className="absolute bottom-4 right-4 flex gap-2">
-                <button className="bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors">
-                  <Heart className="w-5 h-5 text-white" />
-                </button>
-                <button className="bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors">
-                  <Share2 className="w-5 h-5 text-white" />
-                </button>
-                <button className="bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors">
-                  <Download className="w-5 h-5 text-white" />
-                </button>
-              </div>
-            </motion.div>
+                  <span className="text-sm text-ivory/50">{currentImageIndex + 1} / {filteredImages.length}</span>
+                </figcaption>
+              </motion.figure>
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* CTA Section */}
-      <FadeIn direction="up">
-        <div className="bg-gray-900 text-white py-20 mt-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <FadeIn direction="down">
-              <h2 className="text-4xl font-bold mb-6">{gc.blogCta?.heading || DEFAULT_GALLERY.blogCta.heading}</h2>
-            </FadeIn>
-            <FadeIn direction="up" delay={0.1}>
-              <p className="text-xl mb-8 max-w-2xl mx-auto">
-                {gc.blogCta?.body || DEFAULT_GALLERY.blogCta.body}
-              </p>
-            </FadeIn>
-            <FadeIn direction="up" delay={0.2}>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/services"
-                  className="bg-lime-600 text-white px-8 py-3 rounded-full hover:bg-lime-700 transition-colors"
-                >
-                  {gc.blogCta?.button || DEFAULT_GALLERY.blogCta.button}
-                </Link>
-                <Link
-                  href="/facilities"
-                  className="border-2 border-white text-white px-8 py-3 rounded-full hover:bg-white/10 transition-colors"
-                >
-                  View Facilities
-                </Link>
-              </div>
-            </FadeIn>
-          </div>
+      {/* CTA band */}
+      <section className="relative overflow-hidden bg-garden text-ivory">
+        <Parallax speed={0.15} className="absolute inset-0">
+          <Image src="/assets/BRTN GRDN-1.JPEG" alt="" fill sizes="100vw" className="object-cover" />
+        </Parallax>
+        <div className="absolute inset-0 bg-garden/70" />
+        <div className="container-luxe relative py-32 text-center md:py-44">
+          <SectionHeading light title={gc.blogCta?.heading || DEFAULT_GALLERY.blogCta.heading} intro={gc.blogCta?.body || DEFAULT_GALLERY.blogCta.body} align="center" />
+          <FadeIn direction="up" delay={0.2} className="mt-10 flex flex-wrap justify-center gap-3">
+            <LuxeButton href="/book" size="lg" arrow>{gc.blogCta?.button || DEFAULT_GALLERY.blogCta.button}</LuxeButton>
+            <LuxeButton href="/facilities" size="lg" variant="outline">View Facilities</LuxeButton>
+          </FadeIn>
         </div>
-      </FadeIn>
-    </div>
+      </section>
+    </>
   );
 }
