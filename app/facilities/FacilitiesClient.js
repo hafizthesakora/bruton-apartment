@@ -31,7 +31,7 @@ const DEFAULT_FACILITIES = {
   cta: { heading: 'Ready for Your Stay?', body: 'Book your apartment today and enjoy all our premium facilities during your short stay.', primaryCta: 'Check Availability', secondaryCta: 'Contact Us' },
 };
 
-const CATEGORY_IMAGES = ['/assets/BRTN GRDN-26.JPG', '/assets/main-home1.jpg'];
+const CATEGORY_IMAGES = ['/assets/BRTN GRDN-24.JPEG', '/assets/BRTN GRDN-14.JPG'];
 
 export default function FacilitiesClient({ initialData }) {
   const [contactOpen, setContactOpen] = useState(false);
@@ -85,7 +85,7 @@ export default function FacilitiesClient({ initialData }) {
       <section className="section-y bg-ivory">
         <div className="container-luxe grid items-center gap-16 lg:grid-cols-2">
           <Parallax speed={0.1} className="relative aspect-[5/4] rounded-[2rem]">
-            <Image src="/assets/BRTN GRDN-22.JPG" alt="Bruton Gardens apartment" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+            <Image src="/assets/BRTN GRDN-12.JPEG" alt="Bruton Gardens apartment" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </Parallax>
           <div>
             <SectionHeading eyebrow="Take a look" title={explore.heading} intro={explore.body} />

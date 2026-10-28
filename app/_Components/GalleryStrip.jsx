@@ -11,7 +11,8 @@ const DEFAULT_IMAGES = [
   { id: '3', src: '/assets/BRTN GRDN-26.JPG', alt: 'Bruton Gardens' },
   { id: '4', src: '/assets/BRTN GRDN-6.JPEG', alt: 'Bruton Gardens' },
   { id: '5', src: '/assets/BRTN GRDN-27.JPG', alt: 'Bruton Gardens' },
-  { id: '6', src: '/assets/BRTN GRDN-13.JPG', alt: 'Bruton Gardens' },
+  { id: '6', src: '/assets/BRTN GRDN-10.JPEG', alt: 'Bedroom and lounge' },
+  { id: '7', src: '/assets/brut2.jpg', alt: 'Banquet in the hall' },
 ];
 
 // Vertical scroll drives a horizontal photo strip (pinned while it plays).

@@ -37,7 +37,7 @@ export default function HomeEvents() {
     <section className="section-y bg-ivory">
       <div className="container-luxe grid items-center gap-16 lg:grid-cols-12">
         <ImageReveal className="relative aspect-[5/4] rounded-[2rem] lg:col-span-7" from="left">
-          <Image src="/assets/hall.JPEG" alt="The Event Center at Bruton Gardens" fill sizes="(min-width: 1024px) 58vw, 100vw" className="object-cover" />
+          <Image src="/assets/brut2.jpg" alt="A reception set up in the Event Center" fill sizes="(min-width: 1024px) 58vw, 100vw" className="object-cover" />
         </ImageReveal>
         <div className="lg:col-span-4 lg:col-start-9">
           <SectionHeading

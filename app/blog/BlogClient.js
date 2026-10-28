@@ -82,6 +82,21 @@ const allGalleryImages = [
   { id: 10, title: 'Garden Vista', description: 'Stunning garden vista with panoramic views of the entire garden space.', image: '/assets/BRTN GRDN-27.JPG', category: 'Gardens', location: 'Bruton Garden', details: 'Panoramic Views \u2022 Elevated' },
   { id: 11, title: 'Garden Corner', description: 'Intimate garden corner perfect for quiet moments and personal reflection.', image: '/assets/BRTN GRDN-3.JPEG', category: 'Gardens', location: 'Bruton Garden', details: 'Intimate Space \u2022 Private' },
   { id: 12, title: 'Garden Path', description: 'Charming garden path leading through beautiful landscaping and plant life.', image: '/assets/BRTN GRDN-6.JPEG', category: 'Gardens', location: 'Bruton Garden', details: 'Walking Path \u2022 Landscaping' },
+  { id: 13, title: 'Bedroom & Lounge', description: 'A bright bedroom with a lounge sofa and blue drapes.', image: '/assets/BRTN GRDN-10.JPEG', category: 'Apartments', location: 'Bruton Garden', details: 'Bed \u2022 Lounge Sofa' },
+  { id: 14, title: 'Calm Bedroom', description: 'A quiet bedroom with fresh white linen and a work chair.', image: '/assets/BRTN GRDN-20.JPG', category: 'Apartments', location: 'Bruton Garden', details: 'Fresh Linen \u2022 Workspace' },
+  { id: 15, title: 'Warm-Lit Suite', description: 'A cosy bedroom with warm lighting and a wall-mounted TV.', image: '/assets/bed.JPEG', category: 'Apartments', location: 'Bruton Garden', details: 'Warm Lighting \u2022 TV' },
+  { id: 16, title: 'Living Space', description: 'Bed, sofa and soft light in one open, airy room.', image: '/assets/living.JPEG', category: 'Apartments', location: 'Bruton Garden', details: 'Open Plan \u2022 Sofa' },
+  { id: 17, title: 'Fitted Wardrobes', description: 'Built-in wooden wardrobes and plenty of storage.', image: '/assets/furnish.JPG', category: 'Apartments', location: 'Bruton Garden', details: 'Storage \u2022 Wardrobes' },
+  { id: 18, title: 'En-Suite Bathroom', description: 'A clean, modern bathroom with a glass shower.', image: '/assets/BRTN GRDN-21.JPG', category: 'Amenities', location: 'Bruton Garden', details: 'Glass Shower \u2022 En-Suite' },
+  { id: 19, title: 'Shower Room', description: 'Walk-in glass shower with modern fittings.', image: '/assets/BRTN GRDN-13.JPG', category: 'Amenities', location: 'Bruton Garden', details: 'Walk-In Shower' },
+  { id: 20, title: 'Banquet Setting', description: 'The hall dressed for a reception, with gold chairs and floral tables.', image: '/assets/brut2.jpg', category: 'Event Center', location: 'Bruton Garden', details: 'Receptions \u2022 Banquets' },
+  { id: 21, title: 'Celebration Stage', description: 'A floral stage and lounge set-up for special occasions.', image: '/assets/brut1.jpg', category: 'Event Center', location: 'Bruton Garden', details: 'Stage \u2022 Décor' },
+  { id: 22, title: 'The Hall', description: 'Bright, open hall with high ceilings and chandeliers.', image: '/assets/BRTN GRDN-5.JPEG', category: 'Event Center', location: 'Bruton Garden', details: 'High Ceilings \u2022 Natural Light' },
+  { id: 23, title: 'Nhyira Hall', description: 'The event hall from the gardens.', image: '/assets/BRTN GRDN-4.JPEG', category: 'Event Center', location: 'Bruton Garden', details: 'Exterior \u2022 Gardens' },
+  { id: 24, title: 'Hall at Dusk', description: 'Nhyira Hall lit up as evening falls.', image: '/assets/BRTN GRDN-23.JPG', category: 'Event Center', location: 'Bruton Garden', details: 'Evening \u2022 Lighting' },
+  { id: 25, title: 'Apartment Courtyard', description: 'The paved courtyard in front of the apartments.', image: '/assets/BRTN GRDN-24.JPEG', category: 'Gardens', location: 'Bruton Garden', details: 'Courtyard \u2022 Parking' },
+  { id: 26, title: 'Palm Garden', description: 'Palms and lawns beside the apartment block.', image: '/assets/BRTN GRDN-2.JPEG', category: 'Gardens', location: 'Bruton Garden', details: 'Palms \u2022 Lawn' },
+  { id: 27, title: 'From Above', description: 'An aerial view of the hall, lawns and grounds.', image: '/assets/main-home1.jpg', category: 'Gardens', location: 'Bruton Garden', details: 'Aerial View' },
 ];
 
 // ── Blog Post Card ───────────────────────────────────────────────────────────

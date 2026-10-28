@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Clock, XCircle, Loader2, CalendarDays, Home } from 'lucide-react';
 import { formatGHS } from '@/lib/money';
@@ -105,7 +106,7 @@ export default function BookingStatus({ reference }: { reference: string }) {
   }
 
   return (
-    <Panel icon={<SuccessMark />} title={`You’re booked, ${booking.guestFirstName}!`}>
+    <Panel icon={<SuccessMark />} title={`You’re booked, ${booking.guestFirstName}!`} image="/assets/main-home1.jpg">
       <p className="text-ink/60">We’ve saved your booking. Keep your reference handy for check-in.</p>
 
       <motion.div
@@ -150,17 +151,25 @@ function SuccessMark() {
   );
 }
 
-function Panel({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Panel({ icon, title, image, children }: { icon: React.ReactNode; title: string; image?: string; children: React.ReactNode }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-[2rem] border border-garden/10 bg-white/60 p-8 text-center shadow-[0_30px_80px_-40px_rgba(31,59,45,0.4)] backdrop-blur md:p-12"
+      className="overflow-hidden rounded-[2rem] border border-garden/10 bg-white/60 text-center shadow-[0_30px_80px_-40px_rgba(31,59,45,0.4)] backdrop-blur"
     >
+      {image && (
+        <div className="relative h-44 md:h-56">
+          <Image src={image} alt="Bruton Gardens & Apartments" fill priority sizes="(min-width: 768px) 42rem, 100vw" className="object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/70" />
+        </div>
+      )}
+      <div className="p-8 md:p-12">
       <div className="mb-6 flex justify-center">{icon}</div>
       <h1 className="font-display mb-4 text-4xl leading-tight text-garden md:text-5xl">{title}</h1>
       {children}
+      </div>
     </motion.div>
   );
 }

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BedDouble, Bath, Users, Check, ChevronLeft, Loader2, ShieldCheck, CalendarDays, Search } from 'lucide-react';
+import { BedDouble, Bath, Users, Check, ChevronLeft, ChevronRight, Loader2, ShieldCheck, CalendarDays, Search } from 'lucide-react';
 import { formatGHS } from '@/lib/money';
 import { addDays, todayAtProperty } from '@/lib/booking/pricing';
 import type { SearchResult } from '@/lib/booking/engine';
@@ -195,7 +195,7 @@ function Results({ result, searched, preferred, onSelect }: {
           }`}
         >
           <div className="relative h-60 shrink-0 overflow-hidden bg-sand md:h-auto md:w-80">
-            {a.photos[0] && <Image src={a.photos[0].url} alt={a.photos[0].alt || a.name} fill className="object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-105" sizes="(max-width: 768px) 100vw, 320px" />}
+            <Photos photos={a.photos} name={a.name} sizes="(max-width: 768px) 100vw, 320px" />
           </div>
           <div className="flex flex-1 flex-col gap-4 p-6 md:p-8">
             <div>
@@ -364,10 +364,10 @@ function Checkout({ apartment, searched, policy, paymentOptions, onBack, onUnava
       </form>
 
       <aside className="order-1 overflow-hidden rounded-[2rem] bg-garden text-ivory lg:sticky lg:top-28 lg:order-2">
-        <div className="relative h-48 bg-garden-light">
-          {apartment.photos[0] && <Image src={apartment.photos[0].url} alt={apartment.name} fill className="object-cover" sizes="380px" />}
-          <div className="absolute inset-0 bg-gradient-to-t from-garden to-transparent" />
-          <h3 className="font-display absolute bottom-4 left-6 right-6 text-3xl">{apartment.name}</h3>
+        <div className="relative h-56 bg-garden-light">
+          <Photos photos={apartment.photos} name={apartment.name} sizes="380px" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-garden via-transparent to-transparent" />
+          <h3 className="font-display pointer-events-none absolute bottom-4 left-6 right-16 text-3xl">{apartment.name}</h3>
         </div>
         <div className="space-y-5 p-6 text-sm">
           <div className="flex items-start gap-3 text-ivory/85">
@@ -401,6 +401,40 @@ function Checkout({ apartment, searched, policy, paymentOptions, onBack, onUnava
           </ul>
         </div>
       </aside>
+    </div>
+  );
+}
+
+// Swipeable-looking photo viewer: arrows on hover, dots, crossfade between an apartment's photos.
+function Photos({ photos, name, sizes }: { photos: { url: string; alt: string }[]; name: string; sizes: string }) {
+  const [i, setI] = useState(0);
+  if (!photos.length) return null;
+  const go = (d: number) => (e: React.MouseEvent) => { e.stopPropagation(); setI((n) => (n + d + photos.length) % photos.length); };
+  return (
+    <div className="group/photos absolute inset-0">
+      <AnimatePresence initial={false}>
+        <motion.div key={i} className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
+          <Image src={photos[i].url} alt={photos[i].alt || name} fill className="object-cover" sizes={sizes} />
+        </motion.div>
+      </AnimatePresence>
+      {photos.length > 1 && (
+        <>
+          <button type="button" onClick={go(-1)} aria-label="Previous photo"
+            className="absolute left-3 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-ivory/85 text-garden opacity-0 transition-opacity group-hover/photos:opacity-100 focus:opacity-100">
+            <ChevronLeft size={16} />
+          </button>
+          <button type="button" onClick={go(1)} aria-label="Next photo"
+            className="absolute right-3 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-ivory/85 text-garden opacity-0 transition-opacity group-hover/photos:opacity-100 focus:opacity-100">
+            <ChevronRight size={16} />
+          </button>
+          <div className="absolute right-4 top-4 z-10 flex gap-1.5">
+            {photos.map((_, n) => (
+              <button type="button" key={n} onClick={(e) => { e.stopPropagation(); setI(n); }} aria-label={`Photo ${n + 1}`}
+                className={`h-1.5 rounded-full transition-all duration-500 ${n === i ? 'w-6 bg-ivory' : 'w-1.5 bg-ivory/60'}`} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

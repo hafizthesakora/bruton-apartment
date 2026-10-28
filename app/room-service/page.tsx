@@ -11,6 +11,7 @@ export default function RoomServicePage() {
     <GuestPage
       eyebrow="Staying with us?"
       title="Room service"
+      image="/assets/bed.JPEG"
       intro="Order to your apartment — it’s added to your bill, so you can settle everything at check-out."
     >
       <RoomServiceClient />

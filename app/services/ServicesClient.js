@@ -21,7 +21,7 @@ const DEFAULT_SERVICES = {
   reviews: { heading: 'What Our Guests Say' },
 };
 
-const SERVICE_IMAGES = ['/assets/main-home1.jpg', '/assets/hall.JPEG', '/assets/BRTN GRDN-26.JPG', '/assets/BRTN GRDN-27.JPG'];
+const SERVICE_IMAGES = ['/assets/living.JPEG', '/assets/brut2.jpg', '/assets/brut1.jpg', '/assets/BRTN GRDN-26.JPG'];
 
 export default function ServicesClient({ initialData, apartments = [] }) {
   const [c] = useState(initialData && Object.keys(initialData).length ? { ...DEFAULT_SERVICES, ...initialData } : DEFAULT_SERVICES);
@@ -138,7 +138,7 @@ export default function ServicesClient({ initialData, apartments = [] }) {
             </StaggerContainer>
           </div>
           <Parallax speed={0.1} className="relative aspect-[4/5] rounded-[2rem]">
-            <Image src="/assets/BRTN GRDN-27.JPG" alt="Bruton Gardens apartments" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+            <Image src="/assets/BRTN GRDN-10.JPEG" alt="A Bruton Gardens apartment" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </Parallax>
         </div>
       </section>

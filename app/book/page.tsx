@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function BookPage() {
   return (
-    <GuestPage eyebrow="Book your stay" title="Check availability" intro="Choose your dates, pick an apartment, and you're done in a couple of minutes.">
+    <GuestPage eyebrow="Book your stay" title="Check availability" image="/assets/BRTN GRDN-10.JPEG" intro="Choose your dates, pick an apartment, and you're done in a couple of minutes.">
       <Suspense>
         <BookClient />
       </Suspense>

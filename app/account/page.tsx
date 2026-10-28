@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function AccountPage() {
   return (
-    <GuestPage eyebrow="My booking" title="Your stays with us" width="max-w-4xl">
+    <GuestPage eyebrow="My booking" title="Your stays with us" image="/assets/living.JPEG" width="max-w-4xl">
       <AccountClient />
     </GuestPage>
   );

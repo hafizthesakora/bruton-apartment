@@ -2,11 +2,15 @@
   "home-services": {
     "label": "Home — Services Section Carousel",
     "images": [
-      { "id": "1", "src": "/assets/BRTN GRDN-1.JPEG", "alt": "Bruton Gardens Interior", "caption": "" },
-      { "id": "2", "src": "/assets/BRTN GRDN-22.JPG", "alt": "Bruton Gardens Living Area", "caption": "" },
-      { "id": "3", "src": "/assets/BRTN GRDN-26.JPG", "alt": "Bruton Gardens Bedroom", "caption": "" },
-      { "id": "4", "src": "/assets/BRTN GRDN-6.JPEG", "alt": "Bruton Gardens Amenities", "caption": "" },
-      { "id": "5", "src": "/assets/BRTN GRDN-27.JPG", "alt": "Bruton Gardens Pool Area", "caption": "" }
+      { "id": "1", "src": "/assets/BRTN GRDN-1.JPEG", "alt": "Bruton Gardens entrance", "caption": "" },
+      { "id": "2", "src": "/assets/BRTN GRDN-10.JPEG", "alt": "Bedroom and lounge", "caption": "" },
+      { "id": "3", "src": "/assets/BRTN GRDN-26.JPG", "alt": "Nhyira Hall at night", "caption": "" },
+      { "id": "4", "src": "/assets/BRTN GRDN-20.JPG", "alt": "Bedroom", "caption": "" },
+      { "id": "5", "src": "/assets/brut2.jpg", "alt": "Banquet in the hall", "caption": "" },
+      { "id": "6", "src": "/assets/living.JPEG", "alt": "Living space", "caption": "" },
+      { "id": "7", "src": "/assets/BRTN GRDN-27.JPG", "alt": "Apartments at night", "caption": "" },
+      { "id": "8", "src": "/assets/BRTN GRDN-22.JPG", "alt": "Bruton Gardens linen", "caption": "" },
+      { "id": "9", "src": "/assets/BRTN GRDN-6.JPEG", "alt": "Gardens", "caption": "" }
     ]
   },
   "about-slideshow": {
