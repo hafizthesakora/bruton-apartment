@@ -2,8 +2,11 @@
  * Delivery providers. Each returns 'skipped' rather than throwing when its key isn't set,
  * so bookings keep working before the accounts are ready.
  *   SMS   — Arkesel v2 (POST /api/v2/sms/send, `api-key` header)
- *   Email — Resend (free tier is plenty for one property)
+ *   Email — Resend (free tier is plenty for one property); until that's set up, a Gmail account
+ *           over SMTP with an app password (GMAIL_USER + GMAIL_APP_PASSWORD)
  */
+import nodemailer from 'nodemailer';
+
 export type SendResult = { status: 'sent' | 'skipped' | 'failed'; provider: string; error?: string };
 
 const ARKESEL_URL = 'https://sms.arkesel.com/api/v2/sms/send';
@@ -46,7 +49,10 @@ export async function sendSms(to: string, message: string): Promise<SendResult> 
 export async function sendEmail(to: string, subject: string, html: string): Promise<SendResult> {
   const provider = 'resend';
   const key = process.env.RESEND_API_KEY;
-  if (!key) return { status: 'skipped', provider, error: 'RESEND_API_KEY not set' };
+  if (!key) {
+    if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) return sendGmail(to, subject, html);
+    return { status: 'skipped', provider, error: 'RESEND_API_KEY not set' };
+  }
   try {
     const res = await fetch(RESEND_URL, {
       method: 'POST',
@@ -62,6 +68,30 @@ export async function sendEmail(to: string, subject: string, html: string): Prom
     if (res.ok) return { status: 'sent', provider };
     const body = await res.json().catch(() => null);
     return { status: 'failed', provider, error: body?.message || `HTTP ${res.status}` };
+  } catch (err) {
+    return { status: 'failed', provider, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+let gmail: nodemailer.Transporter | null = null;
+
+/** Gmail sends as the account itself; only the display name can be changed. */
+async function sendGmail(to: string, subject: string, html: string): Promise<SendResult> {
+  const provider = 'gmail';
+  const user = process.env.GMAIL_USER!;
+  gmail ??= nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user, pass: process.env.GMAIL_APP_PASSWORD!.replace(/\s+/g, '') },
+  });
+  try {
+    await gmail.sendMail({
+      from: { name: process.env.EMAIL_FROM_NAME || 'Bruton Gardens', address: user },
+      to,
+      subject,
+      html,
+      ...(process.env.EMAIL_REPLY_TO ? { replyTo: process.env.EMAIL_REPLY_TO } : {}),
+    });
+    return { status: 'sent', provider };
   } catch (err) {
     return { status: 'failed', provider, error: err instanceof Error ? err.message : String(err) };
   }
