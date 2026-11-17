@@ -2,6 +2,9 @@
 .next
 node_modules
 .data
+.claude
+.codex
+.agents
 .env*
 !.env.example
 tests
