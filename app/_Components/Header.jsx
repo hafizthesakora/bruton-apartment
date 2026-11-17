@@ -125,7 +125,7 @@ export default function Header() {
               </div>
 
               <ul className="mt-12 flex flex-col gap-2">
-                {[{ href: '/', label: 'Home' }, ...navLinks, { href: '/account', label: 'My Booking' }, { href: '/room-service', label: 'Room Service' }].map((link, i) => (
+                {[...navLinks, { href: '/account', label: 'My Booking' }, { href: '/room-service', label: 'Room Service' }].map((link, i) => (
                   <li key={link.href} className="overflow-hidden">
                     <motion.div
                       initial={{ y: '110%' }}
