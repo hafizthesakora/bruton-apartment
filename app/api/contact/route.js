@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { updateJSON } from '@/lib/data';
 import { errorResponse } from '@/lib/auth/staff';
+import { sendEmail } from '@/lib/notify/providers';
 
 const enquirySchema = z.object({
   name: z.string().trim().min(2).max(120),
@@ -20,6 +21,15 @@ async function saveEnquiry(input) {
   await updateJSON('enquiries.json', (enquiries) => [{
     ...input, id: randomUUID(), read: false, createdAt: new Date().toISOString(),
   }, ...(enquiries || [])]);
+}
+
+async function notifyWithFallback(input, recipient) {
+  if (!recipient) return;
+  const details = Object.entries(input).map(([key, value]) =>
+    `<p><strong>${escapeHTML(key)}:</strong> ${escapeHTML(value).replace(/\n/g, '<br>')}</p>`,
+  ).join('');
+  const result = await sendEmail(recipient, `New Enquiry from ${input.name} — Bruton Gardens Website`, details);
+  if (result.status !== 'sent') console.error('[contact] enquiry saved; fallback notification unavailable', result.status);
 }
 
 async function getAccessToken() {
@@ -60,6 +70,7 @@ export async function POST(request) {
     });
     const outlookUser = process.env.OUTLOOK_USER_EMAIL;
     if (!outlookUser || !process.env.AZURE_TENANT_ID || !process.env.AZURE_CLIENT_ID || !process.env.AZURE_CLIENT_SECRET) {
+      await notifyWithFallback(input, outlookUser || process.env.EMAIL_REPLY_TO || process.env.GMAIL_USER);
       return success();
     }
 
@@ -129,6 +140,7 @@ export async function POST(request) {
 
     } catch (error) {
       console.error('[contact] enquiry saved; Outlook notification failed', error);
+      await notifyWithFallback(input, outlookUser);
     }
     return success();
   } catch (error) {

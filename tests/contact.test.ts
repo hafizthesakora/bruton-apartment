@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { updateJSON } = vi.hoisted(() => ({ updateJSON: vi.fn() }));
+const { updateJSON, sendEmail } = vi.hoisted(() => ({ updateJSON: vi.fn(), sendEmail: vi.fn() }));
 vi.mock('@/lib/data', () => ({ updateJSON }));
+vi.mock('@/lib/notify/providers', () => ({ sendEmail }));
 import { POST } from '@/app/api/contact/route';
 
 const input = { name: 'Ama Test', email: 'ama@example.com', message: 'Please arrange a viewing.' };
@@ -11,6 +12,8 @@ const request = (body: unknown) => new Request('http://localhost/api/contact', {
 
 beforeEach(() => {
   updateJSON.mockReset().mockResolvedValue([]);
+  sendEmail.mockReset().mockResolvedValue({ status: 'sent', provider: 'gmail' });
+  for (const key of ['GMAIL_USER', 'EMAIL_REPLY_TO']) vi.stubEnv(key, '');
   for (const key of ['OUTLOOK_USER_EMAIL', 'AZURE_TENANT_ID', 'AZURE_CLIENT_ID', 'AZURE_CLIENT_SECRET']) vi.stubEnv(key, '');
 });
 afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
@@ -29,6 +32,7 @@ describe('contact enquiries', () => {
   it.each([{ ...input, email: 'invalid' }, { ...input, message: {} }, { ...input, name: ' ' }, null])('rejects invalid input: %j', async (body) => {
     expect((await POST(request(body))).status).toBe(400);
     expect(updateJSON).not.toHaveBeenCalled();
+    expect(sendEmail).not.toHaveBeenCalled();
   });
 
   it('rejects malformed JSON', async () => {
@@ -49,6 +53,22 @@ describe('contact enquiries', () => {
     expect((await POST(request(input))).status).toBe(200);
     expect(updateJSON).toHaveBeenCalledOnce();
     expect(fetch).toHaveBeenCalledOnce();
+    expect(sendEmail).toHaveBeenCalledWith('configured', expect.stringContaining(input.name), expect.stringContaining(input.message));
+  });
+
+  it('delivers through the shared provider when Microsoft mail is not configured', async () => {
+    vi.stubEnv('OUTLOOK_USER_EMAIL', 'info@example.com');
+    expect((await POST(request({ ...input, message: '<script>bad</script>\nHello' }))).status).toBe(200);
+    expect(sendEmail).toHaveBeenCalledWith('info@example.com', expect.any(String), expect.stringContaining('&lt;script&gt;bad&lt;/script&gt;<br>Hello'));
+    expect(updateJSON.mock.invocationCallOrder[0]).toBeLessThan(sendEmail.mock.invocationCallOrder[0]);
+  });
+
+  it('preserves the saved enquiry if both email providers fail', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.stubEnv('OUTLOOK_USER_EMAIL', 'info@example.com');
+    sendEmail.mockResolvedValue({ status: 'failed', provider: 'gmail' });
+    expect((await POST(request(input))).status).toBe(200);
+    expect(updateJSON).toHaveBeenCalledOnce();
   });
 
   it('escapes guest content in notification HTML', async () => {

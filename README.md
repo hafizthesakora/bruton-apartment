@@ -61,6 +61,8 @@ Optional integrations are documented in `.env.example`:
   saved in Admin → Enquiries even when email delivery fails. The app registration
   also needs the Microsoft Graph `Mail.Send` application permission for contact
   email, in addition to `Calendars.ReadWrite` for viewings, with admin consent.
+  If Microsoft mail fails, contact notifications fall back to the configured
+  Resend/Gmail provider. Enquiries remain saved when both providers fail.
 - **Google Places:** configure the Places API key and Place ID for reviews.
 - **Daily tasks:** configure `CRON_SECRET` for the `/api/cron/daily` endpoint.
 
