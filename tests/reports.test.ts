@@ -25,7 +25,7 @@ beforeAll(async () => {
   const rows = await db.select().from(apartments);
   aptCount = rows.filter((a) => a.active).length;
   studio = rows.find((a) => a.slug === 'studio')!.id;
-  suite = rows.find((a) => a.slug === 'executive-suite')!.id;
+  suite = rows.find((a) => a.slug === 'two-bedroom-2')!.id;
 
   // Inside June 10–19: 2 nights (studio), 4 of 6 nights (suite, runs past the end), an Airbnb stay.
   const a = await create({ totalAmount: 100_000 });

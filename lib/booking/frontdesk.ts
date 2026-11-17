@@ -91,8 +91,9 @@ export async function checkOut(db: DB, id: number, input: CheckOutInput, actor: 
       updatedAt: now,
     }).where(eq(bookings.id, id)).returning();
 
+    // Checkout must never reopen a room that maintenance has put out of order.
     await tx.insert(housekeepingStatus).values({ apartmentId: b.apartmentId, status: 'dirty', note: `Guest checked out (${b.reference})`, updatedBy: actor.id, updatedAt: now })
-      .onConflictDoUpdate({ target: housekeepingStatus.apartmentId, set: { status: 'dirty', note: `Guest checked out (${b.reference})`, updatedBy: actor.id, updatedAt: now } });
+      .onConflictDoUpdate({ target: housekeepingStatus.apartmentId, set: { status: 'dirty', note: `Guest checked out (${b.reference})`, updatedBy: actor.id, updatedAt: now }, setWhere: sql`${housekeepingStatus.status} <> 'out_of_order'` });
     await tx.insert(housekeepingTasks).values({ apartmentId: b.apartmentId, date: today, task: `Checkout clean after ${b.reference}` });
 
     await audit(actor, 'booking', id, 'check_out', {

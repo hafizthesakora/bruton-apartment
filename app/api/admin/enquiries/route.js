@@ -1,31 +1,30 @@
+import { guard } from '@/lib/auth/staff';
 import { NextResponse } from 'next/server';
-import { readJSON, writeJSON } from '@/lib/data';
+import { readJSON, updateJSON } from '@/lib/data';
 
-export async function GET() {
+export const GET = guard('enquiries', 'view', async () => {
   const enquiries = await readJSON('enquiries.json') || [];
   return NextResponse.json(enquiries);
-}
+});
 
-export async function PATCH(request) {
+export const PATCH = guard('enquiries', 'full', async (request) => {
   try {
     const { id, read } = await request.json();
-    const enquiries = await readJSON('enquiries.json') || [];
-    const updated = enquiries.map((e) => (e.id === id ? { ...e, read } : e));
-    await writeJSON('enquiries.json', updated);
+    if (typeof id !== 'string' || typeof read !== 'boolean') return NextResponse.json({ error: 'Invalid enquiry update' }, { status: 400 });
+    await updateJSON('enquiries.json', (enquiries) => enquiries.map((e) => (e.id === id ? { ...e, read } : e)));
     return NextResponse.json({ success: true });
   } catch (err) {
     return NextResponse.json({ error: err?.message || 'Failed to update' }, { status: 500 });
   }
-}
+});
 
-export async function DELETE(request) {
+export const DELETE = guard('enquiries', 'full', async (request) => {
   try {
     const { id } = await request.json();
-    const enquiries = await readJSON('enquiries.json') || [];
-    const filtered = enquiries.filter((e) => e.id !== id);
-    await writeJSON('enquiries.json', filtered);
+    if (typeof id !== 'string') return NextResponse.json({ error: 'Invalid enquiry ID' }, { status: 400 });
+    await updateJSON('enquiries.json', (enquiries) => enquiries.filter((e) => e.id !== id));
     return NextResponse.json({ success: true });
   } catch (err) {
     return NextResponse.json({ error: err?.message || 'Failed to delete' }, { status: 500 });
   }
-}
+});

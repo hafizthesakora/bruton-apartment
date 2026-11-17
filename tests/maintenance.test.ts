@@ -16,7 +16,7 @@ const status = async (id: number) => (await db.select().from(housekeepingStatus)
 beforeAll(async () => {
   db = await testDb();
   const rows = await db.select().from(apartments);
-  suite = rows.find((a) => a.slug === 'executive-suite')!.id;
+  suite = rows.find((a) => a.slug === 'two-bedroom-2')!.id;
   studio = rows.find((a) => a.slug === 'studio')!.id;
 });
 

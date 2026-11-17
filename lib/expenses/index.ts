@@ -14,7 +14,7 @@ type Actor = { id: number; name: string };
 
 /** Suggested categories; staff can type their own. */
 export const EXPENSE_CATEGORIES = [
-  'Utilities', 'Cleaning supplies', 'Laundry', 'Staff wages', REPAIRS_CATEGORY, 'Kitchen & food', 'Guest amenities',
+  'Electricity', 'Utilities', 'Cleaning supplies', 'Laundry', 'Staff wages', REPAIRS_CATEGORY, 'Kitchen & food', 'Guest amenities',
   'Internet & TV', 'Security', 'Fuel & transport', 'Marketing', 'Commission & fees', 'Taxes & levies', 'Other',
 ];
 

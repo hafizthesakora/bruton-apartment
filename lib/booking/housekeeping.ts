@@ -62,12 +62,13 @@ export async function housekeepingBoard(db: DB, date: string) {
     const departure = here.find((s) => s.checkOut === date && s.status !== 'confirmed') ?? null;
     const arrival = here.find((s) => s.checkIn === date && s.status !== 'checked_out') ?? null;
     const stayover = here.find((s) => s.status === 'checked_in' && s.checkIn < date && s.checkOut > date) ?? null;
+    const occupant = here.find((s) => s.status === 'checked_in') ?? null;
     const status: HkStatus = a.status ?? 'clean';
     return {
       ...a, status,
-      departure, arrival, stayover,
+      departure, arrival, stayover, occupant, occupied: !!occupant,
       // Someone is arriving and the room isn't ready.
-      urgent: !!arrival && status !== 'clean',
+      urgent: !!arrival && arrival.status === 'confirmed' && status !== 'clean',
       openTasks: tasks.filter((t) => t.apartmentId === a.id && !t.done).length,
     };
   });
@@ -78,6 +79,7 @@ export async function housekeepingBoard(db: DB, date: string) {
     apartments: board,
     tasks: tasks.map((t) => ({ ...t, apartmentName: aptName.get(t.apartmentId) ?? '', overdue: t.date < date })),
     cleaners,
+    occupiedCount: board.filter((a) => a.occupied).length,
     counts: Object.fromEntries(HK_STATUSES.map((s) => [s, board.filter((a) => a.status === s).length])) as Record<HkStatus, number>,
   };
 }

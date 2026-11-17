@@ -1,7 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Star, Check } from 'lucide-react';
+import { Star, Check, UtensilsCrossed } from 'lucide-react';
+import { servicePhoto, PROPERTY_PHOTOS } from '@/lib/property-media';
 import { FadeIn, StaggerContainer, StaggerItem, Parallax, motion, AnimatePresence, EASE_LUXE } from '../_Components/MotionWrapper';
 import PageHero from '../_Components/ui/PageHero';
 import SectionHeading from '../_Components/ui/SectionHeading';
@@ -10,7 +11,7 @@ import ApartmentCard from '../_Components/ui/ApartmentCard';
 import EventEnquiryModal from '../_Components/EventEnquiryModal';
 
 const DEFAULT_SERVICES = {
-  hero: { title: 'Our Services', subtitle: 'Everything you need for a comfortable short-stay experience in our fully furnished apartments' },
+  hero: { title: 'Services', subtitle: 'Everything you need for a comfortable short-stay experience in our fully furnished apartments' },
   cards: [
     { title: 'Apartment Booking', description: "Whether it's a weekend getaway or a month-long work trip, our fully furnished apartments are available on AirBnB and direct booking.", features: ['AirBnB Integration', 'Flexible Dates', 'Instant Confirmation'] },
     { title: 'Event Center', description: 'Our versatile event center is designed to bring your vision to life. From corporate conferences to birthday celebrations.', features: ['Corporate Events', 'Private Celebrations', 'Full Setup Support'] },
@@ -20,8 +21,6 @@ const DEFAULT_SERVICES = {
   whyChoose: { heading: 'Why Choose Our Apartments?', items: [{ title: 'Ultrafast WiFi by Starlink', description: 'High-speed internet powered by Starlink, perfect for remote work, streaming, and staying connected' }, { title: 'Daily Housekeeping', description: 'Professional daily cleaning service to keep your apartment fresh and spotless throughout your stay' }, { title: 'Satellite TV & Soundproof Rooms', description: 'Enjoy premium satellite TV channels in soundproof rooms designed for your comfort and privacy' }, { title: 'Safe & Secure', description: 'CCTV monitoring and highly trained security staff to ensure your safety around the clock' }] },
   reviews: { heading: 'What Our Guests Say' },
 };
-
-const SERVICE_IMAGES = ['/assets/living.JPEG', '/assets/brut2.jpg', '/assets/brut1.jpg', '/assets/BRTN GRDN-26.JPG'];
 
 export default function ServicesClient({ initialData, apartments = [] }) {
   const [c] = useState(initialData && Object.keys(initialData).length ? { ...DEFAULT_SERVICES, ...initialData } : DEFAULT_SERVICES);
@@ -72,7 +71,7 @@ export default function ServicesClient({ initialData, apartments = [] }) {
                 <LuxeButton href="/book" variant="garden" arrow>Check availability</LuxeButton>
               </FadeIn>
             </div>
-            <div className="grid gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-x-8 gap-y-16 md:grid-cols-2">
               {apartments.map((apt, i) => <ApartmentCard key={apt.id} apartment={apt} index={i % 3} />)}
             </div>
           </div>
@@ -85,13 +84,26 @@ export default function ServicesClient({ initialData, apartments = [] }) {
           <SectionHeading eyebrow="What we offer" title="More than a place to sleep" className="mb-20 md:mb-28" />
           <div className="space-y-24 md:space-y-36">
             {services.map((service, index) => {
+              const photo = service.image ? { src: service.image, alt: service.imageAlt || service.title } : servicePhoto(service.title);
               const isBooking = /apartment|booking/i.test(service.title);
               const isEvent = /event/i.test(service.title);
               return (
                 <div key={index} className="grid items-center gap-10 md:grid-cols-2 md:gap-20">
-                  <Parallax speed={0.08} className={`relative aspect-[4/3] rounded-[2rem] ${index % 2 ? 'md:order-2' : ''}`}>
-                    <Image src={service.image || SERVICE_IMAGES[index % SERVICE_IMAGES.length]} alt={service.title} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
-                  </Parallax>
+                  {photo ? (
+                    <Parallax speed={0.08} className={`relative aspect-[4/3] rounded-[2rem] ${index % 2 ? 'md:order-2' : ''}`}>
+                      <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+                    </Parallax>
+                  ) : (
+                    <div className={`flex min-h-80 flex-col justify-between gap-10 rounded-[2rem] bg-garden p-8 text-ivory md:p-12 ${index % 2 ? 'md:order-2' : ''}`}>
+                      <UtensilsCrossed size={32} strokeWidth={1.25} className="text-sand" />
+                      <div>
+                        <p className="eyebrow text-sand">Restaurant & room service</p>
+                        <p className="font-display mt-4 text-4xl leading-tight">Good food, at your own pace.</p>
+                        <p className="mt-4 text-ivory/85">Discover our menu of local favourites and international dishes.</p>
+                      </div>
+                      <LuxeButton href="/room-service" variant="light" arrow className="self-start">View the menu</LuxeButton>
+                    </div>
+                  )}
                   <div>
                     <FadeIn direction="up">
                       <p className="font-display text-7xl text-brass/40">{String(index + 1).padStart(2, '0')}</p>

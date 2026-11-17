@@ -23,7 +23,7 @@ describe('expenses', () => {
 
     const r = await listExpenses(db, { from: '2028-09-01', to: '2028-09-30' });
     expect(r.expenses.map((e) => e.date)).toEqual(['2028-09-20', '2028-09-15', '2028-09-01']);
-    expect(r.expenses[0]).toMatchObject({ apartmentName: 'Garden Studio', createdBy: expect.any(String) });
+    expect(r.expenses[0]).toMatchObject({ apartmentName: 'Garden Studio 1', createdBy: expect.any(String) });
     expect(r.byCategory).toEqual([{ category: 'Utilities', amount: 70_000 }, { category: 'Guest amenities', amount: 8_000 }]);
     expect(r.total).toBe(78_000);
     expect((await listExpenses(db, { from: '2028-09-01', to: '2028-09-30', category: 'Utilities' })).total).toBe(70_000);

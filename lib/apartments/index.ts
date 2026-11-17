@@ -12,6 +12,7 @@ import { apartmentPhotos, apartments, bookings, housekeepingStatus, policies, ra
 import { audit } from '@/lib/audit';
 import { BookingError } from '@/lib/booking/engine';
 import { isISODate, todayAtProperty } from '@/lib/booking/pricing';
+import { roomTypeName } from '@/lib/room-types';
 
 type Actor = { id: number; name: string };
 
@@ -46,12 +47,21 @@ export async function listApartments(db: DB) {
 /** Public showcase for the marketing pages: active units, cover photo and the lowest standard nightly rate. */
 export async function listShowcase(db: DB) {
   const all = await listApartments(db);
-  return all.filter((a) => a.active).map((a) => {
-    const open = a.ratePlans.filter((p) => p.active && !p.validFrom && !p.validTo);
+  const active = all.filter((a) => a.active);
+  const seen = new Set<string>();
+  return active.filter((a) => {
+    const key = a.roomType ?? String(a.id);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).map((a) => {
+    const units = active.filter((unit) => a.roomType ? unit.roomType === a.roomType : unit.id === a.id);
+    const open = units.flatMap((unit) => unit.ratePlans).filter((p) => p.active && !p.validFrom && !p.validTo);
     return {
       id: a.id,
       slug: a.slug,
-      name: a.name,
+      name: roomTypeName(a.roomType, a.name),
+      unitCount: units.length,
       description: a.description,
       bedrooms: a.bedrooms,
       maxGuests: a.maxGuests,

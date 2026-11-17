@@ -55,6 +55,7 @@ export function planForDate<P extends RatePlan>(plans: P[], date: string): P | u
 export class QuoteError extends Error {}
 
 export function quoteStay(plans: RatePlan[], checkIn: string, checkOut: string): Quote {
+  if (!isISODate(checkIn) || !isISODate(checkOut)) throw new QuoteError('Choose valid dates');
   const nights = nightsBetween(checkIn, checkOut);
   if (nights < 1) throw new QuoteError('Check-out must be after check-in');
 

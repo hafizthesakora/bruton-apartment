@@ -253,35 +253,20 @@ export function Parallax({ children, speed = 0.15, className = '' }) {
   );
 }
 
-// Image is wiped into view (clip-path) with a slight settle.
-export function ImageReveal({ children, className = '', delay = 0, from = 'bottom' }) {
+// Photos stay visible before hydration and with reduced motion; scroll only adds a gentle settle.
+export function ImageReveal({ children, className = '', delay = 0 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const reduce = useReducedMotion();
-  const hidden = {
-    bottom: 'inset(100% 0% 0% 0%)',
-    left: 'inset(0% 100% 0% 0%)',
-    right: 'inset(0% 0% 0% 100%)',
-  }[from];
-
-  // The observed wrapper is never clipped: a fully clipped element reports no intersection
-  // in some browsers, which left the image hidden for good.
   return (
     <div ref={ref} className={`relative overflow-hidden ${className}`}>
       <motion.div
         className="absolute inset-0"
-        initial={reduce ? { opacity: 0 } : { clipPath: hidden }}
-        animate={isInView ? (reduce ? { opacity: 1 } : { clipPath: 'inset(0% 0% 0% 0%)' }) : {}}
-        transition={{ duration: 1.3, delay, ease: EASE_LUXE }}
+        initial={false}
+        animate={{ scale: reduce || isInView ? 1 : 1.04 }}
+        transition={{ duration: reduce ? 0 : 0.8, delay: reduce ? 0 : delay, ease: EASE_LUXE }}
       >
-        <motion.div
-          className="relative h-full w-full"
-          initial={reduce ? {} : { scale: 1.2 }}
-          animate={isInView && !reduce ? { scale: 1 } : {}}
-          transition={{ duration: 1.6, delay, ease: EASE_LUXE }}
-        >
-          {children}
-        </motion.div>
+        {children}
       </motion.div>
     </div>
   );

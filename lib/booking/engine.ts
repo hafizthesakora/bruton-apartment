@@ -83,6 +83,7 @@ export async function expireHolds(db: DB | Tx, now = new Date()) {
 
 export type SearchResult = {
   id: number;
+  roomType?: string | null;
   slug: string;
   name: string;
   description: string;
@@ -123,7 +124,7 @@ export async function searchAvailability(
 
   return apts.map((a) => {
     const base = {
-      id: a.id, slug: a.slug, name: a.name, description: a.description, bedrooms: a.bedrooms,
+      id: a.id, roomType: a.roomType, slug: a.slug, name: a.name, description: a.description, bedrooms: a.bedrooms,
       bathrooms: a.bathrooms, maxGuests: a.maxGuests, amenities: a.amenities,
       photos: photos.filter((p) => p.apartmentId === a.id).map((p) => ({ url: p.url, alt: p.alt })),
     };

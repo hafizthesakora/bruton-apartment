@@ -18,7 +18,7 @@ const AboutUs = () => {
         </div>
         <div className="flex-1">
           <Image
-            src="/assets/about-hero.jpg"
+            src="/assets/BRTN GRDN-1.JPEG"
             alt="About Us Hero"
             width={600}
             height={400}

@@ -7,6 +7,12 @@ const plan = (o: Partial<RatePlan> = {}): RatePlan => ({
 });
 
 describe('quoteStay', () => {
+  it('rejects malformed and impossible dates instead of producing invalid quotes', () => {
+    for (const date of ['', 'not-a-date', '2027-02-30']) {
+      expect(() => quoteStay([plan()], date, '2027-03-05')).toThrow(QuoteError);
+      expect(() => quoteStay([plan()], '2027-02-20', date)).toThrow(QuoteError);
+    }
+  });
   it('charges weekend rate on Fri and Sat nights only', () => {
     // 2027-01-07 is a Thursday: Thu, Fri, Sat nights
     const q = quoteStay([plan()], '2027-01-07', '2027-01-10');

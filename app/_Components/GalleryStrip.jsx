@@ -4,16 +4,9 @@ import Image from 'next/image';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import SectionHeading from './ui/SectionHeading';
 import LuxeButton from './ui/LuxeButton';
+import { HOME_GALLERY_PHOTOS, photoCarousel } from '@/lib/property-media';
 
-const DEFAULT_IMAGES = [
-  { id: '1', src: '/assets/BRTN GRDN-1.JPEG', alt: 'Bruton Gardens' },
-  { id: '2', src: '/assets/BRTN GRDN-22.JPG', alt: 'Bruton Gardens' },
-  { id: '3', src: '/assets/BRTN GRDN-26.JPG', alt: 'Bruton Gardens' },
-  { id: '4', src: '/assets/BRTN GRDN-6.JPEG', alt: 'Bruton Gardens' },
-  { id: '5', src: '/assets/BRTN GRDN-27.JPG', alt: 'Bruton Gardens' },
-  { id: '6', src: '/assets/BRTN GRDN-10.JPEG', alt: 'Bedroom and lounge' },
-  { id: '7', src: '/assets/brut2.jpg', alt: 'Banquet in the hall' },
-];
+const DEFAULT_IMAGES = photoCarousel(HOME_GALLERY_PHOTOS);
 
 // Vertical scroll drives a horizontal photo strip (pinned while it plays).
 export default function GalleryStrip() {

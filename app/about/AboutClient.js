@@ -6,21 +6,15 @@ import PageHero from '../_Components/ui/PageHero';
 import SectionHeading from '../_Components/ui/SectionHeading';
 import LuxeButton from '../_Components/ui/LuxeButton';
 import ContactModal from '../_Components/ContactModal';
+import { ABOUT_PHOTOS } from '@/lib/property-media';
 
-const defaultSlideImages = [
-  '/assets/brut1.jpg',
-  '/assets/brut2.jpg',
-  '/assets/BRTN GRDN-6.JPEG',
-  '/assets/BRTN GRDN-1.JPEG',
-  '/assets/BRTN GRDN-22.JPG',
-  '/assets/BRTN GRDN-27.JPG',
-];
+const defaultSlideImages = ABOUT_PHOTOS;
 
 const DEFAULT_ABOUT = {
   hero: { title: 'About Bruton Gardens & Apartments', subtitle: 'A short stay apartment offering exceptional comfort, modern amenities, and warm hospitality on the outskirts of the city.' },
   stats: [{ value: '100+', label: 'Happy Guests' }, { value: '1+', label: 'Years Experience' }, { value: 'Prime', label: 'Location' }, { value: '4.8/5', label: 'Guest Rating' }],
   story: { heading: 'Our Story', paragraph1: 'Bruton Gardens & Apartments was established with a vision to provide travelers and visitors with a home away from home. What started as a family initiative has grown into a trusted short stay destination.', paragraph2: "Our commitment to excellence, attention to detail, and genuine hospitality ensures that every guest enjoys a comfortable, memorable stay. Whether you're visiting for business or leisure, we treat you like family.", primaryCta: 'Book Now', secondaryCta: 'Contact Us' },
-  team: { heading: 'Meet Our Team', members: [{ name: 'Mrs. Portia Owusu Asante', role: 'Director', image: '/assets/team-portia.jpeg', bio: 'Passionate about providing exceptional hospitality and comfortable stays' }, { name: 'Nana Afia Nketia Danquah', role: 'Facilities Manager', image: '/assets/team-nana.jpeg', bio: 'Ensuring every guest enjoys a seamless and memorable experience' }, { name: 'Tetteh Ebenezer', role: 'Front of House', image: '/assets/team-tetteh.jpeg', bio: 'Dedicated to making your stay comfortable and stress-free' }] },
+  team: { heading: 'Meet Our Team', members: [{ name: 'Yaa Asante', role: 'Director', image: '/assets/team-portia.jpeg', bio: 'Passionate about providing exceptional hospitality and comfortable stays' }, { name: 'Nana Afia Nketia Danquah', role: 'Facilities Manager', image: '/assets/team-nana.jpeg', bio: 'Ensuring every guest enjoys a seamless and memorable experience' }, { name: 'Tetteh Ebenezer', role: 'Front of House', image: '/assets/team-tetteh.jpeg', bio: 'Dedicated to making your stay comfortable and stress-free' }] },
 };
 
 export default function AboutClient({ initialData, initialSlideImages }) {
@@ -78,7 +72,7 @@ export default function AboutClient({ initialData, initialSlideImages }) {
             </FadeIn>
           </div>
 
-          <ImageReveal className="relative aspect-[4/5] rounded-[2rem] bg-sand">
+          <ImageReveal className="relative aspect-[5/4] rounded-[2rem] bg-sand">
             <AnimatePresence initial={false}>
               <motion.div
                 key={currentSlide}
@@ -88,7 +82,7 @@ export default function AboutClient({ initialData, initialSlideImages }) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 1.4, ease: EASE_LUXE }}
               >
-                <Image src={slideImages[currentSlide]} alt={`Bruton Gardens ${currentSlide + 1}`} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+                <Image src={slideImages[currentSlide].src} alt={slideImages[currentSlide].alt || 'Bruton Gardens property'} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
               </motion.div>
             </AnimatePresence>
             <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-2">
@@ -96,7 +90,7 @@ export default function AboutClient({ initialData, initialSlideImages }) {
                 <button
                   key={i}
                   onClick={() => setCurrentSlide(i)}
-                  aria-label={`Photo ${i + 1}`}
+                  aria-label={`Show photo ${i + 1}: ${slideImages[i].alt || 'Bruton Gardens'}`} aria-pressed={i === currentSlide}
                   className={`h-1 rounded-full transition-all duration-500 ${i === currentSlide ? 'w-10 bg-ivory' : 'w-4 bg-ivory/50'}`}
                 />
               ))}

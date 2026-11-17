@@ -1,10 +1,11 @@
 import { jwtVerify } from 'jose';
 import { NextResponse } from 'next/server';
 import { can, permissionForPath } from '@/lib/auth/rbac';
+import { authSecret } from '@/lib/auth/secret';
 
 function getSecret() {
   return new TextEncoder().encode(
-    process.env.ADMIN_JWT_SECRET || 'bruton-admin-fallback-secret-change-in-prod'
+    authSecret()
   );
 }
 

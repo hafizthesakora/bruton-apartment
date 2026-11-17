@@ -6,23 +6,18 @@ import { ArrowUp } from 'lucide-react';
 import { FadeIn, RevealText, Marquee } from './MotionWrapper';
 import LuxeButton from './ui/LuxeButton';
 import { socialLinks } from '@/lib/social';
+import { PUBLIC_NAV } from '@/lib/navigation';
 
 const DEFAULT_FOOTER = {
   description: 'Experience luxury living at Bruton Gardens & Apartments. We offer modern, well-furnished apartments in a serene environment with world-class amenities and exceptional service. Your comfort is our priority.',
   quickLinksHeading: 'Explore',
-  quickLinks: [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
-    { href: '/services', label: 'Apartments' },
-    { href: '/facilities', label: 'Facilities' },
-    { href: '/blog', label: 'Gallery & Blog' },
-  ],
+  quickLinks: PUBLIC_NAV,
   connectHeading: 'Connect',
   socialLinks: [],
   featuredItems: [
     { image: '/assets/hall.JPEG', title: 'Event Center', subtitle: 'Elegant & Modern Design' },
-    { image: '/assets/main-home1.jpg', title: 'Premium Units', subtitle: 'Fully Furnished Apartments' },
-    { image: '/assets/BRTN GRDN-26.JPG', title: 'Beautiful Gardens', subtitle: 'Serene Environment' },
+    { image: '/assets/BRTN GRDN-10.JPEG', title: 'Premium Units', subtitle: 'Fully Furnished Apartments' },
+    { image: '/assets/BRTN GRDN-6.JPEG', title: 'Beautiful Gardens', subtitle: 'Serene Environment' },
   ],
   copyright: '© 2026 Bruton Gardens & Apartments. All rights reserved.',
 };
@@ -57,7 +52,7 @@ const Footer = () => {
 
   const links = (settingsSocial.length ? settingsSocial : f.socialLinks || [])
     .filter((s) => s.url && s.url !== '#');
-  const explore = (f.quickLinks || []).filter((l) => !GUEST_LINKS.some((g) => g.href === l.href));
+  const explore = PUBLIC_NAV;
 
   const heading = 'eyebrow mb-6 text-sand/60';
   const link = 'text-ivory/80 transition-colors duration-300 hover:text-brass';

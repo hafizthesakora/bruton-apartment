@@ -1,15 +1,16 @@
+import { guard } from '@/lib/auth/staff';
 import { NextResponse } from 'next/server';
 import { readJSON, writeJSON } from '@/lib/data';
 
-export async function GET(request) {
+export const GET = guard('content', 'view', async (request) => {
   const { searchParams } = new URL(request.url);
   const name = searchParams.get('name');
   const all = await readJSON('carousel.json') || {};
   if (name) return NextResponse.json(all[name] || { label: name, images: [] });
   return NextResponse.json(all);
-}
+});
 
-export async function PUT(request) {
+export const PUT = guard('content', 'full', async (request) => {
   try {
     const { name, carousel } = await request.json();
     if (!name) return NextResponse.json({ error: 'Missing carousel name' }, { status: 400 });
@@ -21,9 +22,9 @@ export async function PUT(request) {
     console.error('Carousel PUT error:', err);
     return NextResponse.json({ error: err?.message || 'Failed to save' }, { status: 500 });
   }
-}
+});
 
-export async function POST(request) {
+export const POST = guard('content', 'full', async (request) => {
   try {
     const { name, label } = await request.json();
     if (!name) return NextResponse.json({ error: 'Missing name' }, { status: 400 });
@@ -36,9 +37,9 @@ export async function POST(request) {
     console.error('Carousel POST error:', err);
     return NextResponse.json({ error: err?.message || 'Failed to create' }, { status: 500 });
   }
-}
+});
 
-export async function DELETE(request) {
+export const DELETE = guard('content', 'full', async (request) => {
   try {
     const { name, imageId, deleteCarousel } = await request.json();
     const all = await readJSON('carousel.json') || {};
@@ -54,4 +55,4 @@ export async function DELETE(request) {
     console.error('Carousel DELETE error:', err);
     return NextResponse.json({ error: err?.message || 'Failed to delete' }, { status: 500 });
   }
-}
+});

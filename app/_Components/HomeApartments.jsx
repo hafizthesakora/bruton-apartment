@@ -22,9 +22,9 @@ export default function HomeApartments({ apartments = [] }) {
           </FadeIn>
         </div>
 
-        <div className="grid gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-x-8 gap-y-16 md:grid-cols-2">
           {apartments.map((apt, i) => (
-            <div key={apt.id} className={i % 3 === 1 ? 'lg:mt-24' : ''}>
+            <div key={apt.id} className={i % 2 === 1 ? 'lg:mt-16' : ''}>
               <ApartmentCard apartment={apt} index={i % 3} />
             </div>
           ))}

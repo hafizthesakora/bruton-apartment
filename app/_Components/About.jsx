@@ -6,9 +6,9 @@ import SectionHeading from './ui/SectionHeading';
 import LuxeButton from './ui/LuxeButton';
 
 const defaultCards = [
-  { image: '/assets/main-home1.jpg' },
-  { image: '/assets/BRTN GRDN-3.JPEG' },
-  { image: '/assets/BRTN GRDN-25 2.JPEG' },
+  { image: '/assets/BRTN GRDN-10.JPEG', alt: 'Open-plan studio with bed and sofa' },
+  { image: '/assets/BRTN GRDN-20.JPG', alt: 'Furnished apartment bedroom' },
+  { image: '/assets/BRTN GRDN-6.JPEG', alt: 'Landscaped gardens and paths' },
 ];
 
 const STATS = [
@@ -22,7 +22,8 @@ const About = ({ content = {} }) => {
     heading = 'Experience Luxury Living at Bruton Gardens & Apartments',
     body = 'Discover modern comfort and elegant design in our premium apartments. Each unit is thoughtfully crafted to provide you with the perfect blend of style, functionality, and convenience on the outskirts of the city.',
     premiumBadge = 'Premium Living',
-    mainImage = '/assets/BRTN GRDN-22.JPG',
+    mainImage = '/assets/BRTN GRDN-10.JPEG',
+    mainImageAlt = 'Open-plan studio with bed, sofa and blue curtains',
     cards = defaultCards,
   } = content;
 
@@ -32,12 +33,12 @@ const About = ({ content = {} }) => {
         {/* Images */}
         <div className="relative lg:col-span-6">
           <ImageReveal className="relative aspect-[4/5] rounded-t-full rounded-b-[2rem] md:w-4/5">
-            <Image src={mainImage} alt="Bruton Gardens" fill sizes="(min-width: 1024px) 40vw, 90vw" className="object-cover" />
+            <Image src={mainImage} alt={mainImageAlt} fill sizes="(min-width: 1024px) 40vw, 90vw" className="object-cover" />
           </ImageReveal>
           {cards[1] && (
             <div className="absolute -bottom-10 right-0 w-2/5 md:w-1/3">
               <ImageReveal delay={0.3} from="left" className="relative aspect-square rounded-[2rem] border-8 border-ivory">
-                <Image src={cards[1].image} alt="" fill sizes="20vw" className="object-cover" />
+                <Image src={cards[1].image} alt={cards[1].alt || 'Furnished apartment bedroom'} fill sizes="20vw" className="object-cover" />
               </ImageReveal>
             </div>
           )}
@@ -71,7 +72,7 @@ const About = ({ content = {} }) => {
       {cards[2] && (
         <div className="container-luxe mt-28 md:mt-40">
           <Parallax speed={0.12} className="relative h-[50vh] rounded-[2rem] md:h-[70vh]">
-            <Image src={cards[2].image} alt="Bruton Gardens grounds" fill sizes="100vw" className="object-cover" />
+            <Image src={cards[2].image} alt={cards[2].alt || 'Bruton Gardens grounds'} fill sizes="100vw" className="object-cover" />
           </Parallax>
         </div>
       )}

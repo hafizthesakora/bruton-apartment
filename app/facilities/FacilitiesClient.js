@@ -9,29 +9,31 @@ import {
   AirVent,
   Utensils,
   CookingPot,
-  WashingMachine,
+  Shirt,
+  Tv,
 } from 'lucide-react';
 import { FadeIn, StaggerContainer, StaggerItem, Parallax, ImageReveal } from '../_Components/MotionWrapper';
 import PageHero from '../_Components/ui/PageHero';
 import SectionHeading from '../_Components/ui/SectionHeading';
 import LuxeButton from '../_Components/ui/LuxeButton';
 import ContactModal from '../_Components/ContactModal';
+import { PROPERTY_PHOTOS } from '@/lib/property-media';
 
 const FACILITY_ICONS = [Wifi, ParkingCircle, Lock, Coffee, AirVent, Utensils];
-const FACILITY_TITLE_ICONS = { 'Fully Equipped Kitchen': CookingPot, 'Washer & Dryer': WashingMachine };
+const FACILITY_TITLE_ICONS = { 'Fully Equipped Kitchen': CookingPot, 'Laundry Services': Shirt, 'Iron & Ironing Board': Shirt, 'Satellite Smart TV': Tv };
 
 const DEFAULT_FACILITIES = {
   hero: { title: 'Our Facilities', subtitle: 'Everything you need for a comfortable short stay, all in one place' },
   categories: [
     { category: 'Essential Amenities', items: [{ title: 'Ultrafast WiFi by Starlink', description: 'Blazing fast internet powered by Starlink, perfect for work and streaming' }, { title: 'Free Parking', description: 'Complimentary parking space for all guests' }, { title: 'Secure Access', description: '24/7 security with keyless entry and CCTV monitoring' }, { title: 'Café Corner', description: 'Coffee maker and refreshment area' }] },
-    { category: 'In-Apartment Features', items: [{ title: 'Fully Equipped Kitchen', description: 'Complete kitchen with cookware, utensils, and appliances' }, { title: 'Washer & Dryer', description: 'In-unit laundry for your convenience' }, { title: 'Climate Control', description: 'Individual air conditioning in every room' }, { title: 'Dining Space', description: 'Comfortable dining area for meals and work' }] },
+    { category: 'In-Apartment Features', items: [{ title: 'Fully Equipped Kitchen', description: 'Complete kitchen with cookware, utensils, and appliances' }, { title: 'Laundry Services', description: 'Laundry services are available through our team' }, { title: 'Iron & Ironing Board', description: 'Available on request from reception' }, { title: 'Satellite Smart TV', description: 'Satellite channels and smart TV entertainment' }, { title: 'Climate Control', description: 'Individual air conditioning in every room' }, { title: 'Dining Space', description: 'Comfortable dining area for meals and work' }] },
   ],
-  explore: { heading: 'Explore Our Apartments', body: 'Take a virtual tour of our fully furnished apartments and see all the amenities included in your stay.', primaryCta: 'Start Tour', secondaryCta: 'Book Now' },
+  explore: { heading: 'Explore Our Apartments', body: 'Browse real photos of our furnished apartments and the amenities available during your stay.', primaryCta: 'View Apartment Photos', secondaryCta: 'Book Now' },
   special: { heading: 'What Makes Us Special', items: [{ title: 'Daily Housekeeping', description: 'Professional daily cleaning service to keep your apartment fresh and spotless.' }, { title: '24-Hour Check-In', description: 'Dedicated staff available around the clock to welcome you.' }, { title: 'CCTV & Trained Security', description: 'Comprehensive CCTV monitoring and highly trained security staff.' }] },
   cta: { heading: 'Ready for Your Stay?', body: 'Book your apartment today and enjoy all our premium facilities during your short stay.', primaryCta: 'Check Availability', secondaryCta: 'Contact Us' },
 };
 
-const CATEGORY_IMAGES = ['/assets/BRTN GRDN-24.JPEG', '/assets/BRTN GRDN-14.JPG'];
+const CATEGORY_IMAGES = [PROPERTY_PHOTOS.terrace, PROPERTY_PHOTOS.kitchen];
 
 export default function FacilitiesClient({ initialData }) {
   const [contactOpen, setContactOpen] = useState(false);
@@ -48,7 +50,7 @@ export default function FacilitiesClient({ initialData }) {
         eyebrow="Amenities"
         title={c.hero?.title || DEFAULT_FACILITIES.hero.title}
         intro={c.hero?.subtitle || DEFAULT_FACILITIES.hero.subtitle}
-        image="/assets/facilities.JPEG"
+        image={PROPERTY_PHOTOS.courtyard.src}
       />
 
       {/* Categories */}
@@ -59,7 +61,7 @@ export default function FacilitiesClient({ initialData }) {
               <div className="lg:sticky lg:top-32">
                 <SectionHeading eyebrow={`0${index + 1}`} title={category.category} />
                 <ImageReveal delay={0.2} className="relative mt-12 hidden aspect-[4/3] rounded-[2rem] lg:block">
-                  <Image src={CATEGORY_IMAGES[index % CATEGORY_IMAGES.length]} alt="" fill sizes="40vw" className="object-cover" />
+                  <Image src={CATEGORY_IMAGES[index % CATEGORY_IMAGES.length].src} alt={CATEGORY_IMAGES[index % CATEGORY_IMAGES.length].alt} fill sizes="40vw" className="object-cover" />
                 </ImageReveal>
               </div>
             </div>
@@ -85,12 +87,12 @@ export default function FacilitiesClient({ initialData }) {
       <section className="section-y bg-ivory">
         <div className="container-luxe grid items-center gap-16 lg:grid-cols-2">
           <Parallax speed={0.1} className="relative aspect-[5/4] rounded-[2rem]">
-            <Image src="/assets/BRTN GRDN-12.JPEG" alt="Bruton Gardens apartment" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+            <Image src={PROPERTY_PHOTOS.bedroom.src} alt={PROPERTY_PHOTOS.bedroom.alt} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </Parallax>
           <div>
             <SectionHeading eyebrow="Take a look" title={explore.heading} intro={explore.body} />
             <FadeIn direction="up" delay={0.2} className="mt-10 flex flex-wrap gap-3">
-              <LuxeButton href="/blog" variant="garden" arrow>{explore.primaryCta}</LuxeButton>
+              <LuxeButton href="/blog?category=Apartments#photos" variant="garden" arrow>{explore.primaryCta}</LuxeButton>
               <LuxeButton href="/book" variant="outline" className="text-garden">{explore.secondaryCta}</LuxeButton>
             </FadeIn>
           </div>
@@ -116,7 +118,7 @@ export default function FacilitiesClient({ initialData }) {
       {/* CTA band */}
       <section className="relative overflow-hidden bg-garden text-ivory">
         <Parallax speed={0.15} className="absolute inset-0">
-          <Image src="/assets/BRTN GRDN-27.JPG" alt="" fill sizes="100vw" className="object-cover" />
+          <Image src={PROPERTY_PHOTOS.gardens.src} alt={PROPERTY_PHOTOS.gardens.alt} fill sizes="100vw" className="object-cover" />
         </Parallax>
         <div className="absolute inset-0 bg-garden/70" />
         <div className="container-luxe relative py-32 text-center md:py-44">

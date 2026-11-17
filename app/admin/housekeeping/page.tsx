@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, LogIn, LogOut, BedDouble, AlertTriangle, Play, Check, RotateCcw, Trash2, Plus } from 'lucide-react';
 import {
   PageHeader, Button, Card, Field, Input, Select, StatusBadge, Badge, Modal, Empty, ErrorText,
@@ -13,10 +13,10 @@ type HkStatus = 'clean' | 'dirty' | 'in_progress' | 'out_of_order';
 type Stay = { reference: string; guestName: string; adults: number; children: number; checkIn: string; checkOut: string; status: string } | null;
 type Apt = {
   id: number; name: string; status: HkStatus; note: string | null; updatedAt: string | null; updatedBy: string | null;
-  departure: Stay; arrival: Stay; stayover: Stay; urgent: boolean; openTasks: number;
+  departure: Stay; arrival: Stay; stayover: Stay; occupant: Stay; occupied: boolean; urgent: boolean; openTasks: number;
 };
 type Task = { id: number; apartmentId: number; apartmentName: string; date: string; task: string; assignedTo: number | null; done: boolean; doneAt: string | null; overdue: boolean };
-type Board = { date: string; apartments: Apt[]; tasks: Task[]; cleaners: { id: number; name: string; role: string }[]; counts: Record<HkStatus, number> };
+type Board = { occupiedCount: number; date: string; apartments: Apt[]; tasks: Task[]; cleaners: { id: number; name: string; role: string }[]; counts: Record<HkStatus, number> };
 
 const DAY_MS = 86_400_000;
 const addDays = (d: string, n: number) => new Date(Date.parse(d + 'T00:00:00Z') + n * DAY_MS).toISOString().slice(0, 10);
@@ -35,6 +35,11 @@ export default function HousekeepingPage() {
   const canEdit = useCan('housekeeping', 'full');
   const [date, setDate] = useState(today);
   const { data, loading, error, reload } = useApi<Board>(`/api/admin/housekeeping?date=${date}`);
+  useEffect(() => {
+    const timer = setInterval(reload, 15000);
+    window.addEventListener('focus', reload);
+    return () => { clearInterval(timer); window.removeEventListener('focus', reload); };
+  }, [reload]);
   const [mineOnly, setMineOnly] = useState<boolean | null>(null);
   const [statusFor, setStatusFor] = useState<Apt | null>(null);
   const [adding, setAdding] = useState<number | null | undefined>(undefined); // apartment id to preselect; undefined = closed
@@ -81,7 +86,7 @@ export default function HousekeepingPage() {
     <div className="p-4 sm:p-8">
       <PageHeader
         title="Housekeeping"
-        subtitle="Room status and the day’s cleaning list. Finishing a room’s last task marks it clean."
+        subtitle="Occupancy follows check-in and check-out automatically. Checkout marks the room dirty and creates a cleaning task."
         actions={
           <div className="flex items-center gap-1">
             <Button variant="secondary" onClick={() => setDate(addDays(date, -1))} aria-label="Previous day"><ChevronLeft size={16} /></Button>
@@ -99,7 +104,11 @@ export default function HousekeepingPage() {
 
       {loading && !data ? <Empty>Loading…</Empty> : error ? <Empty>{error}</Empty> : data && (
         <div className="space-y-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+            <div className="rounded-xl border border-blue-300 bg-white p-4">
+              <p className="text-xs text-gray-600">Occupied</p>
+              <p className="mt-1 text-2xl font-semibold text-gray-900">{data.occupiedCount}</p>
+            </div>
             {(Object.keys(STATUS_LABEL) as HkStatus[]).map((s) => (
               <div key={s} className={cx('rounded-xl border bg-white p-4', STATUS_RING[s])}>
                 <p className="text-xs text-gray-500">{STATUS_LABEL[s]}</p>
@@ -117,7 +126,7 @@ export default function HousekeepingPage() {
                     <h3 className="font-semibold text-gray-900">{a.name}</h3>
                     {a.updatedAt && <p className="text-xs text-gray-400">{a.updatedBy ? `${a.updatedBy} · ` : ''}{formatDate(a.updatedAt, true)}</p>}
                   </div>
-                  <StatusBadge status={a.status} />
+                  <div className="flex flex-col items-end gap-1"><StatusBadge status={a.status} /><Badge>{a.occupied ? 'Occupied' : 'Vacant'}</Badge></div>
                 </div>
 
                 {a.urgent && (
@@ -129,9 +138,9 @@ export default function HousekeepingPage() {
 
                 <div className="space-y-1 text-xs text-gray-600">
                   {a.departure && <p className="flex items-center gap-1.5"><LogOut size={13} className="text-gray-400" /> {a.departure.status === 'checked_out' ? 'Left' : 'Leaving'}: {a.departure.guestName}</p>}
-                  {a.arrival && <p className="flex items-center gap-1.5"><LogIn size={13} className="text-gray-400" /> Arriving: {a.arrival.guestName} · {pax(a.arrival)} guest{pax(a.arrival) === 1 ? '' : 's'}</p>}
-                  {a.stayover && <p className="flex items-center gap-1.5"><BedDouble size={13} className="text-gray-400" /> Staying until {formatDate(a.stayover.checkOut)}</p>}
-                  {!a.departure && !a.arrival && !a.stayover && <p className="text-gray-400">Empty</p>}
+                  {a.arrival && a.arrival.status === 'confirmed' && <p className="flex items-center gap-1.5"><LogIn size={13} className="text-gray-400" /> Arriving: {a.arrival.guestName} · {pax(a.arrival)} guest{pax(a.arrival) === 1 ? '' : 's'}</p>}
+                  {a.occupant && <p className="flex items-center gap-1.5"><BedDouble size={13} className="text-gray-400" /> Staying until {formatDate(a.occupant.checkOut)}</p>}
+                  {!a.departure && !a.arrival && !a.occupant && <p className="text-gray-400">Empty</p>}
                   {a.openTasks > 0 && <p className="text-amber-700">{a.openTasks} open task{a.openTasks === 1 ? '' : 's'}</p>}
                 </div>
 

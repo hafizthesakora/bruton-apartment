@@ -21,7 +21,7 @@ beforeAll(async () => {
   db = await testDb();
   const rows = await db.select().from(apartments);
   studio = rows.find((a) => a.slug === 'studio')!.id;
-  suite = rows.find((a) => a.slug === 'executive-suite')!.id;
+  suite = rows.find((a) => a.slug === 'two-bedroom-2')!.id;
 });
 
 describe('contact keys', () => {
@@ -66,6 +66,25 @@ describe('sign-in codes', () => {
     for (let i = 0; i < 3; i++) await requestCode(db, 'rl@example.com', later(i));
     await expect(requestCode(db, 'rl@example.com', later(4))).rejects.toMatchObject({ status: 429 });
     expect(await requestCode(db, 'rl@example.com', later(30))).not.toBeNull();
+  });
+
+  it('never revives an older code after the newest code is used', async () => {
+    await db.insert(guests).values({ fullName: 'Code Replay', email: 'replay@example.com' });
+    const old = (await requestCode(db, 'replay@example.com', NOW))!;
+    // Same timestamp: ID breaks the tie in favour of the newest code.
+    const latest = (await requestCode(db, 'replay@example.com', NOW))!;
+    expect(await verifyCode(db, 'replay@example.com', latest.code, later(1))).toBe(latest.key);
+    await expect(verifyCode(db, 'replay@example.com', old.code, later(2))).rejects.toThrow(/expired/);
+  });
+
+  it('allows only one concurrent use of a sign-in code', async () => {
+    await db.insert(guests).values({ fullName: 'Concurrent Login', email: 'once@example.com' });
+    const issued = (await requestCode(db, 'once@example.com', NOW))!;
+    const results = await Promise.allSettled([
+      verifyCode(db, 'once@example.com', issued.code, later(1)),
+      verifyCode(db, 'once@example.com', issued.code, later(1)),
+    ]);
+    expect(results.filter((r) => r.status === 'fulfilled')).toHaveLength(1);
   });
 });
 

@@ -13,6 +13,7 @@ import { FadeIn, StaggerContainer, StaggerItem, Parallax, motion, AnimatePresenc
 import PageHero from '../_Components/ui/PageHero';
 import SectionHeading from '../_Components/ui/SectionHeading';
 import LuxeButton from '../_Components/ui/LuxeButton';
+import { GALLERY_CATEGORIES as galleryCategories, GALLERY_PHOTOS as allGalleryImages, PROPERTY_PHOTOS } from '@/lib/property-media';
 
 // ── Blog Posts Data ──────────────────────────────────────────────────────────
 
@@ -21,7 +22,7 @@ const blogPosts = [
     id: 1,
     title: 'Why Bruton Gardens is the Perfect Short-Stay Destination in Accra',
     excerpt: 'Discover what makes Bruton Gardens Apartment the top choice for business travelers, tourists, and families looking for a premium short-stay experience in the heart of Accra.',
-    image: '/assets/BRTN GRDN-26.JPG',
+    image: PROPERTY_PHOTOS.courtyard.src,
     category: 'Lifestyle',
     author: 'Bruton Gardens',
     date: 'January 15, 2026',
@@ -31,7 +32,7 @@ const blogPosts = [
     id: 2,
     title: 'A Guide to Our Fully Furnished Apartments',
     excerpt: 'Take a tour of our beautifully furnished apartments featuring modern amenities, premium bedding, fully equipped kitchens, and stunning views of the surrounding gardens.',
-    image: '/assets/BRTN GRDN-22.JPG',
+    image: PROPERTY_PHOTOS.studio.src,
     category: 'Apartments',
     author: 'Bruton Gardens',
     date: 'January 28, 2026',
@@ -41,7 +42,7 @@ const blogPosts = [
     id: 3,
     title: 'Host Your Next Event at Bruton Gardens Event Center',
     excerpt: 'Our elegant event center is perfect for corporate meetings, birthday celebrations, and intimate gatherings. Learn about our event packages and what we offer.',
-    image: '/assets/BRTN GRDN-25 2.JPEG',
+    image: PROPERTY_PHOTOS.hallEvening.src,
     category: 'Events',
     author: 'Bruton Gardens',
     date: 'February 5, 2026',
@@ -51,52 +52,12 @@ const blogPosts = [
     id: 4,
     title: 'Exploring the Gardens: Nature Meets Modern Living',
     excerpt: 'Our lush gardens offer a peaceful retreat from the bustling city. From morning walks to evening relaxation, discover the green spaces that make Bruton Gardens special.',
-    image: '/assets/BRTN GRDN-27.JPG',
+    image: PROPERTY_PHOTOS.gardens.src,
     category: 'Lifestyle',
     author: 'Bruton Gardens',
     date: 'February 8, 2026',
     readTime: '4 min read',
   },
-];
-
-// ── Gallery Data ─────────────────────────────────────────────────────────────
-
-const galleryCategories = [
-  'All Spaces',
-  'Apartments',
-  'Gardens',
-  'Event Center',
-  'Amenities',
-];
-
-const allGalleryImages = [
-  { id: 1, title: 'Beautiful Garden Entrance', description: 'Stunning garden entrance with lush greenery and well-maintained pathways.', image: '/assets/BRTN GRDN-1.JPEG', category: 'Gardens', location: 'Bruton Garden', details: 'Garden Entrance \u2022 Lush Greenery', featured: true },
-  { id: 2, title: 'Bruton Living Room', description: 'Spacious and bright living area with contemporary furnishings and city views.', image: '/assets/BRTN GRDN-12 2.JPEG', category: 'Apartments', location: 'Bruton Garden', details: 'Contemporary Furnishings \u2022 City Views' },
-  { id: 3, title: 'Spacious Kitchen', description: 'Fully equipped modern kitchen with stainless steel appliances and granite countertops.', image: '/assets/BRTN GRDN-14.JPG', category: 'Apartments', location: 'Bruton Garden', details: 'Full Kitchen \u2022 Dining Area' },
-  { id: 4, title: 'Perfect Washroom', description: 'Wonderful washroom with rain shower and bathtub.', image: '/assets/BRTN GRDN-17 2.JPG', category: 'Apartments', location: 'Bruton Garden', details: 'Rain Shower \u2022 Bathtub' },
-  { id: 5, title: 'Furnished Kitchen', description: 'Fully equipped modern kitchen with stainless steel appliances and granite countertops.', image: '/assets/BRTN GRDN-18.JPG', category: 'Apartments', location: 'Bruton Garden', details: 'Full Kitchen \u2022 Dining Area' },
-  { id: 6, title: 'Bruton Bedroom', description: 'Elegant bedroom with king-size bed, premium linens, and blackout curtains.', image: '/assets/BRTN GRDN-22.JPG', category: 'Apartments', location: 'Bruton Garden', details: 'Private Oasis \u2022 Relaxation' },
-  { id: 7, title: 'Bruton Event Center', description: 'Secluded event center with comfortable lighting and natural beauty.', image: '/assets/BRTN GRDN-25 2.JPEG', category: 'Event Center', location: 'Bruton Garden', details: 'Secluded \u2022 Comfortable Seating' },
-  { id: 8, title: 'Garden Sanctuary', description: 'Peaceful garden sanctuary with meditation areas and natural water features.', image: '/assets/BRTN GRDN-26.JPG', category: 'Gardens', location: 'Bruton Garden', details: 'Meditation Areas \u2022 Water Features', featured: true },
-  { id: 9, title: 'Bruton at Night', description: 'Beautiful garden at night with seasonal flowers and year-round beauty.', image: '/assets/BRTN GRDN-27 2.JPG', category: 'Gardens', location: 'Bruton Garden', details: 'Night View \u2022 Seasonal Flowers' },
-  { id: 10, title: 'Garden Vista', description: 'Stunning garden vista with panoramic views of the entire garden space.', image: '/assets/BRTN GRDN-27.JPG', category: 'Gardens', location: 'Bruton Garden', details: 'Panoramic Views \u2022 Elevated' },
-  { id: 11, title: 'Garden Corner', description: 'Intimate garden corner perfect for quiet moments and personal reflection.', image: '/assets/BRTN GRDN-3.JPEG', category: 'Gardens', location: 'Bruton Garden', details: 'Intimate Space \u2022 Private' },
-  { id: 12, title: 'Garden Path', description: 'Charming garden path leading through beautiful landscaping and plant life.', image: '/assets/BRTN GRDN-6.JPEG', category: 'Gardens', location: 'Bruton Garden', details: 'Walking Path \u2022 Landscaping' },
-  { id: 13, title: 'Bedroom & Lounge', description: 'A bright bedroom with a lounge sofa and blue drapes.', image: '/assets/BRTN GRDN-10.JPEG', category: 'Apartments', location: 'Bruton Garden', details: 'Bed \u2022 Lounge Sofa' },
-  { id: 14, title: 'Calm Bedroom', description: 'A quiet bedroom with fresh white linen and a work chair.', image: '/assets/BRTN GRDN-20.JPG', category: 'Apartments', location: 'Bruton Garden', details: 'Fresh Linen \u2022 Workspace' },
-  { id: 15, title: 'Warm-Lit Suite', description: 'A cosy bedroom with warm lighting and a wall-mounted TV.', image: '/assets/bed.JPEG', category: 'Apartments', location: 'Bruton Garden', details: 'Warm Lighting \u2022 TV' },
-  { id: 16, title: 'Living Space', description: 'Bed, sofa and soft light in one open, airy room.', image: '/assets/living.JPEG', category: 'Apartments', location: 'Bruton Garden', details: 'Open Plan \u2022 Sofa' },
-  { id: 17, title: 'Fitted Wardrobes', description: 'Built-in wooden wardrobes and plenty of storage.', image: '/assets/furnish.JPG', category: 'Apartments', location: 'Bruton Garden', details: 'Storage \u2022 Wardrobes' },
-  { id: 18, title: 'En-Suite Bathroom', description: 'A clean, modern bathroom with a glass shower.', image: '/assets/BRTN GRDN-21.JPG', category: 'Amenities', location: 'Bruton Garden', details: 'Glass Shower \u2022 En-Suite' },
-  { id: 19, title: 'Shower Room', description: 'Walk-in glass shower with modern fittings.', image: '/assets/BRTN GRDN-13.JPG', category: 'Amenities', location: 'Bruton Garden', details: 'Walk-In Shower' },
-  { id: 20, title: 'Banquet Setting', description: 'The hall dressed for a reception, with gold chairs and floral tables.', image: '/assets/brut2.jpg', category: 'Event Center', location: 'Bruton Garden', details: 'Receptions \u2022 Banquets' },
-  { id: 21, title: 'Celebration Stage', description: 'A floral stage and lounge set-up for special occasions.', image: '/assets/brut1.jpg', category: 'Event Center', location: 'Bruton Garden', details: 'Stage \u2022 Décor' },
-  { id: 22, title: 'The Hall', description: 'Bright, open hall with high ceilings and chandeliers.', image: '/assets/BRTN GRDN-5.JPEG', category: 'Event Center', location: 'Bruton Garden', details: 'High Ceilings \u2022 Natural Light' },
-  { id: 23, title: 'Nhyira Hall', description: 'The event hall from the gardens.', image: '/assets/BRTN GRDN-4.JPEG', category: 'Event Center', location: 'Bruton Garden', details: 'Exterior \u2022 Gardens' },
-  { id: 24, title: 'Hall at Dusk', description: 'Nhyira Hall lit up as evening falls.', image: '/assets/BRTN GRDN-23.JPG', category: 'Event Center', location: 'Bruton Garden', details: 'Evening \u2022 Lighting' },
-  { id: 25, title: 'Apartment Courtyard', description: 'The paved courtyard in front of the apartments.', image: '/assets/BRTN GRDN-24.JPEG', category: 'Gardens', location: 'Bruton Garden', details: 'Courtyard \u2022 Parking' },
-  { id: 26, title: 'Palm Garden', description: 'Palms and lawns beside the apartment block.', image: '/assets/BRTN GRDN-2.JPEG', category: 'Gardens', location: 'Bruton Garden', details: 'Palms \u2022 Lawn' },
-  { id: 27, title: 'From Above', description: 'An aerial view of the hall, lawns and grounds.', image: '/assets/main-home1.jpg', category: 'Gardens', location: 'Bruton Garden', details: 'Aerial View' },
 ];
 
 // ── Blog Post Card ───────────────────────────────────────────────────────────
@@ -144,12 +105,22 @@ export default function BlogClient({ initialData }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [subscribeEmail, setSubscribeEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribeError, setSubscribeError] = useState('');
   const [gc] = useState(initialData && Object.keys(initialData).length ? { ...DEFAULT_GALLERY, ...initialData } : DEFAULT_GALLERY);
 
-  const handleSubscribe = async () => {
-    if (!subscribeEmail) return;
+  useEffect(() => {
+    const category = new URLSearchParams(window.location.search).get('category');
+    if (galleryCategories.includes(category)) { setSelectedCategory(category); setActiveTab('gallery'); }
+  }, []);
+
+  const handleSubscribe = async (event) => {
+    event.preventDefault();
+    if (subscribing) return;
+    setSubscribing(true);
+    setSubscribeError('');
     try {
-      await fetch('/api/contact', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -160,14 +131,15 @@ export default function BlogClient({ initialData }) {
           message: `New newsletter subscription from: ${subscribeEmail}`,
         }),
       });
-    } catch {
-      // Silent — still show subscribed
-    }
-    setSubscribed(true);
-    setTimeout(() => {
-      setSubscribed(false);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Unable to subscribe. Please try again.');
+      setSubscribed(true);
       setSubscribeEmail('');
-    }, 3000);
+    } catch (error) {
+      setSubscribeError(error.message || 'Unable to subscribe. Please try again.');
+    } finally {
+      setSubscribing(false);
+    }
   };
 
   const filteredImages = useMemo(() => {
@@ -235,7 +207,7 @@ export default function BlogClient({ initialData }) {
         eyebrow="Gallery & journal"
         title={gc.hero?.title || DEFAULT_GALLERY.hero.title}
         intro={gc.hero?.subtitle || DEFAULT_GALLERY.hero.subtitle}
-        image="/assets/BRTN GRDN-26.JPG"
+        image={PROPERTY_PHOTOS.aerial.src}
       >
         <FadeIn direction="up" delay={0.9} className="mt-10">
           <div className="inline-flex rounded-full border border-ivory/20 bg-garden/40 p-1 backdrop-blur-md">
@@ -272,18 +244,22 @@ export default function BlogClient({ initialData }) {
               <div className="container-luxe max-w-3xl text-center">
                 <SectionHeading eyebrow="Newsletter" title="Stay in the loop" intro="Subscribe for the latest updates, offers, and stories from Bruton Gardens." align="center" />
                 <FadeIn direction="up" delay={0.2}>
-                  <div className="mx-auto mt-10 flex max-w-lg flex-col gap-3 rounded-full sm:flex-row sm:border sm:border-garden/15 sm:bg-ivory sm:p-1.5">
+                  <form onSubmit={handleSubscribe} className="mx-auto mt-10 flex max-w-lg flex-col gap-3 rounded-full sm:flex-row sm:border sm:border-garden/15 sm:bg-ivory sm:p-1.5">
                     <input
                       type="email"
+                      required
+                      aria-label="Email address for newsletter"
                       placeholder="Your email address"
                       value={subscribeEmail}
-                      onChange={(e) => setSubscribeEmail(e.target.value)}
+                      onChange={(e) => { setSubscribeEmail(e.target.value); setSubscribed(false); }}
                       className="flex-1 rounded-full border border-garden/15 bg-ivory px-6 py-3 outline-none sm:border-0 sm:bg-transparent"
                     />
-                    <LuxeButton variant="garden" onClick={handleSubscribe} disabled={!subscribeEmail || subscribed}>
-                      {subscribed ? 'Subscribed' : 'Subscribe'}
+                    <LuxeButton type="submit" variant="garden" disabled={!subscribeEmail || subscribed || subscribing}>
+                      {subscribing ? 'Subscribing…' : subscribed ? 'Subscribed' : 'Subscribe'}
                     </LuxeButton>
-                  </div>
+                  </form>
+                  {subscribeError && <p role="alert" className="mt-3 text-sm text-red-700">{subscribeError}</p>}
+                  {subscribed && <p role="status" className="mt-3 text-sm text-garden">Your subscription request has been received.</p>}
                 </FadeIn>
               </div>
             </section>
@@ -296,7 +272,7 @@ export default function BlogClient({ initialData }) {
             exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 0.6, ease: EASE_LUXE }}
           >
-            <section className="bg-ivory pb-24 pt-16 md:pb-32">
+            <section id="photos" className="scroll-mt-24 bg-ivory pb-24 pt-16 md:pb-32">
               <div className="container-luxe">
                 {/* Filters */}
                 <div className="mb-12 flex flex-col gap-6 border-b border-garden/10 pb-8 lg:flex-row lg:items-center lg:justify-between">
@@ -328,7 +304,7 @@ export default function BlogClient({ initialData }) {
                 </div>
 
                 <p className="eyebrow mb-8 text-ink/45">
-                  Showing {filteredImages.length} of {allGalleryImages.length}
+                  {filteredImages.length} {filteredImages.length === 1 ? 'photo' : 'photos'}{selectedCategory !== 'All Spaces' ? ` · ${selectedCategory}` : ''}
                 </p>
 
                 {/* Masonry */}

@@ -9,9 +9,9 @@ export const metadata = {
 export default function AdminLayout({ children }) {
   return (
     <StaffProvider>
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="flex min-h-screen flex-col bg-gray-50 lg:flex-row">
         <Sidebar />
-        <main className="flex-1 overflow-auto">{children}</main>
+        <main className="min-w-0 w-full flex-1 overflow-auto">{children}</main>
       </div>
     </StaffProvider>
   );

@@ -1,5 +1,7 @@
+import { guard } from '@/lib/auth/staff';
 import { NextResponse } from 'next/server';
-import { readJSON, writeJSON } from '@/lib/data';
+import { updateJSON } from '@/lib/data';
+import { MAX_IMAGE_BYTES } from '@/lib/uploads';
 
 const USE_BLOB = !!process.env.BLOB_READ_WRITE_TOKEN;
 
@@ -21,7 +23,7 @@ async function storeFile(filename, buffer, contentType) {
   return `/uploads/${filename}`;
 }
 
-export async function POST(request) {
+export const POST = guard('content', 'full', async (request) => {
   try {
     const formData = await request.formData();
     const file = formData.get('file');
@@ -34,15 +36,14 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Invalid file type. Only images allowed.' }, { status: 400 });
     }
 
+    if (file.size > MAX_IMAGE_BYTES) return NextResponse.json({ error: 'Image is over 4 MB — please resize it' }, { status: 400 });
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-');
     const filename = `${Date.now()}-${safeName}`;
 
     const src = await storeFile(filename, buffer, file.type);
-
-    const all = await readJSON('carousel.json') || {};
-    if (!all[carouselName]) all[carouselName] = { label: carouselName, images: [] };
 
     const newImage = {
       id: `${Date.now()}`,
@@ -51,12 +52,15 @@ export async function POST(request) {
       caption: '',
     };
 
-    all[carouselName].images.push(newImage);
-    await writeJSON('carousel.json', all);
+    await updateJSON('carousel.json', (all) => {
+      if (!all[carouselName]) all[carouselName] = { label: carouselName, images: [] };
+      all[carouselName].images.push(newImage);
+      return all;
+    });
 
     return NextResponse.json({ success: true, image: newImage });
   } catch (err) {
     console.error('Upload error:', err);
     return NextResponse.json({ error: err?.message || 'Upload failed' }, { status: 500 });
   }
-}
+});

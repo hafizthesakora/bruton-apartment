@@ -29,11 +29,10 @@ async function createPglite(): Promise<DB> {
   const { drizzle } = await import('drizzle-orm/pglite');
   const { migrate } = await import('drizzle-orm/pglite/migrator');
 
-  // Vercel's filesystem is read-only outside /tmp — data there won't persist; set DATABASE_URL.
-  const dataDir = process.env.VERCEL
-    ? '/tmp/pglite'
-    : path.join(process.cwd(), '.data', 'pglite');
-  if (process.env.VERCEL) console.warn('[db] DATABASE_URL not set — using ephemeral PGlite in /tmp.');
+  if (process.env.VERCEL) {
+    throw new Error('DATABASE_URL must be configured on Vercel; embedded storage cannot persist bookings there.');
+  }
+  const dataDir = path.join(process.cwd(), '.data', 'pglite');
 
   fs.mkdirSync(path.dirname(dataDir), { recursive: true });
   const client = await PGlite.create({ dataDir, extensions: { btree_gist } });

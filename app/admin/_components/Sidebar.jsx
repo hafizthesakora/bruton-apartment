@@ -1,5 +1,7 @@
 'use client';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
@@ -24,6 +26,8 @@ import {
   ShieldCheck,
   History,
   Eye,
+  Menu,
+  X,
 } from 'lucide-react';
 import { can, ROLE_LABELS, permissionForPath } from '@/lib/auth/rbac';
 import { useStaff } from './StaffContext';
@@ -78,6 +82,8 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const staff = useStaff();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  useEffect(() => setMobileOpen(false), [pathname]);
 
   if (pathname === '/admin/login') return null;
 
@@ -93,8 +99,8 @@ export default function Sidebar() {
 
   const visible = (item) => staff && can(staff.role, permissionForPath(item.href), 'view');
 
-  return (
-    <aside className="w-60 min-h-screen bg-slate-900 flex flex-col flex-shrink-0 print:hidden">
+  const content = (
+    <>
       {/* Logo */}
       <div className="px-6 py-6 border-b border-slate-700">
         <div className="flex items-center gap-3">
@@ -111,7 +117,7 @@ export default function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+      <nav aria-label="Staff navigation" className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
         {navGroups.map((group) => {
           const items = group.items.filter(visible);
           if (!items.length) return null;
@@ -153,6 +159,22 @@ export default function Sidebar() {
           Sign Out
         </button>
       </div>
-    </aside>
+    </>
   );
+
+  return <>
+    <div className="flex w-full items-center justify-between bg-slate-900 px-4 py-3 text-white lg:hidden print:hidden">
+      <Link href="/admin" className="font-semibold">Bruton Gardens · Staff</Link>
+      <button type="button" onClick={() => setMobileOpen(true)} aria-label="Open staff navigation" aria-expanded={mobileOpen} className="rounded-lg border border-slate-600 p-2"><Menu size={20} /></button>
+    </div>
+    <aside className="hidden w-60 min-h-screen shrink-0 flex-col bg-slate-900 lg:flex print:hidden">{content}</aside>
+    <Dialog open={mobileOpen} onClose={setMobileOpen} className="relative z-[100] lg:hidden">
+      <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+      <DialogPanel className="fixed inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col overflow-y-auto bg-slate-900">
+        <DialogTitle className="sr-only">Staff navigation</DialogTitle>
+        <button type="button" onClick={() => setMobileOpen(false)} aria-label="Close staff navigation" className="absolute right-2 top-2 rounded-lg p-2 text-white"><X size={18} /></button>
+        {content}
+      </DialogPanel>
+    </Dialog>
+  </>;
 }

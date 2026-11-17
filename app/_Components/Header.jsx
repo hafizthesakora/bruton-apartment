@@ -8,15 +8,10 @@ import { Dialog, DialogPanel } from '@headlessui/react';
 import { MapPin, Navigation, X, Menu, UserRound } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import LuxeButton from './ui/LuxeButton';
+import { PUBLIC_NAV } from '@/lib/navigation';
 import { Magnetic, EASE_LUXE } from './MotionWrapper';
 
-const navLinks = [
-  { href: '/book', label: 'Stay' },
-  { href: '/services', label: 'Apartments' },
-  { href: '/facilities', label: 'Facilities' },
-  { href: '/blog', label: 'Gallery' },
-  { href: '/about', label: 'About' },
-];
+const navLinks = PUBLIC_NAV;
 
 // Pages that open with a dark full-bleed hero, where the header starts transparent.
 const HERO_PAGES = ['/', '/about', '/services', '/facilities', '/blog'];

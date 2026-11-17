@@ -24,14 +24,14 @@ beforeAll(async () => {
   db = await testDb();
   const rows = await db.select().from(apartments);
   studio = rows.find((a) => a.slug === 'studio')!.id;
-  suite = rows.find((a) => a.slug === 'executive-suite')!.id;
+  suite = rows.find((a) => a.slug === 'two-bedroom-2')!.id;
 });
 
 describe('createStaffBooking', () => {
   it('creates a confirmed walk-in at the rate-plan price and confirms to the guest', async () => {
-    const b = await create(); // Wed night, studio GH₵ 650
-    expect(b).toMatchObject({ status: 'confirmed', source: 'walk_in', totalAmount: 65_000, paymentMode: 'pay_on_arrival' });
-    expect(await balance(b.id)).toBe(65_000);
+    const b = await create(); // Wed night, studio GH₵ 600
+    expect(b).toMatchObject({ status: 'confirmed', source: 'walk_in', totalAmount: 60_000, paymentMode: 'pay_on_arrival' });
+    expect(await balance(b.id)).toBe(60_000);
     expect(await templates(b.id)).toEqual(['booking_confirmed:email', 'booking_confirmed:sms']);
   });
 
@@ -59,17 +59,17 @@ describe('changeBooking', () => {
   it('extends a stay, re-prices it and posts the difference', async () => {
     const b = await create({ checkIn: '2027-04-05', checkOut: '2027-04-06' }); // Mon
     const changed = await changeBooking(db, b.id, { checkOut: '2027-04-07' }, STAFF, NOW); // 1 → 2 nights
-    expect(changed.totalAmount).toBe(130_000);
+    expect(changed.totalAmount).toBe(120_000);
     const f = await folio(b.id);
-    expect(f.at(-1)).toMatchObject({ type: 'charge', amount: 65_000 });
-    expect(await balance(b.id)).toBe(130_000);
+    expect(f.at(-1)).toMatchObject({ type: 'charge', amount: 60_000 });
+    expect(await balance(b.id)).toBe(120_000);
     expect(await templates(b.id)).toContain('booking_changed:sms');
   });
 
   it('moving to a cheaper stay posts a negative adjustment; keeping the price posts none', async () => {
     const b = await create({ apartmentId: suite, checkIn: '2027-04-12', checkOut: '2027-04-14' });
     await changeBooking(db, b.id, { apartmentId: studio }, STAFF, NOW);
-    expect(await balance(b.id)).toBe(130_000);
+    expect(await balance(b.id)).toBe(120_000);
     const before = (await folio(b.id)).length;
     await changeBooking(db, b.id, { checkOut: '2027-04-15', price: 'keep' }, STAFF, NOW);
     expect((await folio(b.id)).length).toBe(before);

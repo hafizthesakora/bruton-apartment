@@ -5,9 +5,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BedDouble, Bath, Users, Check, ChevronLeft, ChevronRight, Loader2, ShieldCheck, CalendarDays, Search } from 'lucide-react';
 import { formatGHS } from '@/lib/money';
-import { addDays, todayAtProperty } from '@/lib/booking/pricing';
+import { addDays, isISODate, todayAtProperty } from '@/lib/booking/pricing';
 import type { SearchResult } from '@/lib/booking/engine';
 import type { PaymentModeOption } from '@/lib/booking/pricing';
+import { groupAvailableRooms, ROOM_TYPES } from '@/lib/room-types';
 
 type Policy = { depositPct: number; holdMinutes: number; checkInTime: string; checkOutTime: string; cancellationText: string };
 type SearchResponse = { apartments: SearchResult[]; paymentOptions: PaymentModeOption[]; policy: Policy };
@@ -53,9 +54,13 @@ export default function BookClient() {
   const today = todayAtProperty();
   const preferred = params.get('apartment');
 
-  const [checkIn, setCheckIn] = useState(params.get('checkIn') || today);
-  const [checkOut, setCheckOut] = useState(params.get('checkOut') || addDays(today, 2));
-  const [guests, setGuests] = useState(Number(params.get('guests')) || 2);
+  const initialIn = params.get('checkIn') || '';
+  const initialOut = params.get('checkOut') || '';
+  const safeIn = isISODate(initialIn) && initialIn >= today ? initialIn : today;
+  const [checkIn, setCheckIn] = useState(safeIn);
+  const [checkOut, setCheckOut] = useState(isISODate(initialOut) && initialOut > safeIn ? initialOut : addDays(safeIn, 2));
+  const initialGuests = Number(params.get('guests'));
+  const [guests, setGuests] = useState(Number.isInteger(initialGuests) && initialGuests >= 1 && initialGuests <= 20 ? initialGuests : 2);
 
   const [result, setResult] = useState<SearchResponse | null>(null);
   const [searched, setSearched] = useState<{ checkIn: string; checkOut: string; guests: number } | null>(null);
@@ -117,12 +122,12 @@ export default function BookClient() {
               <input type="date" className={inputCls} value={checkIn} min={today} required
                 onChange={(e) => {
                   setCheckIn(e.target.value);
-                  if (e.target.value >= checkOut) setCheckOut(addDays(e.target.value, 1));
+                  if (isISODate(e.target.value) && e.target.value >= checkOut) setCheckOut(addDays(e.target.value, 1));
                 }} />
             </label>
             <label className="block">
               <span className={labelCls}>Check-out</span>
-              <input type="date" className={inputCls} value={checkOut} min={addDays(checkIn, 1)} required
+              <input type="date" className={inputCls} value={checkOut} min={isISODate(checkIn) ? addDays(checkIn, 1) : today} required
                 onChange={(e) => setCheckOut(e.target.value)} />
             </label>
             <label className="block">
@@ -173,15 +178,18 @@ function Results({ result, searched, preferred, onSelect }: {
   preferred: string | null;
   onSelect: (a: SearchResult) => void;
 }) {
-  const byPreference = (a: SearchResult, b: SearchResult) => Number(b.slug === preferred) - Number(a.slug === preferred);
-  const available = result.apartments.filter((a) => a.available).sort(byPreference);
-  const unavailable = result.apartments.filter((a) => !a.available).sort(byPreference);
+  const preferredType = ROOM_TYPES.find((t) => t.slug === preferred)?.key;
+  const byPreference = (a: SearchResult, b: SearchResult) => Number(b.roomType === preferredType) - Number(a.roomType === preferredType);
+  const groups = groupAvailableRooms(result.apartments);
+  const available = groups.filter((a) => a.available).sort(byPreference);
+  const unavailable = groups.filter((a) => !a.available).sort(byPreference);
+  const availableCount = groups.reduce((count, group) => count + group.availableUnits, 0);
 
   return (
     <div className="space-y-6">
       <p className="text-ink/60">
         {available.length
-          ? `${available.length} apartment${available.length === 1 ? '' : 's'} available · ${fmtDate(searched.checkIn)} → ${fmtDate(searched.checkOut)}`
+          ? `${availableCount} apartment${availableCount === 1 ? '' : 's'} available across ${available.length} room type${available.length === 1 ? '' : 's'} · ${fmtDate(searched.checkIn)} → ${fmtDate(searched.checkOut)}`
           : 'Nothing is free for those dates — try different dates, or contact us and we’ll help.'}
       </p>
       {[...available, ...unavailable].map((a, i) => (
@@ -200,6 +208,7 @@ function Results({ result, searched, preferred, onSelect }: {
           <div className="flex flex-1 flex-col gap-4 p-6 md:p-8">
             <div>
               <h3 className="font-display text-3xl text-garden">{a.name}</h3>
+              <p className="mt-1 text-sm font-medium text-garden">{a.availableUnits} of {a.totalUnits} available for these dates</p>
               <p className="mt-2 text-ink/60">{a.description}</p>
             </div>
             <div className="flex flex-wrap gap-5 text-sm text-ink/70">

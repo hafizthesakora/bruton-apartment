@@ -4,18 +4,19 @@ import Link from 'next/link';
 import { BedDouble, Users, ArrowUpRight } from 'lucide-react';
 import { ImageReveal } from '../MotionWrapper';
 import { formatGHS } from '@/lib/money';
+import { PROPERTY_PHOTOS } from '@/lib/property-media';
 
 // Showcase card (see listShowcase in lib/apartments): tall photo that zooms on hover, price from.
 export default function ApartmentCard({ apartment, index = 0 }) {
-  const { slug, name, description, bedrooms, maxGuests, photo, fromRate } = apartment;
+  const { slug, name, description, bedrooms, maxGuests, photo, fromRate, unitCount } = apartment;
   return (
     <Link href={`/book?apartment=${encodeURIComponent(slug)}`} className="group block">
-      <ImageReveal delay={index * 0.12} className="relative aspect-[4/5] rounded-[2rem] bg-sand">
+      <ImageReveal delay={index * 0.12} className="relative aspect-[4/3] rounded-[2rem] bg-sand">
         <Image
-          src={photo?.url || '/assets/main-home1.jpg'}
+          src={photo?.url || PROPERTY_PHOTOS.studio.src}
           alt={photo?.alt || name}
           fill
-          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+          sizes="(min-width: 768px) 50vw, 100vw"
           className="object-cover transition-transform duration-[1.4s] ease-[var(--ease-luxe)] group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80 transition-opacity duration-700 group-hover:opacity-100" />
@@ -31,6 +32,7 @@ export default function ApartmentCard({ apartment, index = 0 }) {
       <div className="mt-6 flex items-start justify-between gap-6">
         <div>
           <h3 className="font-display text-3xl text-garden">{name}</h3>
+          {unitCount > 0 && <p className="mt-1 text-sm font-medium text-garden">{unitCount} {unitCount === 1 ? 'apartment' : 'apartments'}</p>}
           {description && <p className="mt-2 line-clamp-2 text-ink/60">{description}</p>}
         </div>
       </div>

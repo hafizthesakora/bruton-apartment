@@ -25,7 +25,7 @@ beforeAll(async () => {
   db = await testDb();
   const rows = await db.select().from(apartments);
   studio = rows.find((a) => a.slug === 'studio')!.id;
-  suite = rows.find((a) => a.slug === 'executive-suite')!.id;
+  suite = rows.find((a) => a.slug === 'two-bedroom-2')!.id;
 });
 
 describe('checkIn', () => {

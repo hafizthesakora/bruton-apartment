@@ -73,7 +73,7 @@ export async function sendEmail(to: string, subject: string, html: string): Prom
   }
 }
 
-let gmail: nodemailer.Transporter | null = null;
+let gmail: ReturnType<typeof nodemailer.createTransport> | null = null;
 
 /** Gmail sends as the account itself; only the display name can be changed. */
 async function sendGmail(to: string, subject: string, html: string): Promise<SendResult> {

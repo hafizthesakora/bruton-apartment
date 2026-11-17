@@ -4,11 +4,12 @@
  */
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
+import { authSecret } from '@/lib/auth/secret';
 
 export const GUEST_COOKIE = 'guest-session';
 const MAX_AGE = 30 * 24 * 3600;
 
-const secret = () => new TextEncoder().encode(`${process.env.ADMIN_JWT_SECRET || 'bruton-admin-fallback-secret-change-in-prod'}|guest-account`);
+const secret = () => new TextEncoder().encode(`${authSecret()}|guest-account`);
 
 export async function startGuestSession(key: string) {
   const token = await new SignJWT({ k: key, typ: 'guest' })

@@ -79,6 +79,8 @@ export const apartments = pgTable('apartments', {
   slug: varchar('slug', { length: 64 }).notNull().unique(),
   name: text('name').notNull(),
   description: text('description').notNull().default(''),
+  roomType: text('room_type'),
+  unitNumber: integer('unit_number'),
   maxGuests: integer('max_guests').notNull().default(2),
   bedrooms: integer('bedrooms').notNull().default(1),
   bathrooms: integer('bathrooms').notNull().default(1),
@@ -88,7 +90,7 @@ export const apartments = pgTable('apartments', {
   lodgifyPropertyId: text('lodgify_property_id'),
   lodgifyRoomTypeId: text('lodgify_room_type_id'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-});
+}, (t) => [uniqueIndex('apartments_room_unit_idx').on(t.roomType, t.unitNumber)]);
 
 export const apartmentPhotos = pgTable('apartment_photos', {
   id: serial('id').primaryKey(),
@@ -367,6 +369,19 @@ export const expenses = pgTable('expenses', {
   createdBy: integer('created_by'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+/** Calendar-only channel connections; every feed belongs to one physical unit. */
+export const calendarFeeds = pgTable('calendar_feeds', {
+  id: serial('id').primaryKey(),
+  apartmentId: integer('apartment_id').notNull().references(() => apartments.id),
+  source: bookingSource('source').notNull(),
+  url: text('url').notNull(),
+  exportToken: text('export_token').notNull(),
+  enabled: boolean('enabled').notNull().default(true),
+  lastSyncedAt: timestamp('last_synced_at', { withTimezone: true }),
+  lastError: text('last_error'),
+  result: jsonb('result').$type<{ imported: number; updated: number; cancelled: number; conflicts: number }>(),
+}, (t) => [uniqueIndex('calendar_feeds_unit_source_idx').on(t.apartmentId, t.source)]);
 
 /**
  * Outbox for email + SMS. Rows are written inside the same transaction as the booking change

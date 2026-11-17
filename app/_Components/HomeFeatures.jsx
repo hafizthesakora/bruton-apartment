@@ -48,8 +48,8 @@ const HomeFeatures = () => {
           </StaggerContainer>
         </div>
 
-        <Parallax speed={0.1} className="relative aspect-[4/5] rounded-[2rem] lg:aspect-[3/4]">
-          <Image src="/assets/BRTN GRDN-24.JPEG" alt="Bruton Gardens grounds" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+        <Parallax speed={0.1} className="relative aspect-[4/3] rounded-[2rem] lg:aspect-[4/3]">
+          <Image src="/assets/BRTN GRDN-14.JPG" alt="Fitted apartment kitchen with microwave and cooking appliances" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
         </Parallax>
       </div>
     </section>

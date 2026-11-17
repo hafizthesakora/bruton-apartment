@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { MessageCircle, CalendarCheck, ArrowUpRight } from 'lucide-react';
 import { FadeIn, Parallax, StaggerContainer, StaggerItem } from './MotionWrapper';
 import SectionHeading from './ui/SectionHeading';
@@ -23,10 +24,8 @@ const Services = ({ content = {} }) => {
   return (
     <section id="services-section" className="section-y bg-sand/50">
       <div className="container-luxe grid items-center gap-16 lg:grid-cols-2">
-        <Parallax speed={0.1} className="relative aspect-[4/5] rounded-[2rem] md:aspect-[5/6]">
-          <video autoPlay loop muted playsInline className="h-full w-full object-cover">
-            <source src="/assets/bruton-vid.mp4" type="video/mp4" />
-          </video>
+        <Parallax speed={0.1} className="relative aspect-[4/3] overflow-hidden rounded-[2rem]">
+          <Image src="/assets/BRTN GRDN-3.JPEG" alt="Shaded seating overlooking the gardens at Bruton Gardens" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
         </Parallax>
 
         <div>

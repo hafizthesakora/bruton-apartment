@@ -36,7 +36,7 @@ const Banner = ({ content = {}, social = {} }) => {
           loop
           muted
           playsInline
-          poster="/assets/BRTN GRDN-22.JPG"
+          poster="/assets/main-home1.jpg"
           className="h-full w-full object-cover"
           initial={{ scale: reduce ? 1 : 1.15 }}
           animate={{ scale: 1 }}

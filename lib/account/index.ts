@@ -13,6 +13,7 @@ import { audit } from '@/lib/audit';
 import { BookingError } from '@/lib/booking/engine';
 import { nightsBetween } from '@/lib/booking/pricing';
 import { loadSite, queueChangeRequest, queueChangeRequestReply } from '@/lib/notify';
+import { authSecret } from '@/lib/auth/secret';
 
 type Actor = { id: number; name: string };
 
@@ -29,7 +30,7 @@ export function contactKey(contact: string): string | null {
   return d.length >= 9 && d.length <= 15 ? `p:${d.slice(-9)}` : null;
 }
 
-const pepper = () => process.env.ADMIN_JWT_SECRET || 'bruton-dev-pepper';
+const pepper = authSecret;
 const hashCode = (key: string, code: string) => createHash('sha256').update(`${key}:${code}:${pepper()}`).digest('hex');
 
 function guestMatch(key: string) {
@@ -69,16 +70,20 @@ export async function verifyCode(db: DB, contact: string, code: string, now = ne
   const key = contactKey(contact);
   if (!key || !/^\d{6}$/.test(code.trim())) throw new BookingError(400, 'Enter the 6-digit code we sent you');
   const [row] = await db.select().from(guestLoginCodes)
-    .where(and(eq(guestLoginCodes.contactKey, key), isNull(guestLoginCodes.usedAt), gt(guestLoginCodes.expiresAt, now)))
-    .orderBy(desc(guestLoginCodes.createdAt)).limit(1);
-  if (!row || row.attempts >= MAX_ATTEMPTS) throw new BookingError(400, 'That code has expired — ask for a new one');
+    .where(eq(guestLoginCodes.contactKey, key))
+    .orderBy(desc(guestLoginCodes.createdAt), desc(guestLoginCodes.id)).limit(1);
+  // Only the newest code is eligible, even after it has been used or expired.
+  if (!row || row.usedAt || row.expiresAt <= now || row.attempts >= MAX_ATTEMPTS) throw new BookingError(400, 'That code has expired — ask for a new one');
 
   const ok = timingSafeEqual(Buffer.from(row.codeHash), Buffer.from(hashCode(key, code.trim())));
   if (!ok) {
-    await db.update(guestLoginCodes).set({ attempts: row.attempts + 1 }).where(eq(guestLoginCodes.id, row.id));
+    await db.update(guestLoginCodes).set({ attempts: sql`${guestLoginCodes.attempts} + 1` }).where(eq(guestLoginCodes.id, row.id));
     throw new BookingError(400, row.attempts + 1 >= MAX_ATTEMPTS ? 'Too many wrong tries — ask for a new code' : 'That code isn’t right');
   }
-  await db.update(guestLoginCodes).set({ usedAt: now }).where(eq(guestLoginCodes.id, row.id));
+  const consumed = await db.update(guestLoginCodes).set({ usedAt: now })
+    .where(and(eq(guestLoginCodes.id, row.id), isNull(guestLoginCodes.usedAt), gt(guestLoginCodes.expiresAt, now), sql`${guestLoginCodes.attempts} < ${MAX_ATTEMPTS}`))
+    .returning({ id: guestLoginCodes.id });
+  if (!consumed.length) throw new BookingError(400, 'That code has expired — ask for a new one');
   return key;
 }
 

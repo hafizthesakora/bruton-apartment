@@ -5,62 +5,8 @@ import {
   Eye, EyeOff, ExternalLink, AlertCircle, GripVertical,
 } from 'lucide-react';
 
-// ─── Default content (mirrors data/content.json) ───────────────────────────
-const DEFAULTS = {
-  home: {
-    hero: { tagline: 'WELCOME TO BRUTON GARDENS & APARTMENTS', title: 'Find Your Perfect Stay at Bruton Gardens & Apartments', subtitle: 'Discover luxury living on the outskirts of the city.', primaryCta: 'Booking', secondaryCta: 'Schedule Viewing' },
-    about: { heading: 'Experience Luxury Living at Bruton Gardens & Apartments', body: 'Discover modern comfort and elegant design in our premium apartments.', premiumBadge: 'Premium Living', mainImage: '/assets/BRTN GRDN-22.JPG', cards: [{ image: '/assets/main-home1.jpg' }, { image: '/assets/BRTN GRDN-3.JPEG' }, { image: '/assets/BRTN GRDN-25 2.JPEG' }] },
-    services: { heading: 'Take The First Step', body: 'Discover your perfect home at Bruton Gardens Apartment.' },
-  },
-  about: {
-    hero: { title: 'About Bruton Gardens & Apartments', subtitle: 'A short stay apartment offering exceptional comfort and warm hospitality.' },
-    stats: [{ value: '100+', label: 'Happy Guests' }, { value: '1+', label: 'Years Experience' }, { value: 'Prime', label: 'Location' }, { value: '4.8/5', label: 'Guest Rating' }],
-    story: { heading: 'Our Story', paragraph1: 'Bruton Gardens & Apartments was established with a vision to provide travelers with a home away from home.', paragraph2: 'Our commitment to excellence ensures that every guest enjoys a comfortable, memorable stay.', primaryCta: 'Book Now', secondaryCta: 'Contact Us' },
-    team: { heading: 'Meet Our Team', members: [{ name: 'Mrs. Portia Owusu Asante', role: 'Director', image: '/assets/team-portia.jpeg', bio: 'Passionate about providing exceptional hospitality and comfortable stays' }, { name: 'Nana Afia Nketia Danquah', role: 'Facilities Manager', image: '/assets/team-nana.jpeg', bio: 'Ensuring every guest enjoys a seamless and memorable experience' }, { name: 'Tetteh Ebenezer', role: 'Front of House', image: '/assets/team-tetteh.jpeg', bio: 'Dedicated to making your stay comfortable and stress-free' }] },
-  },
-  footer: {
-    description: 'Experience luxury living at Bruton Gardens & Apartments. We offer modern, well-furnished apartments in a serene environment with world-class amenities and exceptional service.',
-    quickLinksHeading: 'Quick Links',
-    quickLinks: [{ href: '/', label: 'Home' }, { href: '/about', label: 'About' }, { href: '/blog', label: 'Gallery & Blog' }, { href: '/services', label: 'Services' }, { href: '/facilities', label: 'Facilities' }],
-    connectHeading: 'Connect',
-    socialLinks: [{ name: 'Facebook', url: '#' }, { name: 'Twitter', url: '#' }, { name: 'TikTok', url: '#' }, { name: 'WhatsApp', url: '#' }],
-    featuredItems: [{ image: '/assets/hall.JPEG', title: 'Event Center', subtitle: 'Elegant & Modern Design' }, { image: '/assets/main-home1.jpg', title: 'Premium Units', subtitle: 'Fully Furnished Apartments' }, { image: '/assets/BRTN GRDN-26.JPG', title: 'Beautiful Gardens', subtitle: 'Serene Environment' }],
-    copyright: '© 2026 Bruton Gardens & Apartments. All rights reserved.',
-  },
-  services: {
-    hero: { title: 'Our Services', subtitle: 'Everything you need for a comfortable short-stay experience.' },
-    cards: [
-      { title: 'Apartment Booking', description: 'Fully furnished apartments available on AirBnB and direct booking.', features: ['AirBnB Integration', 'Flexible Dates', 'Instant Confirmation'] },
-      { title: 'Event Center', description: 'Versatile event center for corporate and private events.', features: ['Corporate Events', 'Private Celebrations', 'Full Setup Support'] },
-      { title: 'Catering Outsourcing', description: 'Professional catering partnerships for any occasion.', features: ['Custom Menus', 'Professional Service', 'All Event Sizes'] },
-      { title: 'Restaurant', description: 'Local Ghanaian favourites and international dishes.', features: ['Local & International Cuisine', 'Experienced Chefs', 'Dine-in & Delivery'] },
-    ],
-    whyChoose: { heading: 'Why Choose Our Apartments?', items: [{ title: 'Ultrafast WiFi by Starlink', description: 'High-speed internet powered by Starlink.' }, { title: 'Daily Housekeeping', description: 'Professional daily cleaning service.' }, { title: 'Satellite TV & Soundproof Rooms', description: 'Premium satellite TV channels in soundproof rooms.' }, { title: 'Safe & Secure', description: 'CCTV monitoring and trained security staff.' }] },
-    reviews: { heading: 'What Our Guests Say' },
-  },
-  facilities: {
-    hero: { title: 'Our Facilities', subtitle: 'Everything you need for a comfortable short stay, all in one place' },
-    categories: [
-      { category: 'Essential Amenities', items: [{ title: 'Ultrafast WiFi by Starlink', description: 'Blazing fast internet powered by Starlink.' }, { title: 'Free Parking', description: 'Complimentary parking for all guests.' }, { title: 'Secure Access', description: '24/7 security with keyless entry and CCTV.' }, { title: 'Café Corner', description: 'Coffee maker and refreshment area.' }] },
-      { category: 'In-Apartment Features', items: [{ title: 'Fully Equipped Kitchen', description: 'Complete kitchen with all appliances.' }, { title: 'Washer & Dryer', description: 'In-unit laundry for your convenience.' }, { title: 'Climate Control', description: 'Individual air conditioning in every room.' }, { title: 'Dining Space', description: 'Comfortable dining area.' }] },
-    ],
-    explore: { heading: 'Explore Our Apartments', body: 'Take a virtual tour of our fully furnished apartments.', primaryCta: 'Start Tour', secondaryCta: 'Book Now' },
-    special: { heading: 'What Makes Us Special', items: [{ title: 'Daily Housekeeping', description: 'Professional daily cleaning service.' }, { title: '24-Hour Check-In', description: 'Staff available around the clock.' }, { title: 'CCTV & Trained Security', description: 'Comprehensive monitoring and trained security.' }] },
-    cta: { heading: 'Ready for Your Stay?', body: 'Book your apartment today and enjoy all our premium facilities.', primaryCta: 'Check Availability', secondaryCta: 'Contact Us' },
-  },
-  gallery: {
-    hero: { title: 'Gallery & Blog', subtitle: 'Explore our spaces and stay up to date with the latest from Bruton Gardens' },
-    blogCta: { heading: 'Love Our Space? Come Visit Bruton Gardens & Apartments', body: 'Experience the perfect blend of luxury and comfort.', button: 'Book Your Stay' },
-  },
-  promoBanner: {
-    enabled: false,
-    text: '🎉 Special offer — Book now and get 10% off your first stay!',
-    link: '',
-    linkLabel: 'Book Now',
-    bgColor: '#a3e635',
-    textColor: '#1e293b',
-  },
-};
+// Use the same reviewed defaults as the public site.
+import DEFAULTS from '@/data/content.json';
 
 const PAGES = [
   { key: 'home', label: 'Home', path: '/', color: 'blue' },
@@ -580,6 +526,7 @@ function ServiceCardsEditor({ d, setFull }) {
             <span className="text-xs font-semibold text-gray-500 uppercase">Card {i + 1}</span>
             <button onClick={() => removeCard(i)} className="text-gray-300 hover:text-red-400"><Trash2 size={14} /></button>
           </div>
+          <F label="Photo URL" value={card.image || ''} onChange={v => updateCard(i, 'image', v)} />
           <F label="Title" value={card.title} onChange={v => updateCard(i, 'title', v)} />
           <F label="Description" value={card.description} onChange={v => updateCard(i, 'description', v)} multiline />
           <div>
